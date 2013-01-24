@@ -1,0 +1,4 @@
+1:Left=MoveLeft
+1:Right=MoveRight
+1:Up=MoveUp
+1:Down=MoveDown
