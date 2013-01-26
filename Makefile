@@ -8,10 +8,10 @@ LD:=g++
 ENGINEDIR:=../ANEngine
 ENGINEINC:=$(ENGINEDIR)/include
 ENGINELIB:=$(ENGINEDIR)/bin/libanengine.a
-INCFLAGS:= -I$(ENGINEINC) $(shell pkg-config --cflags-only-I sdl SDL_ttf libpng)
-CPPFLAGS:= -I$(ENGINEINC) -c -Wall -pthread -std=c++11 -ggdb $(shell pkg-config --cflags sdl SDL_ttf libpng)
+INCFLAGS:= -I$(ENGINEINC) $(shell pkg-config --cflags-only-I sdl SDL_ttf libpng gl)
+CPPFLAGS:= -I$(ENGINEINC) -c -Wall -pthread -std=c++11 -ggdb $(shell pkg-config --cflags sdl SDL_ttf libpng gl)
 LDFLAGS:= -pthread 
-LIBFLAGS:= $(shell pkg-config --libs sdl SDL_ttf libpng glew) -lGL
+LIBFLAGS:= $(shell pkg-config --libs sdl SDL_ttf libpng glew gl)
 ARFLAGS:= rcs
 MMFLAGS:= $(INCFLAGS) -std=c++11
 MMCFLAGS:= $(INCFLAGS) -std=c99
