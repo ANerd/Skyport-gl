@@ -105,7 +105,7 @@ int main(int argc, const char *argv[])
     Hextile tile;
     tile.SetProgram(groundShader);
     tileMov.SetChild(&tile);
-    c.AddChild(&tileMov);
+    //c.AddChild(&tileMov);
 
     Textbox text;
     c.AddChild(&text);

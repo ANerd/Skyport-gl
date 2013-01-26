@@ -14,7 +14,7 @@ namespace anengine
             "varying vec2 vtexcoord; \n"
             "void main(void) \n"
             "{ \n"
-            "  vtexcoord = texcoord; \n"
+            "  vtexcoord = vec2(texcoord.x, texcoord.y); \n"
             "  gl_Position = ViewProjection * (World * vec4(position.x, position.y, 0.0, 1.0)); \n"
             "} \n"
             "##s\n"
@@ -22,12 +22,24 @@ namespace anengine
             "varying vec2 vtexcoord; \n"
             "void main(void) \n"
             "{ \n"
-            "  vec4 col = texture2D(Texture, vtexcoord); \n"
-            "  gl_FragColor = vec4(col.y,col.z,col.a,col.x); \n"
+            "  gl_FragColor = texture2D(Texture, vtexcoord); \n"
             "} \n"
             "##\n"
             "Global:ViewProjection;"
             "World:World;");
+
+    Textbox::TextlibInit Textbox::myTexlibInit;
+
+    Textbox::TextlibInit::TextlibInit()
+    {
+        Debug("Textlib init");
+        textlib_initialize();
+    }
+    Textbox::TextlibInit::~TextlibInit()
+    {
+        Debug("Textlib quit");
+        textlib_quit();
+    }
 
     void Textbox::OnCreate()
     {
@@ -46,10 +58,11 @@ namespace anengine
     void Textbox::SetText(std::string str)
     {
         textlib_initialize();
-        textlib_set_font_size(72);
+        textlib_set_font(72, NULL);
         textlib_set_background_color(0, 0, 0);
-        textlib_set_quality(2);
-        SDL_Surface *text = textlib_get_text((char*)str.c_str());
-        myTexture->SetData(text->w, text->h, GL_RGBA, text->pixels);
+        textlib_set_quality(TEXT_QUALITY_HIGH);
+        SDL_Surface *text = textlib_get_text((char*)str.c_str(), 255,0,0,0);
+        myTexture->SetData(text->w, text->h, GL_BGRA, text->pixels);
+        SDL_FreeSurface(text);
     }
 };

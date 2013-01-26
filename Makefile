@@ -37,18 +37,18 @@ $(ENGINELIB): force
 
 $(TARGET): $(OBJFILES) $(ENGINELIB)
 	@$(ECHO) " (LD) " $@
-	$(LD) $(LDFLAGS) -o $@ $^ $(LIBFLAGS)
+	@$(LD) $(LDFLAGS) -o $@ $^ $(LIBFLAGS)
 
 $(BINDIR)/%.o: %.cpp Makefile 
 	@$(MKDIR) $(@D)
-	@$(ECHO) " (CC) " $@
+	@$(ECHO) " (CPPC) " $@
 	@$(CPPC) $(CPPFLAGS) -o $@ $<
 	@$(CPPC) -MM -MT $@ $(MMFLAGS) $< > $(BINDIR)/$*.d
 
 $(BINDIR)/%.o: %.c Makefile
 	@$(MKDIR) $(@D)
 	@$(ECHO) " (CC) " $@
-	$(CC) $(CFLAGS) -o $@ $<
+	@$(CC) $(CFLAGS) -o $@ $<
 	@$(CC) -MM -MT $@ $(MMCFLAGS) $< > $(BINDIR)/$*.d
 
 .PHONY: clean
