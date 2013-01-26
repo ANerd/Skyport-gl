@@ -20,7 +20,7 @@ int main(void){
   SDL_FillRect(mainsurf, NULL, SDL_MapRGB(mainsurf->format, 128, 128, 255));
   textlib_initialize();
   textlib_set_font(72, NULL);
-  textlib_set_quality(2);
+  textlib_set_quality(TEXT_QUALITY_HIGH);
   SDL_Surface *text = textlib_get_text("foobar", 255, 255, 255, 255);
   print_surface_properties(text, "text-surface");
   SDL_BlitSurface(text, NULL, mainsurf, NULL); 

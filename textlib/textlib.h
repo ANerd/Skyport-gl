@@ -79,13 +79,21 @@ SDL_Surface *textlib_get_text(const char *, Uint8, Uint8, Uint8, Uint8);
 
 /**
  * Renders a nametag + health-bar to
- * a SDL_Surface with the given
- * settings. The name should not
+ * a SDL_Surface. The name should not
  * contain more than 16 letters, and
  * health is a float 0 <= health <= 1.
  */
 SDL_Surface *textlib_get_nametag(const char *name, float health);
 
+/**
+ * Renders a table of statistics about
+ * each player to an opaque surface.
+ * 
+ *
+ */
+SDL_Surface *textlib_get_stats(unsigned int players, const char **names,
+    int *points, int *primary_weapon, int *secondary_weapon);
+  
 #ifdef __cplusplus
 }
 #endif
