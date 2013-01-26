@@ -3,6 +3,10 @@
 #include <SDL.h>
 #include <SDL_ttf.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+  
 #define DEFAULT_FONT_FILE "fonts/cowboys/cowboys.ttf"
 #define DEFAULT_FONT_DPI 10
 #define DEFAULT_FONT_QUALITY_LEVEL 0
@@ -82,4 +86,8 @@ SDL_Surface *textlib_get_text(const char *, Uint8, Uint8, Uint8, Uint8);
  */
 SDL_Surface *textlib_get_nametag(const char *name, float health);
 
+#ifdef __cplusplus
+}
+#endif
+  
 #endif

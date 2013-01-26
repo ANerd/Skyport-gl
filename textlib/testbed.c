@@ -17,7 +17,7 @@ int main(void){
     printf("Error creating SDL screen: %s\n", SDL_GetError());
     exit(EXIT_FAILURE);
   }
-  SDL_FillRect(mainsurf, NULL, SDL_MapRGB(mainsurf->format, 128, 128, 128));
+  SDL_FillRect(mainsurf, NULL, SDL_MapRGB(mainsurf->format, 128, 128, 255));
   textlib_initialize();
   textlib_set_font(72, NULL);
   textlib_set_quality(2);
@@ -33,7 +33,7 @@ int main(void){
   SDL_Rect location2 = {10, text->h + nametag->h + 100, nametag2->w, nametag2->h};
   SDL_BlitSurface(nametag2, NULL, mainsurf, &location2);
   
-  for(int i = 0;i<240;i++){
+  for(int i = 0; i < 480; i++){
     SDL_UpdateRect(mainsurf, 0, 0, 0, 0);
     SDL_Delay(16);
   }

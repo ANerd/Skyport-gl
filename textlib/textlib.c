@@ -65,7 +65,8 @@ SDL_Surface *textlib_get_nametag(const char *name, float health){
   textlib_set_font(16, NULL);
   textlib_set_quality(2);
   SDL_Surface *nametag = textlib_get_text(name, 0, 0, 0, 255);
-  SDL_Surface *bg = SDL_CreateRGBSurface(SDL_SWSURFACE, nametag->w+10, nametag->h+10,
+  SDL_Surface *bg = SDL_CreateRGBSurface(SDL_SWSURFACE | SDL_SRCALPHA,
+					 nametag->w+10, nametag->h+10,
 					 nametag->format->BitsPerPixel,
 					 nametag->format->Rmask, nametag->format->Gmask,
 					 nametag->format->Bmask, nametag->format->Amask);
@@ -77,9 +78,12 @@ SDL_Surface *textlib_get_nametag(const char *name, float health){
   
   SDL_Rect health_rect = {2, 2, pixel_fill_boundary - 2, nametag->h + 10 - 4};
   SDL_FillRect(bg, &health_rect, SDL_MapRGBA(bg->format, 64, 255, 64, 128));
-  
+
+  SDL_SetAlpha(nametag, SDL_SRCALPHA, 0);
   SDL_Rect name_rect = {5, 5, nametag->w, nametag->h};
   SDL_BlitSurface(nametag, NULL, bg, &name_rect);
+  //SDL_SetAlpha(bg, SDL_SRCALPHA, 255);
+  
   
   font = oldfont;
   quality = oldquality;
