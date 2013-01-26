@@ -70,22 +70,24 @@ SDL_Surface *textlib_get_nametag(const char *name, float health){
 					 nametag->format->BitsPerPixel,
 					 nametag->format->Rmask, nametag->format->Gmask,
 					 nametag->format->Bmask, nametag->format->Amask);
-  unsigned int pixel_fill_boundary = round(health*(nametag->w));
+  unsigned int pixel_fill_boundary = (unsigned int)round(health*(nametag->w));
   SDL_FillRect(bg, NULL, SDL_MapRGBA(bg->format, 0, 0, 0, 255));
   
   SDL_Rect interior = {2, 2, nametag->w + 10 - 4, nametag->h + 10 - 4};
-  SDL_FillRect(bg, &interior, SDL_MapRGBA(bg->format, 255, 64, 64, 128));
+  SDL_FillRect(bg, &interior, SDL_MapRGBA(bg->format, 255, 100, 100, 160));
   
   SDL_Rect health_rect = {2, 2, pixel_fill_boundary - 2, nametag->h + 10 - 4};
-  SDL_FillRect(bg, &health_rect, SDL_MapRGBA(bg->format, 64, 255, 64, 128));
+  SDL_FillRect(bg, &health_rect, SDL_MapRGBA(bg->format, 100, 255, 100, 160));
 
-  SDL_SetAlpha(nametag, SDL_SRCALPHA, 0);
   SDL_Rect name_rect = {5, 5, nametag->w, nametag->h};
   SDL_BlitSurface(nametag, NULL, bg, &name_rect);
-  //SDL_SetAlpha(bg, SDL_SRCALPHA, 255);
-  
   
   font = oldfont;
   quality = oldquality;
   return bg;
+}
+
+SDL_Surface *textlib_get_stats(unsigned int players, const char **names,
+			       int *points, int *primary_weapon, int *secondary_weapon){
+
 }
