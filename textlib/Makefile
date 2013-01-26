@@ -24,7 +24,7 @@ textlib.o: textlib.c textlib.h
 	@$(CC) $(CNFLAGS) $(INCLUDEFLAGS) -c $< -o $@
 
 run: default
-	$(shell ./$(BINNAME))
+	./$(BINNAME)
 .PHONY: run
 clean:
 	@$(RM) $(BINNAME)
