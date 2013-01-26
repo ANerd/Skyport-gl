@@ -3,7 +3,7 @@ BINNAME := testbed
 INPUTFILES := testbed.c
 
 INCLUDECFLAGS := `pkg-config --cflags sdl SDL_ttf`
-INCLUDELIBFLAGS := -I"." `pkg-config --libs sdl SDL_ttf`
+INCLUDELIBFLAGS := -I"." `pkg-config --libs sdl SDL_ttf` -lm
 INCLUDEFLAGS := $(INCLUDECFLAGS) $(INCLUDELIBFLAGS)
 
 # Flags in common by all

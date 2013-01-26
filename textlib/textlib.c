@@ -1,5 +1,6 @@
 #include "textlib.h"
 #include <stdio.h>
+#include <math.h>
 
 static TTF_Font *font;
 static unsigned int quality;
@@ -10,7 +11,7 @@ void textlib_initialize(void){
     printf("textlib: error initializing SDL_ttf: %s\n", TTF_GetError());
     exit(EXIT_FAILURE);
   }
-  textlib_set_font_size(DEFAULT_FONT_DPI);
+  textlib_set_font(DEFAULT_FONT_DPI, NULL);
   textlib_set_background_color(255, 255, 255);
 }
 void textlib_set_background_color(Uint8 r, Uint8 g, Uint8 b){
@@ -26,10 +27,13 @@ void textlib_set_quality(unsigned int the_quality){
   }
 }
 
-void textlib_set_font_size(int dpi){
-  font = TTF_OpenFont(DEFAULT_FONT_FILE, dpi);
+void textlib_set_font(int dpi, const char *the_font){
+  if(the_font == NULL){
+    the_font = (char*)DEFAULT_FONT_FILE;
+  }
+  font = TTF_OpenFont(the_font, dpi);
   if(font == NULL){
-    printf("textlib: Error loading font '%s': %s\n", DEFAULT_FONT_FILE, TTF_GetError());
+    printf("textlib: Error loading font '%s': %s\n", the_font, TTF_GetError());
   }
 }
 
@@ -37,18 +41,8 @@ void textlib_quit(void){
   TTF_Quit();
 }
 
-SDL_Surface *textlib_get_text(char *text){
-  /* Uint32 rmask, gmask, bmask, amask; */
-  /* rmask = 0xff000000; // ensure we pack the pixels in RGBA format */
-  /* gmask = 0x00ff0000; */
-  /* bmask = 0x0000ff00; */
-  /* amask = 0x000000ff; */
-  /* SDL_Surface *textsurf = SDL_CreateRGBSurface(SDL_SWSURFACE | SDL_SRCALPHA, 100, 100, 32,  */
-  /* 					       rmask, gmask, bmask, amask); */
-  /* SDL_FillRect(textsurf, NULL, SDL_MapRGBA(textsurf->format, 255, 0, 0, 255)); */
-
-
-  SDL_Color color = {255, 255, 255, 0};
+SDL_Surface *textlib_get_text(const char *text, Uint8 r, Uint8 g, Uint8 b, Uint8 a){
+  SDL_Color color = {r, g, b, a};
   SDL_Surface *textsurf;
   switch (quality){
   case 2: // highest quality; blending
@@ -64,3 +58,30 @@ SDL_Surface *textlib_get_text(char *text){
   return textsurf;
 }
 
+SDL_Surface *textlib_get_nametag(const char *name, float health){
+  TTF_Font *oldfont = font;
+  unsigned int oldquality = quality;
+  
+  textlib_set_font(16, NULL);
+  textlib_set_quality(2);
+  SDL_Surface *nametag = textlib_get_text(name, 0, 0, 0, 255);
+  SDL_Surface *bg = SDL_CreateRGBSurface(SDL_SWSURFACE, nametag->w+10, nametag->h+10,
+					 nametag->format->BitsPerPixel,
+					 nametag->format->Rmask, nametag->format->Gmask,
+					 nametag->format->Bmask, nametag->format->Amask);
+  unsigned int pixel_fill_boundary = round(health*(nametag->w));
+  SDL_FillRect(bg, NULL, SDL_MapRGBA(bg->format, 0, 0, 0, 255));
+  
+  SDL_Rect interior = {2, 2, nametag->w + 10 - 4, nametag->h + 10 - 4};
+  SDL_FillRect(bg, &interior, SDL_MapRGBA(bg->format, 255, 64, 64, 128));
+  
+  SDL_Rect health_rect = {2, 2, pixel_fill_boundary - 2, nametag->h + 10 - 4};
+  SDL_FillRect(bg, &health_rect, SDL_MapRGBA(bg->format, 64, 255, 64, 128));
+  
+  SDL_Rect name_rect = {5, 5, nametag->w, nametag->h};
+  SDL_BlitSurface(nametag, NULL, bg, &name_rect);
+  
+  font = oldfont;
+  quality = oldquality;
+  return bg;
+}
