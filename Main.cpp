@@ -1,6 +1,5 @@
 
 
-#include <GL/glew.h>
 #include <iostream>
 #include "backend/sdl/SDLEventSource.h"
 #include "backend/sdl/SDLContext.h"
@@ -25,7 +24,6 @@ using namespace anengine;
 
 int main(int argc, const char *argv[])
 {
-    glewInit();
     Dispatcher dispatcher;
     SDLEventSource source;
     EventPrinter printer;
