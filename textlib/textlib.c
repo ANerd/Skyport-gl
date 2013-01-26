@@ -10,7 +10,7 @@ void textlib_initialize(void){
     printf("textlib: error initializing SDL_ttf: %s\n", TTF_GetError());
     exit(EXIT_FAILURE);
   }
-  textlib_set_font_size(FONT_DPI);
+  textlib_set_font_size(DEFAULT_FONT_DPI);
   textlib_set_background_color(255, 255, 255);
 }
 void textlib_set_background_color(Uint8 r, Uint8 g, Uint8 b){
@@ -27,9 +27,9 @@ void textlib_set_quality(unsigned int the_quality){
 }
 
 void textlib_set_font_size(int dpi){
-  font = TTF_OpenFont(FONT_FILE, dpi);
+  font = TTF_OpenFont(DEFAULT_FONT_FILE, dpi);
   if(font == NULL){
-    printf("textlib: Error loading font '%s': %s\n", FONT_FILE, TTF_GetError());
+    printf("textlib: Error loading font '%s': %s\n", DEFAULT_FONT_FILE, TTF_GetError());
   }
 }
 

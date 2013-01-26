@@ -3,9 +3,9 @@
 #include <SDL.h>
 #include <SDL_ttf.h>
 
-#define FONT_FILE "fonts/cowboys/cowboys.ttf"
-#define FONT_DPI 10
-#define FONT_QUALITY_LEVEL 3
+#define DEFAULT_FONT_FILE "fonts/cowboys/cowboys.ttf"
+#define DEFAULT_FONT_DPI 10
+#define DEFAULT_FONT_QUALITY_LEVEL 0
 
 /**
  * Lowest-quality font rendering setting.
