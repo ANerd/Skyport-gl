@@ -18,6 +18,7 @@
 #include "entity/PointVisualizer.h"
 #include "filter/KeymapFilter.h"
 #include "Hextile.h"
+#include "Textbox.h"
 
 using namespace anengine;
 
@@ -105,6 +106,9 @@ int main(int argc, const char *argv[])
     tile.SetProgram(groundShader);
     tileMov.SetChild(&tile);
     c.AddChild(&tileMov);
+
+    Textbox text;
+    c.AddChild(&text);
 
     scene.SetRoot(&c);
 
