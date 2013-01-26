@@ -2,3 +2,11 @@
 1:Right=MoveRight
 1:Up=MoveUp
 1:Down=MoveDown
+1:Z=MoveForward
+1:X=MoveBackward
+2:A=MoveLeft
+2:D=MoveRight
+2:W=MoveUp
+2:S=MoveDown
+2:Q=MoveForward
+2:E=MoveBackward

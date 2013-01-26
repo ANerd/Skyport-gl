@@ -6,11 +6,11 @@ ECHO:=echo
 LD:=g++
 ENGINEDIR:=../ANEngine
 ENGINEINC:=$(ENGINEDIR)/include
-ENGINELIB:=$(ENGINEDIR)/bin
+ENGINELIB:=$(ENGINEDIR)/bin/libanengine.a
 INCFLAGS:= -I$(ENGINEINC) $(shell pkg-config --cflags sdl) $(shell libpng-config --I_opts)
 CPPFLAGS:= -c -Wall -pthread -std=c++11 -ggdb $(shell libpng-config --ccopts --cppflags) $(INCFLAGS)
-LDFLAGS:= -pthread -L$(ENGINELIB) 
-LIBFLAGS:= -lanengine $(shell pkg-config --libs sdl) $(shell libpng-config --libs) -lGL
+LDFLAGS:= -pthread 
+LIBFLAGS:= $(shell pkg-config --libs sdl) $(shell libpng-config --libs) -lGL
 ARFLAGS:= rcs
 MMFLAGS:= $(INCFLAGS) -std=c++11
 BINDIR:=bin
@@ -20,20 +20,21 @@ DEPS:=$(OBJFILES:.o=.d)
 TARGET:=skyport-gl
 
 .PHONY: all
-all: $(TARGET)
+all: $(TARGET) 
 	@$(ECHO) "Build successfull!"
 
 -include $(DEPS)
 
-.PHONY: engine
-engine:
+.PHONY: force
+force:
+$(ENGINELIB): force
 	@$(MAKE) -C $(ENGINEDIR)
 
-$(TARGET): $(OBJFILES)
+$(TARGET): $(OBJFILES) $(ENGINELIB)
 	@$(ECHO) " (LD) " $@
 	@$(LD) $(LDFLAGS) -o $@ $^ $(LIBFLAGS)
 
-$(BINDIR)/%.o: %.cpp Makefile engine
+$(BINDIR)/%.o: %.cpp Makefile 
 	@$(MKDIR) $(@D)
 	@$(ECHO) " (CC) " $@
 	@$(CPPC) $(CPPFLAGS) -o $@ $<
