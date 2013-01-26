@@ -7,7 +7,7 @@
 extern "C" {
 #endif
   
-#define DEFAULT_FONT_FILE "fonts/cowboys/cowboys.ttf"
+#define DEFAULT_FONT_FILE "assets/fonts/cowboys/cowboys.ttf"
 #define DEFAULT_FONT_DPI 10
 #define DEFAULT_FONT_QUALITY_LEVEL 0
 
