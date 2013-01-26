@@ -3,6 +3,10 @@
 #include <SDL.h>
 #include <SDL_ttf.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+  
 #define DEFAULT_FONT_FILE "fonts/cowboys/cowboys.ttf"
 #define DEFAULT_FONT_DPI 10
 #define DEFAULT_FONT_QUALITY_LEVEL 0
@@ -42,9 +46,13 @@ void textlib_initialize(void);
 void textlib_quit(void);
 
 /**
- * Sets the used font-size in points, based on 72dpi.
+ * Sets the used font-size and font-file. font-size
+ * is in points relative to 72dpi. The font-file
+ * can be any .ttf file or NULL, in which case
+ * a default font file specified in DEFAULT_FONT_FILE
+ * is used instead.
  */
-void textlib_set_font_size(int);
+void textlib_set_font(int, const char*);
 
 /**
  * Sets the background color to use for text-rendering.
@@ -67,7 +75,19 @@ void textlib_set_quality(unsigned int the_quality);
  * Renders a C string onto a SDL_Surface
  * with the given settings.
  */
-SDL_Surface *textlib_get_text(char *);
+SDL_Surface *textlib_get_text(const char *, Uint8, Uint8, Uint8, Uint8);
 
+/**
+ * Renders a nametag + health-bar to
+ * a SDL_Surface with the given
+ * settings. The name should not
+ * contain more than 16 letters, and
+ * health is a float 0 <= health <= 1.
+ */
+SDL_Surface *textlib_get_nametag(const char *name, float health);
 
+#ifdef __cplusplus
+}
+#endif
+  
 #endif
