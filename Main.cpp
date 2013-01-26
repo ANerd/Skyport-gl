@@ -15,7 +15,7 @@
 #include "entity/Sprite.h"
 #include "entity/Camera.h"
 #include "entity/Marker.h"
-//#include "entity/PointVisualizer.h"
+#include "entity/PointVisualizer.h"
 #include "filter/KeymapFilter.h"
 #include "Hextile.h"
 #include "Textbox.h"
@@ -79,10 +79,10 @@ int main(int argc, const char *argv[])
     Marker camMarker;
     camMov.SetPointAt(&camMarker);
     c.AddChild(&camMarker);
-    //PointVisualizer pv;
-    //pv.Color.Set(ColorF(0,0,1,1));
-    //pv.Size.Set(0.05f);
-    //c.AddChild(&pv);
+    PointVisualizer pv;
+    pv.Color.Set(ColorF(0,0,1,1));
+    pv.Size.Set(0.05f);
+    c.AddChild(&pv);
 
     scene.GetCameraManager().SetCamera(&cam);
 
@@ -105,10 +105,10 @@ int main(int argc, const char *argv[])
     Hextile tile;
     tile.SetProgram(groundShader);
     tileMov.SetChild(&tile);
-    c.AddChild(&tileMov);
+    //c.AddChild(&tileMov);
 
-    //Textbox text;
-    //c.AddChild(&text);
+    Textbox text;
+    c.AddChild(&text);
 
     scene.SetRoot(&c);
 
