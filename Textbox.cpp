@@ -61,7 +61,7 @@ namespace anengine
         textlib_set_font(72, NULL);
         textlib_set_background_color(0, 0, 0);
         textlib_set_quality(TEXT_QUALITY_HIGH);
-        SDL_Surface *text = textlib_get_text((char*)str.c_str(), 255,0,0,0);
+        SDL_Surface *text = textlib_get_text((char*)str.c_str(), 255,0,0);
         myTexture->SetData(text->w, text->h, GL_BGRA, text->pixels);
         SDL_FreeSurface(text);
     }
