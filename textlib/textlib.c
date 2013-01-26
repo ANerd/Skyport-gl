@@ -41,8 +41,8 @@ void textlib_quit(void){
   TTF_Quit();
 }
 
-SDL_Surface *textlib_get_text(const char *text, Uint8 r, Uint8 g, Uint8 b, Uint8 a){
-  SDL_Color color = {r, g, b, a};
+SDL_Surface *textlib_get_text(const char *text, Uint8 r, Uint8 g, Uint8 b){
+  SDL_Color color = {r, g, b, 255};
   SDL_Surface *textsurf;
   switch (quality){
   case 2: // highest quality; blending
@@ -64,7 +64,7 @@ SDL_Surface *textlib_get_nametag(const char *name, float health){
   
   textlib_set_font(16, NULL);
   textlib_set_quality(2);
-  SDL_Surface *nametag = textlib_get_text(name, 0, 0, 0, 255);
+  SDL_Surface *nametag = textlib_get_text(name, 0, 0, 0);
   SDL_Surface *bg = SDL_CreateRGBSurface(SDL_SWSURFACE | SDL_SRCALPHA,
 					 nametag->w+10, nametag->h+10,
 					 nametag->format->BitsPerPixel,

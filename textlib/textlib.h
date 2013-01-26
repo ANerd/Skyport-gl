@@ -75,7 +75,7 @@ void textlib_set_quality(unsigned int the_quality);
  * Renders a C string onto a SDL_Surface
  * with the given settings.
  */
-SDL_Surface *textlib_get_text(const char *, Uint8, Uint8, Uint8, Uint8);
+SDL_Surface *textlib_get_text(const char *, Uint8, Uint8, Uint8);
 
 /**
  * Renders a nametag + health-bar to
