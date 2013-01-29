@@ -15,16 +15,22 @@ namespace anengine
         };
         static TextlibInit myTexlibInit;
         Asset<Texture> myTexture;
+        void UpdateText();
         protected:
-        void OnCreate();
-        void OnDestroy();
+        virtual void OnPropertyChanged(const PropertyInfo *id, bool implicit);
+        virtual void OnCreate();
+        virtual void OnDestroy();
         public:
-        
+        static PropertyInfo ColorProperty;
+        Property<ColorRGBA> Color;
+        static PropertyInfo TextProperty;
+        Property<std::string> Text;
         Textbox() 
-            : Sprite(AssetRef<Texture>()) { }
+            : Sprite(AssetRef<Texture>()),
+            Color(&ColorProperty, this),
+            Text(&TextProperty, this, EventDirection::None, "F")
+        { }
         virtual ~Textbox() { }
-
-        void SetText(std::string str);
     };
 };
 

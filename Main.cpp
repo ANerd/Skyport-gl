@@ -17,7 +17,7 @@
 #include "entity/Marker.h"
 #include "entity/PointVisualizer.h"
 #include "filter/KeymapFilter.h"
-#include "Hextile.h"
+#include "Hexmap.h"
 #include "Textbox.h"
 
 using namespace anengine;
@@ -51,7 +51,7 @@ int main(int argc, const char *argv[])
     inputHub.CreateOutPin("Input");
 
     Pin::Connect(source, "Input", inputHub, "Input");
-    Pin::Connect(inputHub, "Printer", printer, "Input");
+    //Pin::Connect(inputHub, "Printer", printer, "Input");
     Pin::Connect(inputHub, "Input", keymapFilter, "Input");
     Pin::Connect(keymapFilter, "Action", scene, "Actions");
     Pin::Connect(source, "Misc", hub, "In");
@@ -69,20 +69,42 @@ int main(int argc, const char *argv[])
 
     MultiContainer c;
     Camera cam;
-    cam.Near.Set(0.1);
-    cam.Far.Set(10);
+    cam.Near.Set(0.5);
+    cam.Far.Set(50);
     cam.FOV.Set(3.14/4);
     Movable camMov;
-    MatrixF4 cm;
-    cm.CreateTranslation(VectorF4(0, 1, 1));
-    camMov.Transform.Set(cm);
+    camMov.Transform.Set(MatrixF4::Translation(VectorF4(0,1,-1)));
     Marker camMarker;
     camMov.SetPointAt(&camMarker);
     c.AddChild(&camMarker);
-    PointVisualizer pv;
-    pv.Color.Set(ColorF(0,0,1,1));
-    pv.Size.Set(0.05f);
-    c.AddChild(&pv);
+    PointVisualizer center;
+    center.Color.Set(ColorF(1,1,1,1));
+    center.Size.Set(0.05f);
+    c.AddChild(&center);
+
+    Movable topMov;
+    topMov.Transform.Set(MatrixF4::Translation(VectorF4(0,0.1,0)));
+    PointVisualizer top;
+    top.Color.Set(ColorF(0,1,0,1));
+    top.Size.Set(0.05f);
+    topMov.SetChild(&top);
+    c.AddChild(&topMov);
+
+    Movable rightMov;
+    rightMov.Transform.Set(MatrixF4::Translation(VectorF4(0.1,0,0)));
+    PointVisualizer right;
+    right.Color.Set(ColorF(1,0,0,1));
+    right.Size.Set(0.05f);
+    rightMov.SetChild(&right);
+    c.AddChild(&rightMov);
+
+    Movable frontMov;
+    frontMov.Transform.Set(MatrixF4::Translation(VectorF4(0,0,0.1)));
+    PointVisualizer front;
+    front.Color.Set(ColorF(0,0,1,1));
+    front.Size.Set(0.05f);
+    frontMov.SetChild(&front);
+    c.AddChild(&frontMov);
 
     scene.GetCameraManager().SetCamera(&cam);
 
@@ -91,24 +113,32 @@ int main(int argc, const char *argv[])
     c.AddChild(&camMov);
 
     //Add hextiles
-    Marker tileMark;
-    Movable tileMarkMov;
-    tileMarkMov.InstanceId.Set(2);
-    //MatrixF4 m;m.CreateRotationX(90);
-    MatrixF4 m;m.CreateTranslation(UnitF4[Z]);
-    tileMarkMov.Transform.Set(m);
-    tileMarkMov.SetChild(&tileMark);
-    c.AddChild(&tileMarkMov);
+    //Marker mapMark;
+    //PointVisualizer markV;
+    //markV.Color.Set(ColorF(1,0,1,1));
+    //markV.Size.Set(0.05f);
+    //Movable mapMarkMov;
+    //mapMarkMov.InstanceId.Set(2);
+    //mapMarkMov.Transform.Set(MatrixF4::Translation(UnitF4[Z]));
+    //MultiContainer markC;
+    //markC.AddChild(&markV);
+    //markC.AddChild(&mapMark);
+    //mapMarkMov.SetChild(&markC);
+    //c.AddChild(&mapMarkMov);
 
-    Movable tileMov;
-    tileMov.SetPointAt(&tileMark);
-    Hextile tile;
-    tile.SetProgram(groundShader);
-    tileMov.SetChild(&tile);
+    Movable mapMov;
+    mapMov.Transform.Set(MatrixF4::RotationX(3*Pi/2));
+    //mapMov.SetPointAt(&mapMark);
+    Hexmap map(2,2,groundShader);
+    mapMov.SetChild(&map);
+    c.AddChild(&mapMov);
+
+    //Textbox text;
+    //text.Color.Set(ColorRGBA(255,255,0,255));
+    //text.Text.Set("Foobar");
+    //tileMov.SetChild(&text);
     //c.AddChild(&tileMov);
-
-    Textbox text;
-    c.AddChild(&text);
+    //c.AddChild(&text);
 
     scene.SetRoot(&c);
 

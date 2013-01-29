@@ -16,7 +16,7 @@ class Hextile : public FixedGeometry
     }
     virtual void OnDraw(FrameTime elapsed)
     {
-        glDrawArrays(GL_TRIANGLES, 0, 12);
+        glDrawArrays(GL_TRIANGLES, 0, 48);
     }
     public:
     virtual ~Hextile() { }

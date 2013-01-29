@@ -1,3 +1,6 @@
 skyport-gl
 bin/
 .clang_complete
+*.trace
+textlib/testbed
+textlib/*.o

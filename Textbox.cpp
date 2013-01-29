@@ -14,7 +14,7 @@ namespace anengine
             "varying vec2 vtexcoord; \n"
             "void main(void) \n"
             "{ \n"
-            "  vtexcoord = vec2(texcoord.x, texcoord.y); \n"
+            "  vtexcoord = vec2(texcoord.x, 1.0-texcoord.y); \n"
             "  gl_Position = ViewProjection * (World * vec4(position.x, position.y, 0.0, 1.0)); \n"
             "} \n"
             "##s\n"
@@ -27,6 +27,10 @@ namespace anengine
             "##\n"
             "Global:ViewProjection;"
             "World:World;");
+
+    
+    PropertyInfo Textbox::ColorProperty("Color", typeid(Textbox));
+    PropertyInfo Textbox::TextProperty("Text", typeid(Textbox));
 
     Textbox::TextlibInit Textbox::myTexlibInit;
 
@@ -41,10 +45,20 @@ namespace anengine
         textlib_quit();
     }
 
+    void Textbox::OnPropertyChanged(const PropertyInfo *id, bool implicit)
+    {
+        if(id == &TextProperty || id == &ColorProperty)
+        {
+            if(IsCreated())
+                UpdateText();
+        }
+        Sprite::OnPropertyChanged(id, implicit);
+    }
+
     void Textbox::OnCreate()
     {
         myTexture = Scene.Get()->GetAssetManager()->CreateFromMemory<Texture>("");
-        SetText("Foobar");
+        UpdateText();
         Sprite::OnCreate();
         SetProgram(TextboxProgram.Get(Scene.Get()->GetAssetManager()));
     }
@@ -55,13 +69,13 @@ namespace anengine
         Sprite::OnDestroy();
     }
 
-    void Textbox::SetText(std::string str)
+    void Textbox::UpdateText()
     {
         textlib_initialize();
         textlib_set_font(72, NULL);
-        textlib_set_background_color(0, 0, 0);
         textlib_set_quality(TEXT_QUALITY_HIGH);
-        SDL_Surface *text = textlib_get_text((char*)str.c_str(), 255,0,0);
+        ColorRGBA c = Color.Get();
+        SDL_Surface *text = textlib_get_text(Text.Get().c_str(), c[R],c[G],c[B]);
         myTexture->SetData(text->w, text->h, GL_BGRA, text->pixels);
         SDL_FreeSurface(text);
     }
