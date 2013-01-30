@@ -8,8 +8,9 @@ Hexmap::Hexmap(uint m, uint n, AssetRef<Program> program)
     {
         for(uint k = 0; k < m; k++)
         {
-            const VectorF4 jOffset(0.87,1.25,0);
-            const VectorF4 kOffset(0.87,-1.25,0);
+            real dist = 0.1;
+            const VectorF4 jOffset(0.87+dist,1.5+dist,0);
+            const VectorF4 kOffset(0.87+dist,-(1.5+dist),0);
             TileData &tile = myHextiles[Index(j,k)];
             tile.Mov.Transform.Set(MatrixF4::Translation(jOffset*j+kOffset*k));
             tile.Mov.SetChild(&(tile.Tile));
