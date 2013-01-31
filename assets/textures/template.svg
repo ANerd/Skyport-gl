@@ -16,8 +16,8 @@
    inkscape:version="0.48.4 r9939"
    sodipodi:docname="template.svg"
    inkscape:export-filename="/home/anders/projects/cpp/Skyport-gl/assets/textures/template-r.png"
-   inkscape:export-xdpi="49.144661"
-   inkscape:export-ydpi="49.144661">
+   inkscape:export-xdpi="42.78075"
+   inkscape:export-ydpi="42.78075">
   <defs
      id="defs4015" />
   <sodipodi:namedview
@@ -51,7 +51,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title />
+        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
