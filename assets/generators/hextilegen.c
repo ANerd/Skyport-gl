@@ -48,7 +48,7 @@ int main(int argc, char *argv[])
     //fprintf(file, "A1 Position float4 false 24 0 1 288\n");
     double positions[18*4];
     double texcoords[18*2];
-    double flengHeight = 0.2;
+    double flengHeight = 0.4;
     double totalHeight = (2+cos(angleFleng)*flengHeight*2)/2;
 
     int corner;
