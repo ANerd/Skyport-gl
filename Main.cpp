@@ -38,7 +38,7 @@ int main(int argc, const char *argv[])
     AssetRef<Program> groundShader = scene.GetAssetManager()
         ->CreateFromFile<Program>("assets/shaders/Ground.sp");
     AssetRef<Texture> groundTex = scene.GetAssetManager()
-        ->CreateFromFile<Texture>("assets/textures/template-r.png");
+        ->CreateFromFile<Texture>("assets/textures/grass-r.png");
 
     keymapFilter.SetKeymap(keymap);
     printer.CreatePin(EventClass::Input, "Input");
