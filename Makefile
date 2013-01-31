@@ -8,6 +8,9 @@ LD:=g++
 ENGINEDIR:=../ANEngine
 ENGINEINC:=$(ENGINEDIR)/include
 ENGINELIB:=$(ENGINEDIR)/bin/libanengine.a
+
+ASSETSDIR:=assets
+
 INCFLAGS:= -I$(ENGINEINC) $(shell pkg-config --cflags-only-I sdl SDL_ttf libpng gl)
 CPPFLAGS:= -I$(ENGINEINC) -c -Wall -pthread -std=c++11 -ggdb $(shell pkg-config --cflags sdl SDL_ttf libpng gl)
 LDFLAGS:= -pthread 
@@ -25,10 +28,14 @@ TARGET:=skyport-gl
 CFLAGS := -c $(INCFLAGS) -std=c99 $(shell pkg-config --cflags sdl SDL_ttf libpng)
 
 .PHONY: all
-all: $(TARGET) 
+all: $(TARGET) assets
 	@$(ECHO) "Build successfull!"
 
 -include $(DEPS)
+
+.PHONY: assets
+assets: 
+	@$(MAKE) -C $(ASSETSDIR)
 
 .PHONY: force
 force:

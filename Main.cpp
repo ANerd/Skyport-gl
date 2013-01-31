@@ -37,6 +37,8 @@ int main(int argc, const char *argv[])
         ->CreateFromFile<Keymap>("assets/Navigation.kmp");
     AssetRef<Program> groundShader = scene.GetAssetManager()
         ->CreateFromFile<Program>("assets/shaders/Ground.sp");
+    AssetRef<Texture> groundTex = scene.GetAssetManager()
+        ->CreateFromFile<Texture>("assets/textures/template-r.png");
 
     keymapFilter.SetKeymap(keymap);
     printer.CreatePin(EventClass::Input, "Input");
@@ -73,7 +75,7 @@ int main(int argc, const char *argv[])
     cam.Far.Set(50);
     cam.FOV.Set(3.14/4);
     Movable camMov;
-    camMov.Transform.Set(MatrixF4::Translation(VectorF4(0,1,-1)));
+    camMov.Transform.Set(MatrixF4::Translation(VectorF4(0,1,1)));
     Marker camMarker;
     camMov.SetPointAt(&camMarker);
     c.AddChild(&camMarker);
@@ -129,7 +131,7 @@ int main(int argc, const char *argv[])
     Movable mapMov;
     mapMov.Transform.Set(MatrixF4::RotationX(3*Pi/2));
     //mapMov.SetPointAt(&mapMark);
-    Hexmap map(2,2,groundShader);
+    Hexmap map(5,5,groundShader, groundTex);
     mapMov.SetChild(&map);
     c.AddChild(&mapMov);
 

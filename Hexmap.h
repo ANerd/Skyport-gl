@@ -21,7 +21,7 @@ class Hexmap : public MultiContainer
     }
 
     public:
-    Hexmap(uint m, uint n, AssetRef<Program> program);
+    Hexmap(uint m, uint n, AssetRef<Program> program, AssetRef<Texture> tex);
     virtual ~Hexmap();
 };
 

@@ -4,3 +4,4 @@ bin/
 *.trace
 textlib/testbed
 textlib/*.o
+*.gen.*
