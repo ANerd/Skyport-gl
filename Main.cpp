@@ -16,14 +16,20 @@
 #include "entity/Camera.h"
 #include "entity/Marker.h"
 #include "entity/PointVisualizer.h"
+#include "entity/Billboard.h"
 #include "filter/KeymapFilter.h"
 #include "Hexmap.h"
 #include "Textbox.h"
+//#include "ProtocolHandler.h"
 
 using namespace anengine;
 
 int main(int argc, const char *argv[])
 {
+    /*ProtocolHandler proto;
+    GameState gs;
+    proto.Parse("{\"message\":\"connect\", \"revision\":1, \"name\":\"you\"}", gs);
+    return 0;*/
     Dispatcher dispatcher;
     SDLEventSource source;
     EventPrinter printer;
@@ -39,6 +45,8 @@ int main(int argc, const char *argv[])
         ->CreateFromFile<Program>("assets/shaders/Ground.sp");
     AssetRef<Texture> groundTex = scene.GetAssetManager()
         ->CreateFromFile<Texture>("assets/textures/grass-r.png");
+    AssetRef<Texture> billboardTex = scene.GetAssetManager()
+        ->CreateFromFile<Texture>("assets/textures/bill.png");
 
     keymapFilter.SetKeymap(keymap);
     printer.CreatePin(EventClass::Input, "Input");
@@ -135,6 +143,11 @@ int main(int argc, const char *argv[])
     mapMov.SetChild(&map);
     c.AddChild(&mapMov);
 
+    Billboard b(billboardTex);
+    Movable bMovable;
+    bMovable.Transform.Set(MatrixF4::Translation(VectorF4(-5,0.5,-2)));
+    bMovable.SetChild(&b);
+    c.AddChild(&bMovable);
     //Textbox text;
     //text.Color.Set(ColorRGBA(255,255,0,255));
     //text.Text.Set("Foobar");
