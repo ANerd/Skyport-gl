@@ -11,10 +11,10 @@ ENGINELIB:=$(ENGINEDIR)/bin/libanengine.a
 
 ASSETSDIR:=assets
 
-INCFLAGS:= -I$(ENGINEINC) $(shell pkg-config --cflags-only-I sdl SDL_ttf libpng gl)
-CPPFLAGS:= -I$(ENGINEINC) -c -Wall -pthread -std=c++11 -ggdb $(shell pkg-config --cflags sdl SDL_ttf libpng gl)
+INCFLAGS:= -I$(ENGINEINC) $(shell pkg-config --cflags-only-I sdl SDL_ttf libpng gl json)
+CPPFLAGS:= -I$(ENGINEINC) -c -Wall -pthread -std=c++11 -ggdb $(shell pkg-config --cflags sdl SDL_ttf libpng gl json)
 LDFLAGS:= -pthread 
-LIBFLAGS:= $(shell pkg-config --libs sdl SDL_ttf libpng glew gl)
+LIBFLAGS:= $(shell pkg-config --libs sdl SDL_ttf libpng glew gl json)
 ARFLAGS:= rcs
 MMFLAGS:= $(INCFLAGS) -std=c++11
 MMCFLAGS:= $(INCFLAGS) -std=c99

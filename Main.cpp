@@ -20,16 +20,26 @@
 #include "filter/KeymapFilter.h"
 #include "Hexmap.h"
 #include "Textbox.h"
-//#include "ProtocolHandler.h"
+#include "NetworkService.h"
+#include "GameStateService.h"
 
 using namespace anengine;
 
 int main(int argc, const char *argv[])
 {
-    /*ProtocolHandler proto;
-    GameState gs;
-    proto.Parse("{\"message\":\"connect\", \"revision\":1, \"name\":\"you\"}", gs);
-    return 0;*/
+    std::string host;
+    std::string port;
+    if(argc == 3)
+    {
+        host = argv[1];
+        port = argv[2];
+    }
+    else if(argc != 1)
+    {
+        cerr<<"Usage: "<<argv[0]<<" <hostname> <port>"<<endl;
+        return 1;
+    }
+
     Dispatcher dispatcher;
     SDLEventSource source;
     EventPrinter printer;
@@ -38,6 +48,9 @@ int main(int argc, const char *argv[])
     EventHub inputHub(EventClass::Input);
     SceneGraph scene;
     KeymapFilter keymapFilter;
+
+    NetworkService ns(host, port);
+    dispatcher.AddService(ns);
 
     AssetRef<Keymap> keymap = scene.GetAssetManager()
         ->CreateFromFile<Keymap>("assets/Navigation.kmp");
@@ -154,6 +167,9 @@ int main(int argc, const char *argv[])
     //tileMov.SetChild(&text);
     //c.AddChild(&tileMov);
     //c.AddChild(&text);
+
+    GameStateService gamestate(&c, &map);
+    dispatcher.AddService(gamestate);
 
     scene.SetRoot(&c);
 
