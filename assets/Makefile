@@ -18,11 +18,11 @@ all: $(TARGETS)
 
 textures/tiles.gen.png: $(TILESRC)
 	$(MKDIR) $(@D)
-	$(IMGCONVERT) $? -append $@
+	$(IMGCONVERT) $^ -append $@
 
 textures/emblems.gen.png: $(EMBLEMSRC)
 	$(MKDIR) $(@D)
-	$(IMGCONVERT) $? -append $@
+	$(IMGCONVERT) $^ -append $@
 
 geometry/hextile.gen.vbo: bin/hextilegen Makefile
 	$(MKDIR) $(@D)
