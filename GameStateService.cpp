@@ -16,6 +16,11 @@ void GameStateService::Player::Update(const PlayerState &other)
     if(StateDirty)
     {
         Position = other.Position;
+        VectorF2 pos(
+                Hexmap::jOffset[X]*Position[X]+Hexmap::kOffset[X]*Position[Y],
+                Hexmap::jOffset[Y]*Position[X]+Hexmap::kOffset[Y]*Position[Y]);
+        PlayerMovable->Transform.Set(
+                MatrixF4::Translation(VectorF4(pos[X],0.5,pos[Y])));
     }
 }
 
@@ -34,18 +39,15 @@ void GameStateService::Update(const GameState &state)
     VectorI2 mapSize = state.GetMap().GetSize();
     if(Turn == -1)
     {
-        if(state.PlayerCount() == 0)
-            Debug("No players");
         for(auto pit = state.Players_begin(); 
                 pit != state.Players_end(); pit++)
         {
             Movable *mov = new Movable();
             Billboard *bill = new Billboard(myFigureTexture);
             mov->SetChild(bill);
-            Debug("Adding player");
             myContainer->AddChild(mov);
-            Players.push_back(Player(pit->Name,pit->Health,
-                        pit->Score,pit->Position,mov,bill));
+            Players.push_back(Player(pit->Name,mov,bill));
+            //Players.back().Update(*pit);
         }
         myMap->Create(mapSize[X],mapSize[Y]);
     }
@@ -54,7 +56,9 @@ void GameStateService::Update(const GameState &state)
         int i = 0;
         for(auto pit = state.Players_begin(); 
                 pit != state.Players_end(); pit++)
-            Players[i++].Update(*pit);
+        {
+            //Players[i++].Update(*pit);
+        }
     }
     for(int j = 0;  j < mapSize[X]; j++)
     {

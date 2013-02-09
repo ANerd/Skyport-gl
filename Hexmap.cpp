@@ -54,8 +54,8 @@ void Hexmap::Create(uint jSize, uint kSize)
             tile.Tile.SetProgram(myProgram);
             tile.Emblem.SetTexture(myEmblemTexture);
             AddChild(&(tile.Mov));
-            tile.Tile.ProgramState().SetUniform("FrameCount", VectorI2(1,6));
-            tile.Emblem.ProgramState().SetUniform("FrameCount", VectorI2(1,6));
+            tile.Tile.ProgramState().SetUniform("FrameCount", VectorI2(1,7));
+            tile.Emblem.ProgramState().SetUniform("FrameCount", VectorI2(1,7));
         }
     }
 }
@@ -65,13 +65,13 @@ int TypeToIndex(char type)
     switch(type)
     {
         case 'G':
-            return 4;
+            return 5;
         case 'V':
             return 0;
         case 'S':
             return 1;
         case 'E':
-            return 5;
+            return 6;
         case 'R':
             return 3;
         case 'C':

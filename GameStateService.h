@@ -23,10 +23,9 @@ class GameStateService : public Service
         Movable *PlayerMovable;
         Visual *PlayerVisual;
 
-        Player(std::string name, uint health, uint score, VectorI2 pos, 
-                Movable *playerMovable, Visual *playerVisual)
+        Player(std::string name, Movable *playerMovable, Visual *playerVisual)
             : StatsDirty(true), StateDirty(true), Name(name), 
-            Health(health), Score(score), Position(pos), 
+            Health(0), Score(0), Position(ZeroI2), 
             PlayerMovable(playerMovable), PlayerVisual(playerVisual) { }
 
         ~Player() { }
