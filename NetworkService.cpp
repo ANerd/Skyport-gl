@@ -72,7 +72,15 @@ void *NetworkService::NetworkMain()
             if(b)
             {
                 myNewGameState = true;
+                if(gameState.PlayerCount() == 0)
+                {
+                    Debug("-New state has no players");
+                }
                 myGameState = gameState;
+                if(myGameState.PlayerCount() == 0)
+                {
+                    Debug("New state has no players");
+                }
             }
             else
             {

@@ -7,8 +7,8 @@ ifndef EXTASSETSDIR
     $(error Need external assets. Download Skyport-assets and set EXTASSETSDIR in Makefile.)
 endif
 
-TILESRC:=$(wildcard ../$(EXTASSETSDIR)/tiles/*-tile.png)
-EMBLEMSRC:=$(wildcard ../$(EXTASSETSDIR)/billboards/*-billboard.png)
+TILESRC:=$(sort $(wildcard ../$(EXTASSETSDIR)/tiles/*-tile.png))
+EMBLEMSRC:=$(sort $(wildcard ../$(EXTASSETSDIR)/billboards/*-billboard.png))
 
 ifndef TILESRC
     $(error External assets not found.)

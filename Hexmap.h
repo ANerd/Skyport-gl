@@ -34,6 +34,9 @@ class Hexmap : public MultiContainer
     }*/
 
     public:
+    static const real TileDistance;
+    static const VectorF2 jOffset;
+    static const VectorF2 kOffset;
     Hexmap(AssetRef<Program> program, AssetRef<Texture> baseTexture, 
             AssetRef<Texture> emblemTexture);
     virtual ~Hexmap();

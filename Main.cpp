@@ -60,6 +60,8 @@ int main(int argc, const char *argv[])
         ->CreateFromFile<Texture>("assets/textures/tiles.gen.png");
     AssetRef<Texture> emblemTex = scene.GetAssetManager()
         ->CreateFromFile<Texture>("assets/textures/emblems.gen.png");
+    AssetRef<Texture> figureTex = scene.GetAssetManager()
+        ->CreateFromFile<Texture>("assets/textures/figure.png");
 
     keymapFilter.SetKeymap(keymap);
     printer.CreatePin(EventClass::Input, "Input");
@@ -168,7 +170,7 @@ int main(int argc, const char *argv[])
     //c.AddChild(&tileMov);
     //c.AddChild(&text);
 
-    GameStateService gamestate(&c, &map);
+    GameStateService gamestate(&c, &map, figureTex);
     dispatcher.AddService(gamestate);
 
     Pin::Connect(ns, "GameStates", gamestate, "StateUpdates");

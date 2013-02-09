@@ -4,7 +4,10 @@ void GameState::SetPlayer(std::string name, uint health, uint score,
         anengine::VectorI2 pos)
 {
     if(myTurn == -1)
+    {
+        
         myPlayers.push_back(PlayerState(name, health, score, pos));
+    }
     else
     {
         for(auto it = myPlayers.begin(); it != myPlayers.end(); it++)

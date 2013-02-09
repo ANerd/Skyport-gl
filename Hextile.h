@@ -36,7 +36,7 @@ class Hextile : public FixedGeometry
     virtual void OnNewProgram()
     {
         ProgramState().SetUniform("Texture", myTexture);
-        ProgramState().SetUniform("FrameCount", VectorI2(1,3));
+        ProgramState().SetUniform("FrameCount", OneI2);
         ProgramState().SetUniform("Frame", ZeroI2);
         FixedGeometry::OnNewProgram();
     }

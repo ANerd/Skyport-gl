@@ -3,6 +3,7 @@
 
 #include "entity/Service.h"
 #include "util/AnimationHelper.h"
+#include "assets/Texture.h"
 #include "entity/Container.h"
 #include "GameState.h"
 #include "Hexmap.h"
@@ -32,30 +33,29 @@ class GameStateService : public Service
 
         void Update(const PlayerState &other);
     };
-    struct Game
-    {
-        int Turn;
-        std::vector<Player> Players;
-
-        Game() : Turn(-1) { }
-
-        void Update(const GameState &state, Hexmap *map);
-    };
+    void Update(const GameState &state);
 
     AnimationHelper myAnimations;
+    OutPin myDonePin;
+
+    int Turn;
+    std::vector<Player> Players;
     MultiContainer *myContainer;
     Hexmap *myMap;
-    Game myGameState;
-    OutPin myDonePin;
+    AssetRef<Texture> myFigureTexture;
+
     bool StateUpdate(Event &event, InPin pin);
     public:
-    GameStateService(MultiContainer *container, Hexmap *map) 
-        : myContainer(container), myMap(map) 
+    GameStateService(MultiContainer *container, Hexmap *map,
+            AssetRef<Texture> figureTexture) 
+        : Turn(-1), myContainer(container), myMap(map), 
+        myFigureTexture(figureTexture)
     {
         RegisterInPin(SkyportEventClass::GameState, "StateUpdates", 
                 static_cast<EventCallback>(&GameStateService::StateUpdate));
         myDonePin = RegisterOutPin(SkyportEventClass::GameState, "Done");
     }
+    virtual ~GameStateService();
     
     virtual void Update(FrameTime time)
     {

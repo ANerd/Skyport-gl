@@ -108,6 +108,12 @@ class GameState
     {
         return myPlayers.end();
     }
+    
+    int PlayerCount() const
+    {
+        return myPlayers.size();
+    }
+
     const MapState &GetMap() const
     {
         return myMap;

@@ -126,7 +126,12 @@ ProtocolHandler::MessageType ProtocolHandler::Parse(std::string str, GameState &
         json_object *playersObject;
         if(!json_object_object_get_ex(root, "players", &playersObject))
             throw Error(Error::InvalidValue, "Gamestate has no players");
+        if(!json_object_is_type(playersObject, json_type_array))
+            throw Error(Error::InvalidValue, "Players is not array");
+
         int playerCount = json_object_array_length(playersObject);
+        if(playerCount == 0)
+            Debug("Empty player list");
         for(int i = 0; i < playerCount; i++)
         {
             json_object * playerObject =
@@ -148,6 +153,14 @@ ProtocolHandler::MessageType ProtocolHandler::Parse(std::string str, GameState &
                     json_object_get_int(healthObject), 
                     json_object_get_int(scoreObject), 
                     ParseVector(json_object_get_string(positionObject)));
+            if(state.PlayerCount() == 0)
+            {
+                Debug("Added players but no players added");
+            }
+        }
+        if(state.PlayerCount() == 0)
+        {
+            Debug("+New state has no players");
         }
 
         json_object *mapObject;
