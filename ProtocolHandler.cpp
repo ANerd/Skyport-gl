@@ -48,7 +48,7 @@ void ProtocolHandler::Uninitialize()
 
 bool ProtocolHandler::InternalMessage(MessageType type)
 {
-    return type != MessageType::GameState && type != MessageType::FrameDone;
+    return type != MessageType::GameState && type != MessageType::TurnDone;
 }
 
 bool ProtocolHandler::UpdateGamesate(GameState &gamestate)
@@ -69,6 +69,7 @@ bool ProtocolHandler::UpdateGamesate(GameState &gamestate)
 void ProtocolHandler::NotifyDone()
 {
     myTransport->Send(Generate(MessageType::AnimationDone));
+    myState = ProtocolState::WaitingForGamestate;
 }
 
 ProtocolHandler::MessageType ProtocolHandler::Parse(std::string str, GameState &state)
@@ -113,14 +114,14 @@ ProtocolHandler::MessageType ProtocolHandler::Parse(std::string str, GameState &
         myState = ProtocolState::WaitingForGamestate;
         type = MessageType::Connect;
     }
-    else if(message == "gamesate")
+    else if(message == "gamestate")
     {
-        json_object *frameObject;
-        if(!json_object_object_get_ex(root, "frame", &frameObject))
-            throw Error(Error::InvalidValue, "Gamestate has no frame");
-        int frame = json_object_get_int(frameObject);
+        json_object *turnObject;
+        if(!json_object_object_get_ex(root, "turn", &turnObject))
+            throw Error(Error::InvalidValue, "Gamestate has no turn");
+        int turn = json_object_get_int(turnObject);
 
-        state.BeginFrame(frame);
+        state.SetTurn(turn);
 
         json_object *playersObject;
         if(!json_object_object_get_ex(root, "players", &playersObject))
@@ -179,10 +180,16 @@ ProtocolHandler::MessageType ProtocolHandler::Parse(std::string str, GameState &
         }
         state.SetMap(newMap);
 
-        state.EndFrame();
-        myState = ProtocolState::InFrame;
+        myState = ProtocolState::InTurn;
         type = MessageType::GameState;
     }
+    else if (message == "endturn")
+    {
+        myState = ProtocolState::WaitingForDone;
+        type = MessageType::TurnDone;
+    }
+    else
+        throw Error(Error::InvalidValue, "Unknown message: "+message);
     return type;
 }
 
@@ -199,6 +206,12 @@ std::string ProtocolHandler::Generate(MessageType type)
                 json_object_object_add(root, "revision", revision);
                 json_object *name = json_object_new_string("skyport-gl");
                 json_object_object_add(root, "name", name);
+            }
+            break;
+        case MessageType::AnimationDone:
+            {
+                json_object *connectMessage = json_object_new_string("ready");
+                json_object_object_add(root, "message", connectMessage);
             }
             break;
         default:

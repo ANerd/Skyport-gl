@@ -57,9 +57,9 @@ int main(int argc, const char *argv[])
     AssetRef<Program> groundShader = scene.GetAssetManager()
         ->CreateFromFile<Program>("assets/shaders/Ground.sp");
     AssetRef<Texture> groundTex = scene.GetAssetManager()
-        ->CreateFromFile<Texture>("assets/textures/grass-r.png");
-    AssetRef<Texture> billboardTex = scene.GetAssetManager()
-        ->CreateFromFile<Texture>("assets/textures/bill.png");
+        ->CreateFromFile<Texture>("assets/textures/tiles.gen.png");
+    AssetRef<Texture> emblemTex = scene.GetAssetManager()
+        ->CreateFromFile<Texture>("assets/textures/emblems.gen.png");
 
     keymapFilter.SetKeymap(keymap);
     printer.CreatePin(EventClass::Input, "Input");
@@ -152,15 +152,15 @@ int main(int argc, const char *argv[])
     Movable mapMov;
     mapMov.Transform.Set(MatrixF4::RotationX(3*Pi/2));
     //mapMov.SetPointAt(&mapMark);
-    Hexmap map(5,5,groundShader, groundTex);
+    Hexmap map(groundShader, groundTex, emblemTex);
     mapMov.SetChild(&map);
     c.AddChild(&mapMov);
 
-    Billboard b(billboardTex);
-    Movable bMovable;
-    bMovable.Transform.Set(MatrixF4::Translation(VectorF4(-5,0.5,-2)));
-    bMovable.SetChild(&b);
-    c.AddChild(&bMovable);
+    //Billboard b(billboardTex);
+    //Movable bMovable;
+    //bMovable.Transform.Set(MatrixF4::Translation(VectorF4(-5,0.5,-2)));
+    //bMovable.SetChild(&b);
+    //c.AddChild(&bMovable);
     //Textbox text;
     //text.Color.Set(ColorRGBA(255,255,0,255));
     //text.Text.Set("Foobar");
@@ -170,6 +170,9 @@ int main(int argc, const char *argv[])
 
     GameStateService gamestate(&c, &map);
     dispatcher.AddService(gamestate);
+
+    Pin::Connect(ns, "GameStates", gamestate, "StateUpdates");
+    Pin::Connect(gamestate, "Done", ns, "Done");
 
     scene.SetRoot(&c);
 

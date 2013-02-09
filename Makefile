@@ -5,6 +5,9 @@ MKDIR:=mkdir -p
 RM:=rm -f
 ECHO:=echo
 LD:=g++
+EXTASSETSDIR:=../Skyport-assets/png
+export EXTASSETSDIR
+
 ENGINEDIR:=../ANEngine
 ENGINEINC:=$(ENGINEDIR)/include
 ENGINELIB:=$(ENGINEDIR)/bin/libanengine.a
@@ -12,7 +15,7 @@ ENGINELIB:=$(ENGINEDIR)/bin/libanengine.a
 ASSETSDIR:=assets
 
 INCFLAGS:= -I$(ENGINEINC) $(shell pkg-config --cflags-only-I sdl SDL_ttf libpng gl json)
-CPPFLAGS:= -I$(ENGINEINC) -c -Wall -pthread -std=c++11 -ggdb $(shell pkg-config --cflags sdl SDL_ttf libpng gl json)
+CPPFLAGS:= -I$(ENGINEINC) -DASSETSDIR="$(EXTASSETSDIR)" -c -Wall -pthread -std=c++11 -ggdb $(shell pkg-config --cflags sdl SDL_ttf libpng gl json)
 LDFLAGS:= -pthread 
 LIBFLAGS:= $(shell pkg-config --libs sdl SDL_ttf libpng glew gl json)
 ARFLAGS:= rcs
@@ -62,3 +65,4 @@ $(BINDIR)/%.o: %.c Makefile
 
 clean:
 	$(RM) $(TARGET) $(shell find $(BINDIR)/ -name "*.o" -o -name "*.d")
+	@$(MAKE) -C $(ASSETSDIR) clean

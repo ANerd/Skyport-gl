@@ -90,6 +90,7 @@ std::string NetworkTransport::Recv(char separator)
         {
             if(errno == EINTR)
             {
+                Debug("N:Interrupted, exit.");
                 recv.clear();
                 break;
             }

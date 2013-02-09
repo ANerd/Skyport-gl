@@ -12,7 +12,8 @@ class ProtocolHandler
         Uninitialized,
         WaitingForHandshake,
         WaitingForGamestate,
-        InFrame
+        InTurn,
+        WaitingForDone
     } myState;
 
     enum class MessageType
@@ -20,7 +21,7 @@ class ProtocolHandler
         Connect,
         AnimationDone,
         GameState,
-        FrameDone
+        TurnDone
     };
     bool InternalMessage(MessageType type);
 

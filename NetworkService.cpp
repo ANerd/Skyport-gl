@@ -37,7 +37,7 @@ void NetworkService::OnUninitialize()
         throw Error(Error::InternalError, "Failed to join thread");
 }
 
-bool NetworkService::StateUpdate(Event &event, InPin pin)
+bool NetworkService::DoneUpdate(Event &event, InPin pin)
 {
     if(event.GetEvent() == GameStateEventCodes::StateProcessed)
     {
@@ -57,6 +57,8 @@ void *NetworkService::sNetworkMain(void *arg)
 void *NetworkService::NetworkMain()
 {
     GameState gameState;
+    if(myHost.size() == 0)
+        return NULL;
     myTransport.Connect(myHost, myPort);
     myProtocol.Initialize();
     pthread_mutex_lock(&myGameSateLock);
@@ -69,8 +71,8 @@ void *NetworkService::NetworkMain()
         {
             if(b)
             {
-                Debug("N: Got gamesate");
                 myNewGameState = true;
+                myGameState = gameState;
             }
             else
             {

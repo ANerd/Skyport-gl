@@ -34,18 +34,19 @@ class GameStateService : public Service
     };
     struct Game
     {
-        int Frame;
+        int Turn;
         std::vector<Player> Players;
 
-        Game() : Frame(-1) { }
+        Game() : Turn(-1) { }
 
-        void Update(const GameState &state);
+        void Update(const GameState &state, Hexmap *map);
     };
 
     AnimationHelper myAnimations;
     MultiContainer *myContainer;
     Hexmap *myMap;
     Game myGameState;
+    OutPin myDonePin;
     bool StateUpdate(Event &event, InPin pin);
     public:
     GameStateService(MultiContainer *container, Hexmap *map) 
@@ -53,6 +54,7 @@ class GameStateService : public Service
     {
         RegisterInPin(SkyportEventClass::GameState, "StateUpdates", 
                 static_cast<EventCallback>(&GameStateService::StateUpdate));
+        myDonePin = RegisterOutPin(SkyportEventClass::GameState, "Done");
     }
     
     virtual void Update(FrameTime time)

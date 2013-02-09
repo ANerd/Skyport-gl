@@ -1,4 +1,6 @@
 ##s
+uniform ivec2 FrameCount;
+uniform ivec2 Frame;
 uniform mat4 ViewProjection; 
 uniform mat4 World; 
 attribute vec4 Position;
@@ -6,7 +8,8 @@ attribute vec2 Texcoord;
 varying vec2 vTexcoord;
 void main(void) 
 { 
-  vTexcoord = Texcoord;
+  vec2 frameSize = vec2(1.0/float(FrameCount.x),1.0/float(FrameCount.y));
+  vTexcoord = vec2((Texcoord.x+float(Frame.x)) * frameSize.x,(Texcoord.y+float(Frame.y)) * frameSize.y);
   gl_Position = ViewProjection * (World * Position); 
 } 
 ##s

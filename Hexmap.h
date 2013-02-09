@@ -3,26 +3,43 @@
 
 #include "entity/Container.h"
 #include "Hextile.h"
+#include "entity/Billboard.h"
 
 class Hexmap : public MultiContainer
 {
     struct TileData
     {
         Hextile Tile;
+        Billboard Emblem;
         Movable Mov;
+        Movable EmblemMove;
+        MultiContainer TileContainer;
     };
     TileData *myHextiles;
-    uint myM;
-    uint myN;
+    uint myJLength;
+    uint myKLength;
+    AssetRef<Program> myProgram;
+    AssetRef<Texture> myBaseTexture;
+    AssetRef<Texture> myEmblemTexture;
 
     uint Index(uint j, uint k)
     {
-        return j * myM + k;
+        return k * myJLength + j;
     }
 
+    /*virtual void OnCreate()
+    {
+        Debug("Hexmap created: %p",this);
+        MultiContainer::OnCreate();
+    }*/
+
     public:
-    Hexmap(uint m, uint n, AssetRef<Program> program, AssetRef<Texture> tex);
+    Hexmap(AssetRef<Program> program, AssetRef<Texture> baseTexture, 
+            AssetRef<Texture> emblemTexture);
     virtual ~Hexmap();
+
+    void Create(uint jSize, uint kSize);
+    void SetTileType(uint j, uint k, char type);
 };
 
 #endif

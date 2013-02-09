@@ -31,7 +31,7 @@ class NetworkService : public Service
     static void *sNetworkMain(void *arg);
     void *NetworkMain();
 
-    bool StateUpdate(Event &event, InPin pin);
+    bool DoneUpdate(Event &event, InPin pin);
     public:
     NetworkService(std::string host, std::string port)
         : myNewGameState(false), myQuit(false), myDone(false), myHost(host), 
@@ -39,18 +39,19 @@ class NetworkService : public Service
     {
         myGameStatePin = RegisterOutPin(SkyportEventClass::GameState, "GameStates");
 
-        RegisterInPin(SkyportEventClass::GameState, "StateUpdates", 
-                static_cast<EventCallback>(&NetworkService::StateUpdate));
-
+        RegisterInPin(SkyportEventClass::GameState, "Done", 
+                static_cast<EventCallback>(&NetworkService::DoneUpdate));
 
         int r = pthread_mutex_init(&myGameSateLock, NULL);
+        r |= pthread_cond_init(&myDoneCond, NULL);
         if(r != 0)
             throw Error(Error::InternalError, "Failed to create matrix");
     }
 
     virtual ~NetworkService() 
     {
-       pthread_mutex_destroy(&myGameSateLock); 
+        pthread_cond_destroy(&myDoneCond);
+        pthread_mutex_destroy(&myGameSateLock); 
     }
 
     virtual void OnInitialize();

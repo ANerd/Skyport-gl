@@ -3,7 +3,7 @@
 void GameState::SetPlayer(std::string name, uint health, uint score, 
         anengine::VectorI2 pos)
 {
-    if(myFrame == 0)
+    if(myTurn == -1)
         myPlayers.push_back(PlayerState(name, health, score, pos));
     else
     {

@@ -50,6 +50,10 @@ class MapState
         : mySize(size), myData(new char[size[X]*size[Y]]) { }
     MapState()
         : mySize(ZeroI2), myData(new char[0]) { }
+    ~MapState()
+    {
+        delete [] myData;
+    }
 
     MapState &operator= (const MapState &other)
     {
@@ -58,6 +62,11 @@ class MapState
         myData = new char[mySize[X]*mySize[Y]];
         std::copy(other.myData, other.myData + mySize[X]*mySize[Y], myData);
         return *this;
+    }
+
+    VectorI2 GetSize() const
+    {
+        return mySize;
     }
 
     char operator ()(int j, int k) const
@@ -74,25 +83,22 @@ class GameState
 {
     std::vector<PlayerState> myPlayers;
     MapState myMap;
-    int myFrame;
+    int myTurn;
     public:
     typedef std::vector<PlayerState>::const_iterator Players_iterator;
     GameState()
-        : myFrame(-1) { }
+        : myTurn(-1) { }
     void SetPlayer(std::string name, uint health, uint score, 
             anengine::VectorI2 pos);
 
-    void BeginFrame(int frame)
+    void SetTurn(int turn)
     {
-        myFrame = frame;
-    }
-    void EndFrame()
-    {
+        myTurn = turn;
     }
 
-    int GetFrame() const
+    int GetTurn() const
     {
-        return myFrame;
+        return myTurn;
     }
     Players_iterator Players_begin() const
     {
