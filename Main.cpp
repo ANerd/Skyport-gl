@@ -104,13 +104,24 @@ int main(int argc, const char *argv[])
     cam.FOV.Set(3.14/4);
     Movable camMov;
     camMov.Transform.Set(MatrixF4::Translation(VectorF4(0,1,1)));
-    Marker camMarker;
-    camMov.SetPointAt(&camMarker);
-    c.AddChild(&camMarker);
     PointVisualizer center;
     center.Color.Set(ColorF(1,1,1,1));
     center.Size.Set(0.05f);
     c.AddChild(&center);
+
+    MultiContainer camMarkerC;
+    Movable camMarkerMov;
+    camMarkerMov.InstanceId.Set(2);
+    Marker camMarker;
+    camMarkerMov.SetChild(&camMarkerC);
+    camMarkerC.AddChild(&camMarker);
+    camMov.SetPointAt(&camMarker);
+    c.AddChild(&camMarkerMov);
+
+    PointVisualizer camMarkerViz;
+    camMarkerViz.Color.Set(ColorF(1,0,1,1));
+    camMarkerViz.Size.Set(0.05f);
+    camMarkerC.AddChild(&camMarkerViz);
 
     //Movable skyMov;
     //skyMov.Transform.Set(MatrixF4::Scale(VectorF4(90,90,90,1)));
