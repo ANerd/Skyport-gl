@@ -46,8 +46,9 @@ void GameStateService::Update(const GameState &state)
             Billboard *bill = new Billboard(myFigureTexture);
             mov->SetChild(bill);
             myContainer->AddChild(mov);
+            bill->ProgramState().SetUniform("Z", -0.05f);
             Players.push_back(Player(pit->Name,mov,bill));
-            //Players.back().Update(*pit);
+            Players.back().Update(*pit);
         }
         myMap->Create(mapSize[X],mapSize[Y]);
     }
@@ -57,7 +58,7 @@ void GameStateService::Update(const GameState &state)
         for(auto pit = state.Players_begin(); 
                 pit != state.Players_end(); pit++)
         {
-            //Players[i++].Update(*pit);
+            Players[i++].Update(*pit);
         }
     }
     for(int j = 0;  j < mapSize[X]; j++)
