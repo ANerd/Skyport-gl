@@ -112,12 +112,12 @@ int main(int argc, const char *argv[])
     center.Size.Set(0.05f);
     c.AddChild(&center);
 
-    Movable skyMov;
-    skyMov.Transform.Set(MatrixF4::Scale(VectorF4(90,90,90,1)));
+    //Movable skyMov;
+    //skyMov.Transform.Set(MatrixF4::Scale(VectorF4(90,90,90,1)));
     Skybox sky(skyTex);
     sky.SetProgram(skyShader);
-    skyMov.SetChild(&sky);
-    c.AddChild(&skyMov);
+    //skyMov.SetChild(&sky);
+    c.AddChild(&sky);
 
     Movable topMov;
     topMov.Transform.Set(MatrixF4::Translation(VectorF4(0,0.1,0)));

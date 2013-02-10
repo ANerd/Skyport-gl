@@ -36,6 +36,7 @@ class Skybox : public FixedGeometry
     virtual void OnNewProgram()
     {
         ProgramState().SetUniform("Texture", myTexture);
+        ProgramState().SetUniform("Projection", MatrixF4::Orthogonal(-0.2, 0.2, -0.2, 0.2, 0.1, 5));
         FixedGeometry::OnNewProgram();
     }
     public:

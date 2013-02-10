@@ -6,7 +6,7 @@
 void EmmitVertex(int i, double positions[], double texcoords[], FILE *file)
 {
     fprintf(file, "%g %g %g %g %g %g\n", positions[i*3+0],positions[i*3+1],
-        positions[i*3+2], 1.0, 
+        positions[i*3+2], 0.0, 
         texcoords[i*2+0], texcoords[i*2+1]);
     //fprintf(file, "%g %g %g %g 0.0 0.0\n", texcoords[i*2+0], texcoords[i*2+1],
     //    positions[i*4+2], positions[i*4+3]);
