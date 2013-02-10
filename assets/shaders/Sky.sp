@@ -1,13 +1,12 @@
 ##s
 uniform mat4 View; 
-uniform mat4 Projection; 
 attribute vec4 Position;
 attribute vec2 Texcoord;
 varying vec2 vTexcoord;
 void main(void) 
 { 
   vTexcoord = Texcoord;
-  gl_Position = Projection * (View * Position) + vec4(0.0,0.0,0.0,1.0);
+  gl_Position = vec4((View * (Position*5.0)).xy,0.999,1.0);
 } 
 ##s
 uniform sampler2D Texture; 

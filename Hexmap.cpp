@@ -2,7 +2,7 @@
 #include "Hexmap.h"
 #include <cstdlib>
 
-const real Hexmap::TileDistance = 0.1f;
+const real Hexmap::TileDistance = 0.05f;
 const VectorF2 Hexmap::jOffset(-(1.5+TileDistance),-(0.87+TileDistance));
 const VectorF2 Hexmap::kOffset(-(1.5+TileDistance),0.87+TileDistance);
 
