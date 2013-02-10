@@ -19,6 +19,7 @@
 #include "entity/Billboard.h"
 #include "filter/KeymapFilter.h"
 #include "Hexmap.h"
+#include "Skybox.h"
 #include "Textbox.h"
 #include "NetworkService.h"
 #include "GameStateService.h"
@@ -56,12 +57,16 @@ int main(int argc, const char *argv[])
         ->CreateFromFile<Keymap>("assets/Navigation.kmp");
     AssetRef<Program> groundShader = scene.GetAssetManager()
         ->CreateFromFile<Program>("assets/shaders/Ground.sp");
+    AssetRef<Program> skyShader = scene.GetAssetManager()
+        ->CreateFromFile<Program>("assets/shaders/Sky.sp");
     AssetRef<Texture> groundTex = scene.GetAssetManager()
         ->CreateFromFile<Texture>("assets/textures/tiles.gen.png");
     AssetRef<Texture> emblemTex = scene.GetAssetManager()
         ->CreateFromFile<Texture>("assets/textures/emblems.gen.png");
     AssetRef<Texture> figureTex = scene.GetAssetManager()
         ->CreateFromFile<Texture>("assets/textures/figure.png");
+    AssetRef<Texture> skyTex = scene.GetAssetManager()
+        ->CreateFromFile<Texture>("assets/textures/sky.gen.png");
 
     keymapFilter.SetKeymap(keymap);
     printer.CreatePin(EventClass::Input, "Input");
@@ -106,6 +111,13 @@ int main(int argc, const char *argv[])
     center.Color.Set(ColorF(1,1,1,1));
     center.Size.Set(0.05f);
     c.AddChild(&center);
+
+    Movable skyMov;
+    skyMov.Transform.Set(MatrixF4::Scale(VectorF4(90,90,90,1)));
+    Skybox sky(skyTex);
+    sky.SetProgram(skyShader);
+    skyMov.SetChild(&sky);
+    c.AddChild(&skyMov);
 
     Movable topMov;
     topMov.Transform.Set(MatrixF4::Translation(VectorF4(0,0.1,0)));

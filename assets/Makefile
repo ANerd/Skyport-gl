@@ -1,7 +1,8 @@
 
-TARGETS:=geometry/hextile.gen.vbo textures/tiles.gen.png textures/emblems.gen.png
-CFLAGS:= -lm
+TARGETS:=geometry/hextile.gen.vbo geometry/skybox.gen.vbo textures/tiles.gen.png textures/emblems.gen.png textures/sky.gen.png
+CFLAGS:= -lm -ggdb
 MKDIR:=mkdir -p
+CP:=cp
 IMGCONVERT:=convert
 ifndef EXTASSETSDIR
     $(error Need external assets. Download Skyport-assets and set EXTASSETSDIR in Makefile.)
@@ -16,6 +17,9 @@ endif
 
 all: $(TARGETS)
 
+textures/sky.gen.png: ../$(EXTASSETSDIR)/skybox/skybox.png
+	$(CP) $< $@
+
 textures/tiles.gen.png: $(TILESRC)
 	$(MKDIR) $(@D)
 	$(IMGCONVERT) $^ -append $@
@@ -28,7 +32,14 @@ geometry/hextile.gen.vbo: bin/hextilegen Makefile
 	$(MKDIR) $(@D)
 	$< $@
 
+geometry/skybox.gen.vbo: bin/skyboxgen Makefile
+	$(MKDIR) $(@D)
+	$< $@
+
 bin/hextilegen: generators/hextilegen.c Makefile
+	$(MKDIR) $(@D)
+	$(CC) $(CFLAGS) $< -o $@
+bin/skyboxgen: generators/skyboxgen.c Makefile
 	$(MKDIR) $(@D)
 	$(CC) $(CFLAGS) $< -o $@
 
