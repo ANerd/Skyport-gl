@@ -95,7 +95,7 @@ int main(int argc, const char *argv[])
     MultiContainer c;
     Camera cam;
     cam.Near.Set(0.5);
-    cam.Far.Set(50);
+    cam.Far.Set(100);
     cam.FOV.Set(3.14/4);
     Movable camMov;
     camMov.Transform.Set(MatrixF4::Translation(VectorF4(0,1,1)));
