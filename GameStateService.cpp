@@ -181,11 +181,5 @@ bool GameStateService::StateUpdate(Event &event, InPin pin)
     GameStateEvent &gevent = dynamic_cast<GameStateEvent&>(event);
     Update(gevent.GetState());
     Debug("Updated gamesate");
-    if(myActionCount == myActionCursor)
-    {
-        Event nevent(SkyportEventClass::GameState, 
-                GameStateEventCodes::StateProcessed, this);
-        myDonePin.Send(nevent);
-    }
     return true;
 }

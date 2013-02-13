@@ -45,7 +45,7 @@ void ProtocolHandler::Uninitialize()
 
 bool ProtocolHandler::InternalMessage(MessageType type)
 {
-    return type != MessageType::GameState && type != MessageType::TurnDone;
+    return type != MessageType::GameState && type != MessageType::ActionsDone;
 }
 
 bool ProtocolHandler::UpdateGamesate(GameState &gamestate)
@@ -224,11 +224,15 @@ ProtocolHandler::MessageType ProtocolHandler::Parse(std::string str, GameState &
         myState = ProtocolState::InTurn;
         type = MessageType::GameState;
     }
-    else if (message == "endturn")
+    else if (message == "endactions")
     {
         if(myState != ProtocolState::InTurn)
             throw Error(Error::InvalidState, "Got unexpected endturn");
         myState = ProtocolState::WaitingForDone;
+        type = MessageType::ActionsDone;
+    }
+    else if (message == "endturn")
+    {
         type = MessageType::TurnDone;
     }
     else if(message == "action")
