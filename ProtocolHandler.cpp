@@ -42,9 +42,6 @@ void ProtocolHandler::Uninitialize()
     myTransport->Disconnect();
     myState = ProtocolState::Uninitialized;
 }
-//void ProtocolHandler::OnUpdate(FrameTime time)
-//{
-//}
 
 bool ProtocolHandler::InternalMessage(MessageType type)
 {
@@ -70,6 +67,34 @@ void ProtocolHandler::NotifyDone()
 {
     myTransport->Send(Generate(MessageType::AnimationDone));
     myState = ProtocolState::WaitingForGamestate;
+}
+
+Direction ParseDirection(std::string name)
+{
+    if(name == "up")
+        return Direction::Up;
+    if(name == "down")
+        return Direction::Down;
+    if(name == "right-up")
+        return Direction::Right_Up;
+    if(name == "left-up")
+        return Direction::Right_Up;
+    if(name == "right-down")
+        return Direction::Right_Up;
+    if(name == "left-down")
+        return Direction::Right_Up;
+    AbsBug("Unknown direction: "+name);
+}
+
+Weapon ParseWeapon(std::string name)
+{
+    if(name == "laser")
+        return Weapon::Laser;
+    if(name == "motar")
+        return Weapon::Motar;
+    if(name == "droid")
+        return Weapon::Droid;
+    AbsBug("Unknown weapon: " + name);
 }
 
 ProtocolHandler::MessageType ProtocolHandler::Parse(std::string str, GameState &state)
@@ -116,6 +141,9 @@ ProtocolHandler::MessageType ProtocolHandler::Parse(std::string str, GameState &
     }
     else if(message == "gamestate")
     {
+        if(myState != ProtocolState::WaitingForGamestate)
+            throw Error(Error::InvalidState, "Got unexpected gamesate");
+
         json_object *turnObject;
         if(!json_object_object_get_ex(root, "turn", &turnObject))
             throw Error(Error::InvalidValue, "Gamestate has no turn");
@@ -198,8 +226,82 @@ ProtocolHandler::MessageType ProtocolHandler::Parse(std::string str, GameState &
     }
     else if (message == "endturn")
     {
+        if(myState != ProtocolState::InTurn)
+            throw Error(Error::InvalidState, "Got unexpected endturn");
         myState = ProtocolState::WaitingForDone;
         type = MessageType::TurnDone;
+    }
+    else if(message == "action")
+    {
+        if(myState != ProtocolState::InTurn)
+            throw Error(Error::InvalidState, "Got unexpected action");
+
+        json_object *typeObject;
+        if(!json_object_object_get_ex(root, "type", &typeObject))
+            throw Error(Error::InvalidValue, "Action has no type");
+        
+        std::string atype(json_object_get_string(typeObject));
+        if(atype == "move")
+        {
+            json_object *directionObject;
+            if(!json_object_object_get_ex(root, "direction", &directionObject))
+                throw Error(Error::InvalidValue, "Move has no direction");
+            state.AddAction(ActionState::CreateMovement(ParseDirection(
+                            json_object_get_string(directionObject))));
+        }
+        else if(atype == "pass")
+        {
+            state.AddAction(ActionState::CreatePass());
+        }
+        else if(atype == "upgrade")
+        {
+            json_object *weaponObject;
+            if(!json_object_object_get_ex(root, "weapon", &weaponObject))
+                throw Error(Error::InvalidValue, "Upgrade has no weapon");
+            state.AddAction(ActionState::CreateUpgrade(ParseWeapon(
+                            json_object_get_string(weaponObject))));
+        }
+        else if(atype == "mine")
+        {
+            state.AddAction(ActionState::CreateMine());
+        }
+        else if(atype == "laser")
+        {
+            json_object *directionObject;
+            if(!json_object_object_get_ex(root, "direction", &directionObject))
+                throw Error(Error::InvalidValue, "Laser has no direction");
+            state.AddAction(ActionState::CreateLaser(ParseDirection(
+                            json_object_get_string(directionObject))));
+        }
+        else if(atype == "motar")
+        {
+
+            json_object *coordinateObject;
+            if(!json_object_object_get_ex(root, "coordinates", &coordinateObject))
+                throw Error(Error::InvalidValue, "Motar has no coordinate");
+            state.AddAction(ActionState::CreateMotar(ParseVector(
+                            json_object_get_string(coordinateObject))));
+        }
+        else if(atype == "droid")
+        {
+            Direction commands[ActionState::MaxDroidCommands];
+            json_object *sequenceObject;
+            if(!json_object_object_get_ex(root, "sequence", &sequenceObject))
+                throw Error(Error::InvalidValue, "Droid has no sequence");
+
+            int sequenceLength = json_object_array_length(sequenceObject);
+            for(int i = 0; i < sequenceLength; i++)
+            {
+                json_object *commandObject = 
+                    json_object_array_get_idx(sequenceObject, i);
+                commands[i] = 
+                    ParseDirection(json_object_get_string(commandObject));
+            }
+            state.AddAction(ActionState::CreateDroid(commands, sequenceLength));
+        }
+        else
+            throw Error(Error::InvalidValue, "Unknown action: "+atype);
+        type = MessageType::GameState;
     }
     else
         throw Error(Error::InvalidValue, "Unknown message: "+message);

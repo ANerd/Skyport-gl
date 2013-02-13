@@ -5,7 +5,7 @@ void GameState::SetPlayer(std::string name, uint health, uint score,
 {
     if(myTurn == 0)
     {
-        myPlayers.push_back(PlayerState(name, health, score, pos));
+        myPlayers.push_back(PlayerState(myPlayerIndex++, name, health, score, pos));
     }
     else
     {
@@ -16,6 +16,7 @@ void GameState::SetPlayer(std::string name, uint health, uint score,
                 it->Health = health;
                 it->Score = score;
                 it->Position = pos;
+                it->Index = myPlayerIndex++;
                 break;
             }
         }

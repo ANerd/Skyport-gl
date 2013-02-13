@@ -175,7 +175,7 @@ int main(int argc, const char *argv[])
     //c.AddChild(&mapMarkMov);
 
     Movable mapMov;
-    mapMov.Transform.Set(MatrixF4::RotationX(3*Pi/2));
+    mapMov.Transform.Set(MatrixF4::RotationX(3*Pi/2)*MatrixF4::RotationZ(Pi));
     //mapMov.SetPointAt(&mapMark);
     Hexmap map(groundShader, groundTex, emblemTex);
     mapMov.SetChild(&map);

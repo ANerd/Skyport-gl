@@ -4,7 +4,7 @@
 
 const real Hexmap::TileDistance = 0.05f;
 const VectorF2 Hexmap::jOffset(-(1.5+TileDistance),-(0.87+TileDistance));
-const VectorF2 Hexmap::kOffset(-(1.5+TileDistance),0.87+TileDistance);
+const VectorF2 Hexmap::kOffset( (1.5+TileDistance),-(0.87+TileDistance));
 
 Hexmap::Hexmap(AssetRef<Program> program, AssetRef<Texture> baseTexture, 
         AssetRef<Texture> emblemTexture)

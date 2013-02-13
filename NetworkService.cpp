@@ -52,6 +52,10 @@ bool NetworkService::DoneUpdate(Event &event, InPin pin)
 
 void *NetworkService::sNetworkMain(void *arg)
 {
+    struct sigaction act;
+    sigaction(SIGINT, NULL, &act);
+    act.sa_flags &= ~SA_RESTART;
+    sigaction(SIGINT, &act, NULL);
     return static_cast<NetworkService*>(arg)->NetworkMain();
 }
 void *NetworkService::NetworkMain()

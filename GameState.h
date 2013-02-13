@@ -24,15 +24,112 @@ struct GameStateEventCodes
     };
 };
 
+enum class SkyportAction
+{
+    None,
+    Move,
+    Pass,
+    Upgrade,
+    Mine,
+    Laser,
+    Motar,
+    Droid
+};
+
+enum class Direction
+{
+    None,
+    Up,
+    Down,
+    Right_Up,
+    Left_up,
+    Left_Down,
+    Right_Down
+};
+
+enum class Weapon
+{
+    Laser,
+    Motar,
+    Droid
+};
+
+class ActionState
+{
+    public:
+    static const uint MaxDroidCommands = 5;
+    private:
+    SkyportAction myAction;
+    Direction myDirection;
+    Weapon myWeapon;
+    VectorI2 myCoordinate;
+    Direction myCommands[MaxDroidCommands];
+    ActionState(SkyportAction action) : myAction(action) { }
+    public:
+    ActionState() : myAction(SkyportAction::None) { }
+    static ActionState CreateMovement(Direction dir)
+    {
+        ActionState state(SkyportAction::Move);
+        state.myDirection = dir;
+        return state;
+    }
+    static ActionState CreatePass()
+    {
+        return ActionState(SkyportAction::Pass);
+    }
+    static ActionState CreateUpgrade(Weapon wep)
+    {
+        ActionState state(SkyportAction::Upgrade);
+        state.myWeapon = wep;
+        return state;
+    }
+    static ActionState CreateMine()
+    {
+        return ActionState(SkyportAction::Mine);
+    }
+    static ActionState CreateLaser(Direction dir)
+    {
+        ActionState state(SkyportAction::Laser);
+        state.myDirection = dir;
+        return state;
+    }
+    static ActionState CreateMotar(VectorI2 coord)
+    {
+        ActionState state(SkyportAction::Motar);
+        state.myCoordinate = coord;
+        return state;
+    }
+    static ActionState CreateDroid(Direction *commands, uint count)
+    {
+        ActionState state(SkyportAction::Droid);
+        if(count > MaxDroidCommands)
+            throw Error(Error::InvalidValue, "Too many droid actions");
+        for(uint i = 0; i < count; i++)
+            state.myCommands[i] = commands[i];
+        for(uint i = count; i < MaxDroidCommands; i++)
+            state.myCommands[i] = Direction::None;
+        return state;
+    }
+
+    SkyportAction GetAction() { return myAction; }
+    Direction GetDirection() { return myDirection; }
+    Weapon GetWeapon() { return myWeapon; }
+    VectorI2 GetCoordinate() { return myCoordinate; }
+    Direction *GetCommands() { return myCommands; }
+};
+
 class PlayerState
 {
     public:
+    uint Index;
     std::string Name;
     uint Health;
     uint Score;
     anengine::VectorI2 Position;
-    PlayerState(std::string name, uint health, uint score, anengine::VectorI2 pos)
-        : Name(name), Health(health), Score(score), Position(pos) { }
+    PlayerState(uint index, std::string name, uint health, uint score,
+            anengine::VectorI2 pos)
+        : Index(index), Name(name), Health(health), Score(score), Position(pos) 
+    { }
     ~PlayerState() { }
 };
 
@@ -84,16 +181,21 @@ class GameState
     std::vector<PlayerState> myPlayers;
     MapState myMap;
     int myTurn;
+    int myActionCount;
+    int myPlayerIndex;
+    ActionState myActions[3];
     public:
     typedef std::vector<PlayerState>::const_iterator Players_iterator;
     GameState()
-        : myTurn(-1) { }
+        : myTurn(-1), myActionCount(0), myPlayerIndex(0) { }
     void SetPlayer(std::string name, uint health, uint score, 
             anengine::VectorI2 pos);
 
     void SetTurn(int turn)
     {
         myTurn = turn;
+        myActionCount = 0;
+        myPlayerIndex = 0;
     }
 
     int GetTurn() const
@@ -121,6 +223,24 @@ class GameState
     void SetMap(const MapState &map)
     {
         myMap = map;
+    }
+
+    void AddAction(ActionState action)
+    {
+        if(myActionCount >= 3)
+            throw Error(Error::InvalidState, "Too many actions in one turn.");
+        myActions[myActionCount++] = action;
+    }
+
+    uint GetActionCount() const
+    {
+        return myActionCount;
+    }
+
+    const ActionState &GetAction(uint i) const
+    {
+        Bug(myActionCount >= 3, "Request wrong action");
+        return myActions[i];
     }
 };
 

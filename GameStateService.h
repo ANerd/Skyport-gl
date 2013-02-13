@@ -10,10 +10,11 @@
 
 using namespace anengine;
 
-class GameStateService : public Service
+class GameStateService : public Service, public AnimationHelperListner
 {
     struct Player
     {
+        uint Index;
         bool StatsDirty;
         bool StateDirty;
         std::string Name;
@@ -23,8 +24,8 @@ class GameStateService : public Service
         Movable *PlayerMovable;
         Visual *PlayerVisual;
 
-        Player(std::string name, Movable *playerMovable, Visual *playerVisual)
-            : StatsDirty(true), StateDirty(true), Name(name), 
+        Player(uint index, std::string name, Movable *playerMovable, Visual *playerVisual)
+            : Index(index), StatsDirty(true), StateDirty(true), Name(name), 
             Health(0), Score(0), Position(ZeroI2), 
             PlayerMovable(playerMovable), PlayerVisual(playerVisual) { }
 
@@ -41,14 +42,22 @@ class GameStateService : public Service
     std::vector<Player> Players;
     MultiContainer *myContainer;
     Hexmap *myMap;
+    std::vector<Player>::iterator myCurrentPlayer;
     AssetRef<Texture> myFigureTexture;
+    uint myActionCount;
+    uint myActionCursor;
+    ActionState myActionStates[3];
 
+    void SetCurrentPlayer();
     bool StateUpdate(Event &event, InPin pin);
+    void PlayAnimation();
+
+    virtual void AnimationDone();
     public:
     GameStateService(MultiContainer *container, Hexmap *map,
             AssetRef<Texture> figureTexture) 
-        : Turn(-1), myContainer(container), myMap(map), 
-        myFigureTexture(figureTexture)
+        : myAnimations(this), Turn(-1), myContainer(container), myMap(map), 
+        myFigureTexture(figureTexture), myActionCount(0), myActionCursor(0)
     {
         RegisterInPin(SkyportEventClass::GameState, "StateUpdates", 
                 static_cast<EventCallback>(&GameStateService::StateUpdate));
@@ -56,7 +65,7 @@ class GameStateService : public Service
     }
     virtual ~GameStateService();
     
-    virtual void Update(FrameTime time)
+    virtual void OnUpdate(FrameTime time)
     {
         myAnimations.Update(time);
     }
