@@ -3,8 +3,8 @@
 #include <cstdlib>
 
 const real Hexmap::TileDistance = 0.05f;
-const VectorF2 Hexmap::jOffset(-(1.5+TileDistance),-(0.87+TileDistance));
-const VectorF2 Hexmap::kOffset( (1.5+TileDistance),-(0.87+TileDistance));
+const VectorF2 Hexmap::jOffset( (1.5+TileDistance),-(0.87+TileDistance));
+const VectorF2 Hexmap::kOffset(-(1.5+TileDistance),-(0.87+TileDistance));
 
 Hexmap::Hexmap(AssetRef<Program> program, AssetRef<Texture> baseTexture, 
         AssetRef<Texture> emblemTexture)
@@ -39,8 +39,8 @@ void Hexmap::Create(uint jSize, uint kSize)
     {
         for(uint k = 0; k < kSize; k++)
         {
-            VectorF4 mjOffset(jOffset[X],jOffset[Y],0);
-            VectorF4 mkOffset(kOffset[X],kOffset[Y],0);
+            VectorF4 mjOffset(-jOffset[X],jOffset[Y],0);
+            VectorF4 mkOffset(-kOffset[X],kOffset[Y],0);
 
             TileData &tile = myHextiles[Index(j,k)];
             tile.Mov.Transform.Set(MatrixF4::Translation(mjOffset*j+mkOffset*k)*
