@@ -319,8 +319,8 @@ std::string ProtocolHandler::Generate(MessageType type)
                 json_object_object_add(root, "message", connectMessage);
                 json_object *revision = json_object_new_int(1);
                 json_object_object_add(root, "revision", revision);
-                json_object *name = json_object_new_string("skyport-gl");
-                json_object_object_add(root, "name", name);
+                json_object *password = json_object_new_string("supersecretpassword");
+                json_object_object_add(root, "password", password);
             }
             break;
         case MessageType::AnimationDone:
