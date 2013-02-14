@@ -63,6 +63,7 @@ void GameStateService::Update(const GameState &state)
             mov->SetChild(bill);
             myContainer->AddChild(mov);
             bill->ProgramState().SetUniform("Z", -0.05f);
+            bill->ProgramState().SetUniform("FrameCount", VectorI2(4,1));
             Players.push_back(Player(i++,pit->Name,mov,bill));
             Players.back().Update(*pit);
         }
@@ -146,15 +147,23 @@ void GameStateService::PlayAnimation()
                         myCurrentPlayer->PlayerMovable->Transform.Get()
                             .GetTranslation(pos);
 
+                        Debug("Added move animation");
+
                         VectorF2 off = DirectionToOffset(
                                 myActionStates[myActionCursor].GetDirection());
-                        AnimationHelper::AnimationData data(
+                        AnimationHelper::TranslationAnimationData *trdata =
+                            new AnimationHelper::TranslationAnimationData(
                                 myCurrentPlayer->PlayerMovable,
-                                pos, VectorF4(
-                                    pos[X] + off[X], pos[Y], pos[Z]+off[Y]), 
+                                pos, 
+                                VectorF4(pos[X] + off[X], pos[Y], pos[Z]+off[Y]), 
                                 1, AnimationHelper::SmoothCurve);
-                        Debug("Added move animation");
-                        myAnimations.AddAnimation(data);
+                        myAnimations.AddAnimation(trdata);
+
+                        AnimationHelper::TextureAnimationData *tedata =
+                            new AnimationHelper::TextureAnimationData(
+                                myCurrentPlayer->PlayerVisual, 4, X, 1,
+                                AnimationHelper::LinearCurve);
+                        myAnimations.AddAnimation(tedata);
                     }
                     break;
                 default:
