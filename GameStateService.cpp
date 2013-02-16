@@ -117,7 +117,7 @@ VectorF2 DirectionToOffset(Direction dir)
         case Direction::Down:
             tileoff = VectorI2(1 , 1);
             break;
-        case Direction::Left_up:
+        case Direction::Left_Up:
             tileoff = VectorI2(0,-1);
             break;
         case Direction::Left_Down:

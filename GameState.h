@@ -42,7 +42,7 @@ enum class Direction
     Up,
     Down,
     Right_Up,
-    Left_up,
+    Left_Up,
     Left_Down,
     Right_Down
 };
@@ -193,6 +193,10 @@ class GameState
 
     void SetTurn(int turn)
     {
+        if(myTurn == -1 && turn != 0)
+            throw Error(Error::InvalidValue, "Got no turn 0.");
+        if(myTurn != -1 && turn == 0)
+            throw Error(Error::InvalidValue, "Got multiple turn 0.");
         myTurn = turn;
         myActionCount = 0;
         myPlayerIndex = 0;

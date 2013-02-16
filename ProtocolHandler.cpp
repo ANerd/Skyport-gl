@@ -78,11 +78,11 @@ Direction ParseDirection(std::string name)
     if(name == "right-up")
         return Direction::Right_Up;
     if(name == "left-up")
-        return Direction::Right_Up;
+        return Direction::Left_Up;
     if(name == "right-down")
-        return Direction::Right_Up;
+        return Direction::Right_Down;
     if(name == "left-down")
-        return Direction::Right_Up;
+        return Direction::Left_Down;
     AbsBug("Unknown direction: "+name);
 }
 
@@ -158,8 +158,6 @@ ProtocolHandler::MessageType ProtocolHandler::Parse(std::string str, GameState &
             throw Error(Error::InvalidValue, "Players is not array");
 
         int playerCount = json_object_array_length(playersObject);
-        if(playerCount == 0)
-            Debug("Empty player list");
         for(int i = 0; i < playerCount; i++)
         {
             json_object * playerObject =
@@ -186,10 +184,6 @@ ProtocolHandler::MessageType ProtocolHandler::Parse(std::string str, GameState &
 
             state.SetPlayer(json_object_get_string(nameObject), 
                     health, score, position);
-            if(state.PlayerCount() == 0)
-            {
-                Debug("Added players but no players added");
-            }
         }
 
         json_object *mapObject;
