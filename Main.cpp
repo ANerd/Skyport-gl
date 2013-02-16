@@ -64,7 +64,7 @@ int main(int argc, const char *argv[])
     AssetRef<Texture> emblemTex = scene.GetAssetManager()
         ->CreateFromFile<Texture>("assets/textures/emblems.gen.png");
     AssetRef<Texture> figureTex = scene.GetAssetManager()
-        ->CreateFromFile<Texture>("assets/textures/figure.png");
+        ->CreateFromFile<Texture>("assets/textures/figure.gen.png");
     AssetRef<Texture> skyTex = scene.GetAssetManager()
         ->CreateFromFile<Texture>("assets/textures/sky.gen.png");
 

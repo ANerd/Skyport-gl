@@ -63,7 +63,7 @@ void GameStateService::Update(const GameState &state)
             mov->SetChild(bill);
             myContainer->AddChild(mov);
             bill->ProgramState().SetUniform("Z", -0.05f);
-            bill->ProgramState().SetUniform("FrameCount", VectorI2(4,1));
+            //bill->ProgramState().SetUniform("FrameCount", VectorI2(4,1));
             Players.push_back(Player(i++,pit->Name,mov,bill));
             Players.back().Update(*pit);
         }
@@ -163,7 +163,7 @@ void GameStateService::PlayAnimation()
                             new AnimationHelper::TextureAnimationData(
                                 myCurrentPlayer->PlayerVisual, 4, X, 1,
                                 AnimationHelper::LinearCurve);
-                        myAnimations.AddAnimation(tedata);
+                        //myAnimations.AddAnimation(tedata);
                     }
                     break;
                 default:
