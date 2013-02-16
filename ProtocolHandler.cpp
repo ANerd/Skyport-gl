@@ -168,27 +168,28 @@ ProtocolHandler::MessageType ProtocolHandler::Parse(std::string str, GameState &
             json_object * nameObject;
             if(!json_object_object_get_ex(playerObject, "name", &nameObject))
                 throw Error(Error::InvalidValue, "Player has no name");
+
             json_object * healthObject;
-            if(!json_object_object_get_ex(playerObject, "health", &healthObject))
-                throw Error(Error::InvalidValue, "Player has no health");
+            int health = 100;
+            if(json_object_object_get_ex(playerObject, "health", &healthObject))
+                health = json_object_get_int(healthObject);
+
             json_object * scoreObject;
-            if(!json_object_object_get_ex(playerObject, "score", &scoreObject))
-                throw Error(Error::InvalidValue, "Player has no score");
+            int score = 0;
+            if(json_object_object_get_ex(playerObject, "score", &scoreObject))
+                score = json_object_get_int(scoreObject);
+
             json_object * positionObject;
-            if(!json_object_object_get_ex(playerObject, "position", &positionObject))
-                throw Error(Error::InvalidValue, "Player has no position");
+            VectorI2 position;
+            if(json_object_object_get_ex(playerObject, "position", &positionObject))
+                position = ParseVector(json_object_get_string(positionObject));
+
             state.SetPlayer(json_object_get_string(nameObject), 
-                    json_object_get_int(healthObject), 
-                    json_object_get_int(scoreObject), 
-                    ParseVector(json_object_get_string(positionObject)));
+                    health, score, position);
             if(state.PlayerCount() == 0)
             {
                 Debug("Added players but no players added");
             }
-        }
-        if(state.PlayerCount() == 0)
-        {
-            Debug("+New state has no players");
         }
 
         json_object *mapObject;
