@@ -3,6 +3,7 @@
 
 #include "entity/Container.h"
 #include "Hextile.h"
+#include "Hexborder.h"
 #include "entity/Billboard.h"
 
 class Hexmap : public MultiContainer
@@ -10,6 +11,7 @@ class Hexmap : public MultiContainer
     struct TileData
     {
         Hextile Tile;
+        Hexborder Border;
         Billboard Emblem;
         Movable Mov;
         Movable EmblemMove;

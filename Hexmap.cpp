@@ -50,12 +50,14 @@ void Hexmap::Create(uint jSize, uint kSize)
             tile.EmblemMove.SetChild(&(tile.Emblem));
             tile.TileContainer.AddChild(&(tile.Tile));
             tile.TileContainer.AddChild(&(tile.EmblemMove));
+            tile.TileContainer.AddChild(&(tile.Border));
             tile.Tile.SetTexture(myBaseTexture);
             tile.Tile.SetProgram(myProgram);
             tile.Emblem.SetTexture(myEmblemTexture);
             AddChild(&(tile.Mov));
             tile.Tile.ProgramState().SetUniform("FrameCount", VectorI2(1,7));
             tile.Emblem.ProgramState().SetUniform("FrameCount", VectorI2(1,7));
+            tile.Border.ProgramState().SetUniform("Color", ColorF(1,0,0,1));
         }
     }
 }
