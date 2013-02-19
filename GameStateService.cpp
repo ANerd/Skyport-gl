@@ -63,7 +63,7 @@ void GameStateService::Update(const GameState &state)
             mov->SetChild(bill);
             myContainer->AddChild(mov);
             bill->ProgramState().SetUniform("Z", -0.05f);
-            //bill->ProgramState().SetUniform("FrameCount", VectorI2(4,1));
+            bill->ProgramState().SetUniform("FrameCount", VectorI2(1,1));
             Players.push_back(Player(i++,pit->Name,mov,bill));
             Players.back().Update(*pit);
         }

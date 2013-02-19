@@ -8,7 +8,7 @@ const VectorF2 Hexmap::kOffset(-(1.5+TileDistance),-(0.87+TileDistance));
 
 Hexmap::Hexmap(AssetRef<Program> program, AssetRef<Texture> baseTexture, 
         AssetRef<Texture> emblemTexture)
-    : myHextiles(NULL), myProgram(program), myBaseTexture(baseTexture), 
+    : myHextiles(NULL), myProgramRef(program), myBaseTextureRef(baseTexture), 
     myEmblemTexture(emblemTexture) 
 {
 }
@@ -51,11 +51,9 @@ void Hexmap::Create(uint jSize, uint kSize)
             tile.TileContainer.AddChild(&(tile.Tile));
             tile.TileContainer.AddChild(&(tile.EmblemMove));
             tile.TileContainer.AddChild(&(tile.Border));
-            tile.Tile.SetTexture(myBaseTexture);
-            tile.Tile.SetProgram(myProgram);
+            tile.Tile.SetProgram(myProgram, myProgramStates[0]);
             tile.Emblem.SetTexture(myEmblemTexture);
             AddChild(&(tile.Mov));
-            tile.Tile.ProgramState().SetUniform("FrameCount", VectorI2(1,7));
             tile.Emblem.ProgramState().SetUniform("FrameCount", VectorI2(1,7));
             tile.Border.ProgramState().SetUniform("Color", ColorF(1,0,0,1));
         }
@@ -85,8 +83,32 @@ int TypeToIndex(char type)
     }
 }
 
+void Hexmap::OnCreate()
+{
+    myProgram = myProgramRef;
+    myBaseTexture = myBaseTextureRef;
+    for(uint i = 0; i < TileTypeCount; i++)
+    {
+        myProgramStates[i] = myProgram->CreateState();
+        Program::ProgramState &state = myProgram->GetState(myProgramStates[i]);
+        state.SetUniform("FrameCount", VectorI2(1,TileTypeCount));
+        state.SetUniform("Frame", VectorI2(0,i));
+        state.SetUniform("Texture", myBaseTexture);
+    }
+    MultiContainer::OnCreate();
+}
+
+void Hexmap::OnDestroy()
+{
+    myProgram.Release();
+    myBaseTexture.Release();
+    MultiContainer::OnDestroy();
+}
+
 void Hexmap::SetTileType(uint j, uint k, char type)
 {
-    myHextiles[Index(j,k)].Tile.ProgramState().SetUniform("Frame", VectorI2(0,TypeToIndex(type)));
+    myHextiles[Index(j,k)].Tile.SetProgramState(
+            myProgramStates[TypeToIndex(type)]);
+    //myHextiles[Index(j,k)].Tile.ProgramState().SetUniform("Frame", VectorI2(0, TypeToIndex(type)));
     myHextiles[Index(j,k)].Emblem.ProgramState().SetUniform("Frame", VectorI2(0,TypeToIndex(type)));
 }
