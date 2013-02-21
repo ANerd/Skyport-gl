@@ -21,11 +21,15 @@ class Hexmap : public MultiContainer
     TileData *myHextiles;
     uint myJLength;
     uint myKLength;
-    AssetRef<Program> myProgramRef;
-    Asset<Program> myProgram;
+    static StaticAsset<Program> myHextileProgramRef;
+    Asset<Program> myHextileProgram;
+    static StaticAsset<Program> myHexborderProgramRef;
+    Asset<Program> myHexborderProgram;
+    Asset<Program> myEmblemProgram;
     AssetRef<Texture> myBaseTextureRef;
     Asset<Texture> myBaseTexture;
-    AssetRef<Texture> myEmblemTexture;
+    AssetRef<Texture> myEmblemTextureRef;
+    Asset<Texture> myEmblemTexture;
 
     uint Index(uint j, uint k)
     {
@@ -38,14 +42,15 @@ class Hexmap : public MultiContainer
         MultiContainer::OnCreate();
     }*/
 
-    ProgramStateId myProgramStates[TileTypeCount];
+    ProgramStateId myHextileProgramStates[TileTypeCount];
+    ProgramStateId myHexborderProgramStates[TileTypeCount];
+    ProgramStateId myEmblemProgramStates[TileTypeCount];
 
     public:
     static const real TileDistance;
     static const VectorF2 jOffset;
     static const VectorF2 kOffset;
-    Hexmap(AssetRef<Program> program, AssetRef<Texture> baseTexture, 
-            AssetRef<Texture> emblemTexture);
+    Hexmap(AssetRef<Texture> baseTexture, AssetRef<Texture> emblemTexture);
     virtual ~Hexmap();
 
     virtual void OnCreate();

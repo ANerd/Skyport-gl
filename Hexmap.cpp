@@ -3,15 +3,16 @@
 #include <cstdlib>
 
 const real Hexmap::TileDistance = 0.05f;
+StaticAsset<Program> Hexmap::myHexborderProgramRef(AssetManager
+            ::CreateStaticFromFile<Program>("assets/shaders/hexborder.sp"));
+StaticAsset<Program> Hexmap::myHextileProgramRef(AssetManager
+            ::CreateStaticFromFile<Program>("assets/shaders/Ground.sp"));
 const VectorF2 Hexmap::jOffset( (1.5+TileDistance),-(0.87+TileDistance));
 const VectorF2 Hexmap::kOffset(-(1.5+TileDistance),-(0.87+TileDistance));
 
-Hexmap::Hexmap(AssetRef<Program> program, AssetRef<Texture> baseTexture, 
-        AssetRef<Texture> emblemTexture)
-    : myHextiles(NULL), myProgramRef(program), myBaseTextureRef(baseTexture), 
-    myEmblemTexture(emblemTexture) 
-{
-}
+Hexmap::Hexmap(AssetRef<Texture> baseTexture, AssetRef<Texture> emblemTexture)
+    : myHextiles(NULL), myBaseTextureRef(baseTexture), 
+    myEmblemTextureRef(emblemTexture) { }
 
 Hexmap::~Hexmap()
 {
@@ -51,11 +52,10 @@ void Hexmap::Create(uint jSize, uint kSize)
             tile.TileContainer.AddChild(&(tile.Tile));
             tile.TileContainer.AddChild(&(tile.EmblemMove));
             tile.TileContainer.AddChild(&(tile.Border));
-            tile.Tile.SetProgram(myProgram, myProgramStates[0]);
-            tile.Emblem.SetTexture(myEmblemTexture);
+            tile.Tile.SetProgram(myHextileProgram, myHextileProgramStates[0]);
+            tile.Border.SetProgram(myHexborderProgram, myHexborderProgramStates[0]);
+            tile.Emblem.SetProgram(myEmblemProgram, myEmblemProgramStates[0]);
             AddChild(&(tile.Mov));
-            tile.Emblem.ProgramState().SetUniform("FrameCount", VectorI2(1,7));
-            tile.Border.ProgramState().SetUniform("Color", ColorF(1,0,0,1));
         }
     }
 }
@@ -85,30 +85,47 @@ int TypeToIndex(char type)
 
 void Hexmap::OnCreate()
 {
-    myProgram = myProgramRef;
+    myHextileProgram = myHextileProgramRef.Get(Scene.Get()->GetAssetManager());
+    myHexborderProgram = myHexborderProgramRef.Get(Scene.Get()->GetAssetManager());
     myBaseTexture = myBaseTextureRef;
+    myEmblemTexture = myEmblemTextureRef;
+    myEmblemProgram = Billboard::BillboardProgram.Get(Scene.Get()->GetAssetManager());
     for(uint i = 0; i < TileTypeCount; i++)
     {
-        myProgramStates[i] = myProgram->CreateState();
-        Program::ProgramState &state = myProgram->GetState(myProgramStates[i]);
-        state.SetUniform("FrameCount", VectorI2(1,TileTypeCount));
-        state.SetUniform("Frame", VectorI2(0,i));
-        state.SetUniform("Texture", myBaseTexture);
+        myHextileProgramStates[i] = myHextileProgram->CreateState();
+        Program::ProgramState &hstate = myHextileProgram->GetState(myHextileProgramStates[i]);
+        hstate.SetUniform("FrameCount", VectorI2(1,TileTypeCount));
+        hstate.SetUniform("Frame", VectorI2(0,i));
+        hstate.SetUniform("Texture", myBaseTexture);
+
+        myHexborderProgramStates[i] = myHexborderProgram->CreateState();
+        Program::ProgramState &bstate = myHexborderProgram->GetState(myHexborderProgramStates[i]);
+        bstate.SetUniform("Color", ColorF(1,0,0,1));
+
+        myEmblemProgramStates[i] = myEmblemProgram->CreateState();
+        Program::ProgramState &estate = myEmblemProgram->GetState(myEmblemProgramStates[i]);
+        estate.SetUniform("FrameCount", VectorI2(1,TileTypeCount));
+        estate.SetUniform("Frame", VectorI2(0,i));
+        estate.SetUniform("Texture", myEmblemTexture);
     }
     MultiContainer::OnCreate();
 }
 
 void Hexmap::OnDestroy()
 {
-    myProgram.Release();
+    myHextileProgram.Release();
+    myHexborderProgram.Release();
     myBaseTexture.Release();
+    myEmblemTexture.Release();
     MultiContainer::OnDestroy();
 }
 
 void Hexmap::SetTileType(uint j, uint k, char type)
 {
     myHextiles[Index(j,k)].Tile.SetProgramState(
-            myProgramStates[TypeToIndex(type)]);
-    //myHextiles[Index(j,k)].Tile.ProgramState().SetUniform("Frame", VectorI2(0, TypeToIndex(type)));
-    myHextiles[Index(j,k)].Emblem.ProgramState().SetUniform("Frame", VectorI2(0,TypeToIndex(type)));
+            myHextileProgramStates[TypeToIndex(type)]);
+    myHextiles[Index(j,k)].Border.SetProgramState(
+            myHexborderProgramStates[TypeToIndex(type)]);
+    myHextiles[Index(j,k)].Emblem.SetProgramState(
+            myEmblemProgramStates[TypeToIndex(type)]);
 }

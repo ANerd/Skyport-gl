@@ -55,8 +55,6 @@ int main(int argc, const char *argv[])
 
     AssetRef<Keymap> keymap = scene.GetAssetManager()
         ->CreateFromFile<Keymap>("assets/Navigation.kmp");
-    AssetRef<Program> groundShader = scene.GetAssetManager()
-        ->CreateFromFile<Program>("assets/shaders/Ground.sp");
     AssetRef<Program> skyShader = scene.GetAssetManager()
         ->CreateFromFile<Program>("assets/shaders/Sky.sp");
     AssetRef<Texture> groundTex = scene.GetAssetManager()
@@ -177,7 +175,7 @@ int main(int argc, const char *argv[])
     Movable mapMov;
     mapMov.Transform.Set(MatrixF4::RotationX(3*Pi/2)*MatrixF4::RotationZ(Pi));
     //mapMov.SetPointAt(&mapMark);
-    Hexmap map(groundShader, groundTex, emblemTex);
+    Hexmap map(groundTex, emblemTex);
     mapMov.SetChild(&map);
     c.AddChild(&mapMov);
 

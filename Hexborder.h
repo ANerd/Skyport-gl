@@ -9,7 +9,6 @@ using namespace anengine;
 class Hexborder : public FixedGeometry
 {
     static StaticAsset<VertexBuffer> myVertexBuffer;
-    static StaticAsset<Program> myProgram;
     protected:
     virtual AssetRef<VertexBuffer> GetGeometry(AssetManager *manager)
     {
@@ -18,12 +17,6 @@ class Hexborder : public FixedGeometry
     virtual void OnDraw(FrameTime elapsed)
     {
         glDrawArrays(GL_TRIANGLES, 0, 36);
-    }
-
-    virtual void OnCreate()
-    {
-        SetProgram(myProgram.Get(Scene.Get()->GetAssetManager()));
-        FixedGeometry::OnCreate();
     }
 
     public:
