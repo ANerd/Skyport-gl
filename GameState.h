@@ -243,7 +243,7 @@ class GameState
 
     const ActionState &GetAction(uint i) const
     {
-        Bug(myActionCount >= 3, "Request wrong action");
+        Bug(i >= 3, "Request wrong action");
         return myActions[i];
     }
 };
