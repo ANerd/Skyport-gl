@@ -115,8 +115,10 @@ void Hexmap::OnDestroy()
 {
     myHextileProgram.Release();
     myHexborderProgram.Release();
+    myEmblemProgram.Release();
     myBaseTexture.Release();
     myEmblemTexture.Release();
+
     MultiContainer::OnDestroy();
 }
 
