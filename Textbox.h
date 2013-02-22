@@ -1,13 +1,12 @@
 #ifndef TEXTBOX_H_
 #define TEXTBOX_H_
 
-#include "entity/Sprite.h"
+#include "entity/GUISprite.h"
 
 namespace anengine
 {
-    class Textbox : public Sprite
+    class Textbox : public GUISprite
     {
-        static StaticAsset<Program> TextboxProgram;
         struct TextlibInit
         {
             TextlibInit();
@@ -25,8 +24,9 @@ namespace anengine
         Property<ColorRGBA> Color;
         static PropertyInfo TextProperty;
         Property<std::string> Text;
+
         Textbox() 
-            : Sprite(AssetRef<Texture>()),
+            : GUISprite(AssetRef<Texture>()),
             Color(&ColorProperty, this),
             Text(&TextProperty, this, EventDirection::None, "F")
         { }

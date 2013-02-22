@@ -43,7 +43,6 @@ int main(int argc, const char *argv[])
 
     Dispatcher dispatcher;
     SDLEventSource source;
-    EventPrinter printer;
     SDLContext context(100, 100, false);
     EventHub hub(EventClass::Misc);
     EventHub inputHub(EventClass::Input);
@@ -67,10 +66,8 @@ int main(int argc, const char *argv[])
         ->CreateFromFile<Texture>("assets/textures/sky.gen.png");
 
     keymapFilter.SetKeymap(keymap);
-    printer.CreatePin(EventClass::Input, "Input");
     hub.CreateInPin("In");
     hub.CreateOutPin("Context");
-    //hub.CreateOutPin("Printer");
     hub.CreateOutPin("Dispatcher");
     hub.CreateOutPin("Scene");
 
@@ -79,7 +76,6 @@ int main(int argc, const char *argv[])
     inputHub.CreateOutPin("Input");
 
     Pin::Connect(source, "Input", inputHub, "Input");
-    //Pin::Connect(inputHub, "Printer", printer, "Input");
     Pin::Connect(inputHub, "Input", keymapFilter, "Input");
     Pin::Connect(keymapFilter, "Action", scene, "Actions");
     Pin::Connect(source, "Misc", hub, "In");
@@ -121,27 +117,24 @@ int main(int argc, const char *argv[])
     camMarkerViz.Size.Set(0.05f);
     camMarkerC.AddChild(&camMarkerViz);
 
-    //Movable skyMov;
-    //skyMov.Transform.Set(MatrixF4::Scale(VectorF4(90,90,90,1)));
     Skybox sky(skyTex);
     sky.SetProgram(skyShader);
-    //skyMov.SetChild(&sky);
     c.AddChild(&sky);
 
     Movable topMov;
     topMov.Transform.Set(MatrixF4::Translation(VectorF4(0,0.1,0)));
-    PointVisualizer top;
-    top.Color.Set(ColorF(0,1,0,1));
-    top.Size.Set(0.05f);
-    topMov.SetChild(&top);
+    PointVisualizer pvY;
+    pvY.Color.Set(ColorF(0,1,0,1));
+    pvY.Size.Set(0.05f);
+    topMov.SetChild(&pvY);
     c.AddChild(&topMov);
 
     Movable rightMov;
     rightMov.Transform.Set(MatrixF4::Translation(VectorF4(0.1,0,0)));
-    PointVisualizer right;
-    right.Color.Set(ColorF(1,0,0,1));
-    right.Size.Set(0.05f);
-    rightMov.SetChild(&right);
+    PointVisualizer pvX;
+    pvX.Color.Set(ColorF(1,0,0,1));
+    pvX.Size.Set(0.05f);
+    rightMov.SetChild(&pvX);
     c.AddChild(&rightMov);
 
     Movable frontMov;
@@ -158,38 +151,26 @@ int main(int argc, const char *argv[])
     camMov.SetChild(&cam);
     c.AddChild(&camMov);
 
-    //Add hextiles
-    //Marker mapMark;
-    //PointVisualizer markV;
-    //markV.Color.Set(ColorF(1,0,1,1));
-    //markV.Size.Set(0.05f);
-    //Movable mapMarkMov;
-    //mapMarkMov.InstanceId.Set(2);
-    //mapMarkMov.Transform.Set(MatrixF4::Translation(UnitF4[Z]));
-    //MultiContainer markC;
-    //markC.AddChild(&markV);
-    //markC.AddChild(&mapMark);
-    //mapMarkMov.SetChild(&markC);
-    //c.AddChild(&mapMarkMov);
-
     Movable mapMov;
     mapMov.Transform.Set(MatrixF4::RotationX(3*Pi/2)*MatrixF4::RotationZ(Pi));
-    //mapMov.SetPointAt(&mapMark);
     Hexmap map(groundTex, emblemTex);
     mapMov.SetChild(&map);
     c.AddChild(&mapMov);
 
-    //Billboard b(billboardTex);
-    //Movable bMovable;
-    //bMovable.Transform.Set(MatrixF4::Translation(VectorF4(-5,0.5,-2)));
-    //bMovable.SetChild(&b);
-    //c.AddChild(&bMovable);
-    //Textbox text;
-    //text.Color.Set(ColorRGBA(255,255,0,255));
-    //text.Text.Set("Foobar");
-    //tileMov.SetChild(&text);
-    //c.AddChild(&tileMov);
-    //c.AddChild(&text);
+    Textbox title;
+    title.Color.Set(ColorRGBA(255,255,0,255));
+    title.Text.Set("Foobar");
+    title.Anchors.Set(Anchor::Top);
+    title.Size.Set(SizeF2(0.1,0.2));
+    title.Position.Set(VectorF2(0,0.1));
+    c.AddChild(&title);
+
+    Textbox subTitle;
+    subTitle.Color.Set(ColorRGBA(255,255,0,255));
+    subTitle.Text.Set("Barbaz");
+    subTitle.Anchors.Set(Anchor::Bottom);
+    subTitle.Size.Set(SizeF2(0.1,0.15));
+    c.AddChild(&subTitle);
 
     GameStateService gamestate(&c, &map, figureTex);
     dispatcher.AddService(gamestate);
