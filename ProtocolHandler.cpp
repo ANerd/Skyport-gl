@@ -99,6 +99,7 @@ Weapon ParseWeapon(std::string name)
 
 ProtocolHandler::MessageType ProtocolHandler::Parse(std::string str, GameState &state)
 {
+    //{"message":"title", "text":"kort tekst"} og {"message":"subtitle", "text":"muligens litt lengre tekst"}
     MessageType type;
     json_object *root = json_tokener_parse(str.c_str());
 

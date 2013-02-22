@@ -24,7 +24,7 @@ void GameStateService::Player::Update(const PlayerState &other)
                 Hexmap::jOffset[X]*Position[X]+Hexmap::kOffset[X]*Position[Y],
                 Hexmap::jOffset[Y]*Position[X]+Hexmap::kOffset[Y]*Position[Y]);
         PlayerMovable->Transform.Set(
-                MatrixF4::Translation(VectorF4(pos[X],0.5,pos[Y])));
+                MatrixF4::Translation(VectorF4(pos[X],0.0,pos[Y])));
     }
     StatsDirty = false;
     StateDirty = false;
@@ -37,6 +37,9 @@ GameStateService::~GameStateService()
     {
         delete pit->PlayerMovable;
         delete pit->PlayerVisual;
+        delete pit->NametagMovable;
+        delete pit->PlayerContainer;
+        delete pit->PlayerNametag;
     }
 }
 
@@ -60,15 +63,33 @@ void GameStateService::Update(const GameState &state)
         {
             Movable *mov = new Movable();
             Billboard *bill = new Billboard(myFigureTexture);
-            mov->SetChild(bill);
+            Movable *nameMov = new Movable();
+            MultiContainer *container = new MultiContainer();
+            Nametag *nametag = new Nametag();
+            bill->Offset.Set(VectorF2(0,0.5));
+            nametag->Offset.Set(VectorF2(0,1.5));
+
+            //nameMov->Transform.Set(MatrixF4::Translation(UnitF4[Y]));
+            nametag->PlayerName.Set(pit->Name);
+            nametag->Health.Set(pit->Health/100.0f);
+
+            mov->SetChild(container);
+            container->AddChild(bill);
+            container->AddChild(nameMov);
+            nameMov->SetChild(nametag);
             myContainer->AddChild(mov);
             bill->ProgramState().SetUniform("Z", -0.05f);
             bill->ProgramState().SetUniform("FrameCount", VectorI2(1,1));
-            Players.push_back(Player(i++,pit->Name,mov,bill));
+            Players.push_back(Player(i++,pit->Name,mov,bill,nameMov,
+                        container, nametag));
             Players.back().Update(*pit);
         }
         myMap->Create(mapSize[X],mapSize[Y]);
         myCurrentPlayer = Players.begin();
+
+        //myStats = new Statusbox();
+        //myStats->State.Set(state);
+        //myContainer->AddChild(myStats);
     }
     else
     {

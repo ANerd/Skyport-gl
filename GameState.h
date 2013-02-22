@@ -246,6 +246,15 @@ class GameState
         Bug(i >= 3, "Request wrong action");
         return myActions[i];
     }
+
+    bool operator == (const GameState &other) const
+    {
+        return false;
+    }
+    bool operator != (const GameState &other) const
+    {
+        return true;
+    }
 };
 
 class GameStateEvent : public Event

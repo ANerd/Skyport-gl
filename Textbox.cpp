@@ -13,6 +13,8 @@ namespace anengine
     {
         Debug("Textlib init");
         textlib_initialize();
+        textlib_set_font(72, NULL);
+        textlib_set_quality(TEXT_QUALITY_HIGH);
     }
     Textbox::TextlibInit::~TextlibInit()
     {
@@ -46,14 +48,13 @@ namespace anengine
 
     void Textbox::UpdateText()
     {
-        textlib_initialize();
-        textlib_set_font(72, NULL);
-        textlib_set_quality(TEXT_QUALITY_HIGH);
         ColorRGBA c = Color.Get();
         SDL_Surface *text = textlib_get_text(Text.Get().c_str(), c[R],c[G],c[B]);
+        SDL_LockSurface(text);
         myTexture->SetData(text->w, text->h, GL_BGRA, text->pixels);
         real height = Size.Get()[Height];
         Size.Set(SizeF2(text->w * height / text->h, height));
+        SDL_UnlockSurface(text);
         SDL_FreeSurface(text);
     }
 };

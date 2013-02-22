@@ -6,6 +6,8 @@
 #include "assets/Texture.h"
 #include "entity/Container.h"
 #include "GameState.h"
+#include "Statusbox.h"
+#include "Nametag.h"
 #include "Hexmap.h"
 
 using namespace anengine;
@@ -23,11 +25,18 @@ class GameStateService : public Service, public AnimationHelperListner
         anengine::VectorI2 Position;
         Movable *PlayerMovable;
         Visual *PlayerVisual;
+        Movable *NametagMovable;
+        MultiContainer *PlayerContainer;
+        Nametag *PlayerNametag;
 
-        Player(uint index, std::string name, Movable *playerMovable, Visual *playerVisual)
+        Player(uint index, std::string name, Movable *playerMovable, 
+                Visual *playerVisual, Movable *nametagMovable,
+                MultiContainer *playerContainer, Nametag *nametag)
             : Index(index), StatsDirty(true), StateDirty(true), Name(name), 
             Health(0), Score(0), Position(ZeroI2), 
-            PlayerMovable(playerMovable), PlayerVisual(playerVisual) { }
+            PlayerMovable(playerMovable), PlayerVisual(playerVisual),
+            NametagMovable(nametagMovable), PlayerContainer(playerContainer),
+            PlayerNametag(nametag) { }
 
         ~Player() { }
 
@@ -42,6 +51,7 @@ class GameStateService : public Service, public AnimationHelperListner
     std::vector<Player> Players;
     MultiContainer *myContainer;
     Hexmap *myMap;
+    Statusbox *myStats;
     std::vector<Player>::iterator myCurrentPlayer;
     AssetRef<Texture> myFigureTexture;
     uint myActionCount;
