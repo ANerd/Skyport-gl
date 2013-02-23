@@ -30,6 +30,29 @@ void GameStateService::Player::Update(const PlayerState &other)
     StateDirty = false;
 }
 
+GameStateService::GameStateService(MultiContainer *container, Hexmap *map,
+        AssetRef<Texture> figureTexture) 
+    : myAnimations(this), Turn(-1), myContainer(container), myMap(map), 
+    myFigureTexture(figureTexture), myActionCount(0), myActionCursor(0)
+{
+    RegisterInPin(SkyportEventClass::GameState, "StateUpdates", 
+            static_cast<EventCallback>(&GameStateService::StateUpdate));
+    myDonePin = RegisterOutPin(SkyportEventClass::GameState, "Done");
+    myTitle.Color.Set(ColorRGBA(255,255,0,255));
+    myTitle.Text.Set("Welcome");
+    myTitle.Anchors.Set(Anchor::Top);
+    myTitle.Size.Set(SizeF2(0.1,0.2));
+    myTitle.Position.Set(VectorF2(0,0.1));
+
+    mySubtitle.Color.Set(ColorRGBA(255,255,0,255));
+    mySubtitle.Text.Set("Game will begin shortly");
+    mySubtitle.Anchors.Set(Anchor::Bottom);
+    mySubtitle.Size.Set(SizeF2(0.1,0.15));
+
+    container->AddChild(&myTitle);
+    container->AddChild(&mySubtitle);
+}
+
 GameStateService::~GameStateService()
 {
     for(auto pit = Players.begin(); 
@@ -87,6 +110,11 @@ void GameStateService::Update(const GameState &state)
         myMap->Create(mapSize[X],mapSize[Y]);
         myCurrentPlayer = Players.begin();
 
+        AnimationHelper::HideAnimationData *hanim = 
+                new AnimationHelper::HideAnimationData(&mySubtitle, 6);
+        hanim->Presistant = true;
+        mySubtitleAnimation = myAnimations.AddAnimation(hanim);
+
         //myStats = new Statusbox();
         //myStats->State.Set(state);
         //myContainer->AddChild(myStats);
@@ -118,6 +146,13 @@ void GameStateService::Update(const GameState &state)
     for(uint i = 0; i < myActionCount; i++)
     {
         myActionStates[i] = state.GetAction(i);
+    }
+
+    myTitle.Text.Set(state.GetTitle());
+    if(state.GetSubtitle() != mySubtitle.Text.Get())
+    {
+        mySubtitle.Text.Set(state.GetSubtitle());
+        myAnimations.ResetAnimation(mySubtitleAnimation);
     }
 
     PlayAnimation();
@@ -156,7 +191,7 @@ VectorF2 DirectionToOffset(Direction dir)
 
 void GameStateService::PlayAnimation()
 {
-    if(myAnimations.GetAnimationCount() == 0)
+    if(myAnimations.GetAnimationCount() == 1)
     {
         if(myActionCursor < myActionCount)
         {
@@ -178,10 +213,10 @@ void GameStateService::PlayAnimation()
                                 1, AnimationHelper::SmoothCurve);
                         myAnimations.AddAnimation(trdata);
 
-                        AnimationHelper::TextureAnimationData *tedata =
-                            new AnimationHelper::TextureAnimationData(
-                                myCurrentPlayer->PlayerVisual, 4, X, 1,
-                                AnimationHelper::LinearCurve);
+                        //AnimationHelper::TextureAnimationData *tedata =
+                        //    new AnimationHelper::TextureAnimationData(
+                        //        myCurrentPlayer->PlayerVisual, 4, X, 1,
+                        //        AnimationHelper::LinearCurve);
                         //myAnimations.AddAnimation(tedata);
                     }
                     break;

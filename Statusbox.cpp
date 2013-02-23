@@ -4,12 +4,11 @@
 
 namespace anengine
 {
-    PropertyInfo Statusbox::ColorProperty("Color", typeid(Statusbox));
     PropertyInfo Statusbox::StateProperty("GameState", typeid(Statusbox));
 
     void Statusbox::OnPropertyChanged(const PropertyInfo *id, bool implicit)
     {
-        if(id == &StateProperty || id == &ColorProperty)
+        if(id == &StateProperty)
         {
             if(IsCreated())
                 UpdateStatus();
@@ -33,7 +32,6 @@ namespace anengine
 
     void Statusbox::UpdateStatus()
     {
-        ColorRGBA c = Color.Get();
         const GameState &s = State.Get();
         char const** names = new const char*[s.PlayerCount()];
         int *points = new int[s.PlayerCount()];

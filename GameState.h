@@ -183,6 +183,8 @@ class GameState
     int myTurn;
     int myActionCount;
     int myPlayerIndex;
+    std::string myTitle;
+    std::string mySubtitle;
     ActionState myActions[3];
     public:
     typedef std::vector<PlayerState>::const_iterator Players_iterator;
@@ -245,6 +247,26 @@ class GameState
     {
         Bug(i >= 3, "Request wrong action");
         return myActions[i];
+    }
+
+    void SetTitle(std::string title)
+    {
+        myTitle = title;
+    }
+
+    void SetSubtitle(std::string subtitle)
+    {
+        mySubtitle = subtitle;
+    }
+
+    std::string GetTitle() const
+    {
+        return myTitle;
+    }
+
+    std::string GetSubtitle() const
+    {
+        return mySubtitle;
     }
 
     bool operator == (const GameState &other) const

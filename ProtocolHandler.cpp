@@ -140,6 +140,18 @@ ProtocolHandler::MessageType ProtocolHandler::Parse(std::string str, GameState &
         myState = ProtocolState::WaitingForGamestate;
         type = MessageType::Connect;
     }
+    else if(message == "title" || message == "subtitle")
+    {
+        std::string text;
+        json_object *textObject;
+        if(json_object_object_get_ex(root, "text", &textObject))
+            text = json_object_get_string(textObject);
+        if(message == "title")
+            state.SetTitle(text);
+        else
+            state.SetSubtitle(text);
+        type = MessageType::GameState;
+    }
     else if(message == "gamestate")
     {
         if(myState != ProtocolState::WaitingForGamestate)

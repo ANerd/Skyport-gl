@@ -157,21 +157,6 @@ int main(int argc, const char *argv[])
     mapMov.SetChild(&map);
     c.AddChild(&mapMov);
 
-    Textbox title;
-    title.Color.Set(ColorRGBA(255,255,0,255));
-    title.Text.Set("Foobar");
-    title.Anchors.Set(Anchor::Top);
-    title.Size.Set(SizeF2(0.1,0.2));
-    title.Position.Set(VectorF2(0,0.1));
-    c.AddChild(&title);
-
-    Textbox subTitle;
-    subTitle.Color.Set(ColorRGBA(255,255,0,255));
-    subTitle.Text.Set("Barbaz");
-    subTitle.Anchors.Set(Anchor::Bottom);
-    subTitle.Size.Set(SizeF2(0.1,0.15));
-    c.AddChild(&subTitle);
-
     GameStateService gamestate(&c, &map, figureTex);
     dispatcher.AddService(gamestate);
 

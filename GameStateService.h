@@ -8,6 +8,7 @@
 #include "GameState.h"
 #include "Statusbox.h"
 #include "Nametag.h"
+#include "Textbox.h"
 #include "Hexmap.h"
 
 using namespace anengine;
@@ -52,11 +53,14 @@ class GameStateService : public Service, public AnimationHelperListner
     MultiContainer *myContainer;
     Hexmap *myMap;
     Statusbox *myStats;
+    Textbox myTitle;
+    Textbox mySubtitle;
     std::vector<Player>::iterator myCurrentPlayer;
     AssetRef<Texture> myFigureTexture;
     uint myActionCount;
     uint myActionCursor;
     ActionState myActionStates[3];
+    AnimationHelper::AnimationIndex mySubtitleAnimation;
 
     void SetCurrentPlayer();
     bool StateUpdate(Event &event, InPin pin);
@@ -65,14 +69,8 @@ class GameStateService : public Service, public AnimationHelperListner
     virtual void AnimationDone();
     public:
     GameStateService(MultiContainer *container, Hexmap *map,
-            AssetRef<Texture> figureTexture) 
-        : myAnimations(this), Turn(-1), myContainer(container), myMap(map), 
-        myFigureTexture(figureTexture), myActionCount(0), myActionCursor(0)
-    {
-        RegisterInPin(SkyportEventClass::GameState, "StateUpdates", 
-                static_cast<EventCallback>(&GameStateService::StateUpdate));
-        myDonePin = RegisterOutPin(SkyportEventClass::GameState, "Done");
-    }
+            AssetRef<Texture> figureTexture);
+
     virtual ~GameStateService();
     
     virtual void OnUpdate(FrameTime time)
