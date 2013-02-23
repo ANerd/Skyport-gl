@@ -13,6 +13,7 @@ namespace anengine
         virtual void OnPropertyChanged(const PropertyInfo *id, bool implicit);
         virtual void OnCreate();
         virtual void OnDestroy();
+        virtual void OnNewProgram();
         public:
         static PropertyInfo PlayerNameProperty;
         Property<std::string> PlayerName;

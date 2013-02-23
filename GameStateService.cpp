@@ -168,8 +168,6 @@ void GameStateService::PlayAnimation()
                         myCurrentPlayer->PlayerMovable->Transform.Get()
                             .GetTranslation(pos);
 
-                        Debug("Added move animation");
-
                         VectorF2 off = DirectionToOffset(
                                 myActionStates[myActionCursor].GetDirection());
                         AnimationHelper::TranslationAnimationData *trdata =
@@ -210,6 +208,5 @@ bool GameStateService::StateUpdate(Event &event, InPin pin)
 {
     GameStateEvent &gevent = dynamic_cast<GameStateEvent&>(event);
     Update(gevent.GetState());
-    Debug("Updated gamesate");
     return true;
 }

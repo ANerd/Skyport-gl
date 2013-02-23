@@ -31,6 +31,12 @@ namespace anengine
         Billboard::OnDestroy();
     }
 
+    void Nametag::OnNewProgram()
+    {
+        ProgramState().SetUniform("Flip", VectorF2(0,1));
+        Billboard::OnNewProgram();
+    }
+
     void Nametag::UpdateStatus()
     {
         SDL_Surface *stat = textlib_get_nametag(PlayerName.Get().c_str(), Health.Get());
