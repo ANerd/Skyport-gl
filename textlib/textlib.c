@@ -4,8 +4,8 @@
 
 // these values are hardcoded for 16-char nametags.
 // If we want to allow longer names, they need adjusting.
-#define NAMETAG_WIDTH 213
-#define NAMETAG_HEIGHT 29
+#define NAMETAG_WIDTH 256
+#define NAMETAG_HEIGHT 32
 
 static TTF_Font *font;
 static unsigned int quality;
