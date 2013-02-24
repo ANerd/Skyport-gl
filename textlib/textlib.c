@@ -2,6 +2,11 @@
 #include <stdio.h>
 #include <math.h>
 
+// these values are hardcoded for 16-char nametags.
+// If we want to allow longer names, they need adjusting.
+#define NAMETAG_WIDTH 213
+#define NAMETAG_HEIGHT 29
+
 static TTF_Font *font;
 static unsigned int quality;
 static SDL_Color bgcolor;
@@ -63,10 +68,11 @@ SDL_Surface *textlib_get_nametag(const char *name, float health){
   unsigned int oldquality = quality;
   
   textlib_set_font(16, NULL);
-  textlib_set_quality(2);
+  textlib_set_quality(TEXT_QUALITY_HIGH);
   SDL_Surface *nametag = textlib_get_text(name, 0, 0, 0);
-  SDL_Surface *bg = SDL_CreateRGBSurface(SDL_SWSURFACE | SDL_SRCALPHA,
-					 nametag->w+10, nametag->h+10,
+  SDL_Surface *bg = SDL_CreateRGBSurface(SDL_SWSURFACE,
+					 //nametag->w+10, nametag->h+10,
+					 NAMETAG_WIDTH, NAMETAG_HEIGHT,
 					 nametag->format->BitsPerPixel,
 					 nametag->format->Rmask, nametag->format->Gmask,
 					 nametag->format->Bmask, nametag->format->Amask);
@@ -74,10 +80,10 @@ SDL_Surface *textlib_get_nametag(const char *name, float health){
   SDL_FillRect(bg, NULL, SDL_MapRGBA(bg->format, 0, 0, 0, 255));
   
   SDL_Rect interior = {2, 2, nametag->w + 10 - 4, nametag->h + 10 - 4};
-  SDL_FillRect(bg, &interior, SDL_MapRGBA(bg->format, 255, 100, 100, 160));
+  SDL_FillRect(bg, &interior, SDL_MapRGBA(bg->format, 255, 100, 100, 255));
   
   SDL_Rect health_rect = {2, 2, pixel_fill_boundary - 2, nametag->h + 10 - 4};
-  SDL_FillRect(bg, &health_rect, SDL_MapRGBA(bg->format, 100, 255, 100, 160));
+  SDL_FillRect(bg, &health_rect, SDL_MapRGBA(bg->format, 100, 255, 100, 255));
 
   SDL_Rect name_rect = {5, 5, nametag->w, nametag->h};
   SDL_BlitSurface(nametag, NULL, bg, &name_rect);
@@ -89,5 +95,6 @@ SDL_Surface *textlib_get_nametag(const char *name, float health){
 
 SDL_Surface *textlib_get_stats(unsigned int players, const char **names,
 			       int *points, int *primary_weapon, int *secondary_weapon){
-
+  // TODO
+  return NULL;
 }
