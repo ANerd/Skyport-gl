@@ -15,7 +15,7 @@ class Hexmap : public MultiContainer
         Hexborder Border;
         Billboard Emblem;
         Movable Mov;
-        Movable EmblemMove;
+        //Movable EmblemMove;
         MultiContainer TileContainer;
     };
     TileData *myHextiles;

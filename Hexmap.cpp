@@ -47,10 +47,10 @@ void Hexmap::Create(uint jSize, uint kSize)
             tile.Mov.Transform.Set(MatrixF4::Translation(mjOffset*j+mkOffset*k)*
                     MatrixF4::RotationZ(rand()%6*Pi/3));
             tile.Mov.SetChild(&(tile.TileContainer));
-            tile.EmblemMove.Transform.Set(MatrixF4::Translation(VectorF4(0,0,0.5)));
-            tile.EmblemMove.SetChild(&(tile.Emblem));
+            //tile.EmblemMove.Transform.Set(MatrixF4::Translation(VectorF4(0,0,0.5)));
+            //tile.EmblemMove.SetChild(&(tile.Emblem));
             tile.TileContainer.AddChild(&(tile.Tile));
-            tile.TileContainer.AddChild(&(tile.EmblemMove));
+            tile.TileContainer.AddChild(&(tile.Emblem));
             tile.TileContainer.AddChild(&(tile.Border));
             tile.Tile.SetProgram(myHextileProgram, myHextileProgramStates[0]);
             tile.Border.SetProgram(myHexborderProgram, myHexborderProgramStates[0]);
@@ -107,6 +107,7 @@ void Hexmap::OnCreate()
         estate.SetUniform("FrameCount", VectorI2(1,TileTypeCount));
         estate.SetUniform("Frame", VectorI2(0,i));
         estate.SetUniform("Texture", myEmblemTexture);
+        estate.SetUniform("Offset", VectorF2(0,0.5f));
     }
     MultiContainer::OnCreate();
 }
