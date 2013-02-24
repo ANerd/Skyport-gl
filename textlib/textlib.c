@@ -67,7 +67,7 @@ SDL_Surface *textlib_get_nametag(const char *name, float health){
   TTF_Font *oldfont = font;
   unsigned int oldquality = quality;
   
-  textlib_set_font(16, NULL);
+  textlib_set_font(19, NULL);
   textlib_set_quality(TEXT_QUALITY_HIGH);
   SDL_Surface *nametag = textlib_get_text(name, 0, 0, 0);
   SDL_Surface *bg = SDL_CreateRGBSurface(SDL_SWSURFACE,
@@ -79,13 +79,13 @@ SDL_Surface *textlib_get_nametag(const char *name, float health){
   unsigned int pixel_fill_boundary = (unsigned int)round(health*(nametag->w));
   SDL_FillRect(bg, NULL, SDL_MapRGBA(bg->format, 0, 0, 0, 255));
   
-  SDL_Rect interior = {2, 2, nametag->w + 10 - 4, nametag->h + 10 - 4};
+  SDL_Rect interior = {2, 2, NAMETAG_WIDTH - 4, NAMETAG_HEIGHT - 4};
   SDL_FillRect(bg, &interior, SDL_MapRGBA(bg->format, 255, 100, 100, 255));
   
-  SDL_Rect health_rect = {2, 2, pixel_fill_boundary - 2, nametag->h + 10 - 4};
+  SDL_Rect health_rect = {2, 2, pixel_fill_boundary - 2, NAMETAG_HEIGHT - 4};
   SDL_FillRect(bg, &health_rect, SDL_MapRGBA(bg->format, 100, 255, 100, 255));
 
-  SDL_Rect name_rect = {5, 5, nametag->w, nametag->h};
+  SDL_Rect name_rect = {(int)round(NAMETAG_WIDTH/2.0 - (nametag->w)/2), 6, nametag->w, nametag->h};
   SDL_BlitSurface(nametag, NULL, bg, &name_rect);
   
   font = oldfont;

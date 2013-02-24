@@ -26,19 +26,25 @@ int main(void){
   print_surface_properties(text, "text-surface");
   SDL_BlitSurface(text, NULL, mainsurf, NULL); 
 
-  SDL_Surface *nametag = textlib_get_nametag("Anders", 0.5f);
+  SDL_Surface *nametag = textlib_get_nametag("a", 0.5f);
   print_surface_properties(nametag, "nametag-surface");
   SDL_Rect location = {10, text->h + 10, nametag->w, nametag->h};
   SDL_BlitSurface(nametag, NULL, mainsurf, &location);
   
-  SDL_Surface *nametag2 = textlib_get_nametag("Amadiro", 0.25f);
+  SDL_Surface *nametag2 = textlib_get_nametag("Foobar", 0.25f);
   SDL_Rect location2 = {10, text->h + nametag->h + 100, nametag2->w, nametag2->h};
   SDL_BlitSurface(nametag2, NULL, mainsurf, &location2);
 
-  SDL_Surface *nametag3 = textlib_get_nametag("Jonny 16-letters", 0.25f);
+  SDL_Surface *nametag3 = textlib_get_nametag("Jonny 16-letters", 0.75f);
   SDL_Rect location3 = {10, text->h + nametag->h + nametag2->h + 200, nametag3->w, nametag3->h};
   SDL_BlitSurface(nametag3, NULL, mainsurf, &location3);
   print_surface_properties(nametag3, "nametag-16letters");
+
+  SDL_Surface *nametag4 = textlib_get_nametag("0123456789ABCDEF", 0.66f);
+  SDL_Rect location4 = {10, text->h + nametag->h + nametag2->h + nametag3->h + 300,
+			nametag4->w, nametag4->h};
+  SDL_BlitSurface(nametag4, NULL, mainsurf, &location4);
+  print_surface_properties(nametag4, "nametag-16letters");
   
   for(int i = 0; i < 480; i++){
     SDL_UpdateRect(mainsurf, 0, 0, 0, 0);
