@@ -1,0 +1,6 @@
+explosium:6f6829
+scrap:3d3329
+rubidium:4b0c09
+rock:5e5e5e
+grass:324700
+spawn:7b720b
