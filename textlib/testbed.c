@@ -40,7 +40,7 @@ int main(void){
   SDL_BlitSurface(nametag3, NULL, mainsurf, &location3);
   print_surface_properties(nametag3, "nametag-16letters");
 
-  SDL_Surface *nametag4 = textlib_get_nametag("0123456789ABCDEF", 0.66f);
+  SDL_Surface *nametag4 = textlib_get_nametag("0123456789ABCDEF", 1.00f);
   SDL_Rect location4 = {10, text->h + nametag->h + nametag2->h + nametag3->h + 300,
 			nametag4->w, nametag4->h};
   SDL_BlitSurface(nametag4, NULL, mainsurf, &location4);
