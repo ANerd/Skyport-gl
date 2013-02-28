@@ -130,7 +130,7 @@ void GameStateService::Update(const GameState &state)
             MultiContainer *container = new MultiContainer();
             Nametag *nametag = new Nametag();
             bill->Offset.Set(VectorF2(0,0.5));
-            nametag->Offset.Set(VectorF2(0,1.0));
+            nametag->Offset.Set(VectorF2(0,1.15));
 
             nametag->PlayerName.Set(pit->Name);
             nametag->Health.Set(pit->Health/100.0f);
