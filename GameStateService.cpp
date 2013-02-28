@@ -90,9 +90,8 @@ void GameStateService::Update(const GameState &state)
             MultiContainer *container = new MultiContainer();
             Nametag *nametag = new Nametag();
             bill->Offset.Set(VectorF2(0,0.5));
-            nametag->Offset.Set(VectorF2(0,1.5));
+            nametag->Offset.Set(VectorF2(0,1.0));
 
-            //nameMov->Transform.Set(MatrixF4::Translation(UnitF4[Y]));
             nametag->PlayerName.Set(pit->Name);
             nametag->Health.Set(pit->Health/100.0f);
 
@@ -103,6 +102,7 @@ void GameStateService::Update(const GameState &state)
             myContainer->AddChild(mov);
             bill->ProgramState().SetUniform("Z", -0.05f);
             bill->ProgramState().SetUniform("FrameCount", VectorI2(1,1));
+            nametag->ProgramState().SetUniform("Size", VectorF2(1.6,0.2));
             Players.push_back(Player(i++,pit->Name,mov,bill,nameMov,
                         container, nametag));
             Players.back().Update(*pit);
