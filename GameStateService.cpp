@@ -31,9 +31,10 @@ void GameStateService::Player::Update(const PlayerState &other)
 }
 
 GameStateService::GameStateService(MultiContainer *container, Hexmap *map,
-        AssetRef<Texture> figureTexture) 
+        AssetRef<Texture> figureTexture, Camera *camera) 
     : myAnimations(this), Turn(-1), myContainer(container), myMap(map), 
-    myFigureTexture(figureTexture), myActionCount(0), myActionCursor(0)
+    myFigureTexture(figureTexture), myActionCount(0), myActionCursor(0),
+    myCamera(camera)
 {
     RegisterInPin(SkyportEventClass::GameState, "StateUpdates", 
             static_cast<EventCallback>(&GameStateService::StateUpdate));
@@ -66,6 +67,45 @@ GameStateService::~GameStateService()
     }
 }
 
+
+VectorI2 DirectionToTileOffset(Direction dir)
+{
+    VectorI2 tileoff;
+    switch(dir)
+    {
+        case Direction::None:
+            break;
+        case Direction::Up:
+            tileoff = VectorI2(-1,-1);
+            break;
+        case Direction::Down:
+            tileoff = VectorI2(1 , 1);
+            break;
+        case Direction::Left_Up:
+            tileoff = VectorI2(0,-1);
+            break;
+        case Direction::Left_Down:
+            tileoff = VectorI2(1,0);
+            break;
+        case Direction::Right_Up:
+            tileoff = VectorI2(-1,0);
+            break;
+        case Direction::Right_Down:
+        tileoff = VectorI2(0,1);
+            break;
+    }
+    return tileoff;
+} 
+
+VectorF2 TileToPosition(VectorI2 tile)
+{
+    return Hexmap::jOffset * tile[X] + Hexmap::kOffset * tile[Y];
+}
+
+VectorF2 DirectionToOffset(Direction dir)
+{
+    return TileToPosition(DirectionToTileOffset(dir));
+}
 void GameStateService::SetCurrentPlayer()
 {
     while(myCurrentPlayer->Index != 0)
@@ -115,6 +155,33 @@ void GameStateService::Update(const GameState &state)
         hanim->Presistant = true;
         mySubtitleAnimation = myAnimations.AddAnimation(hanim);
 
+        VectorF2 midpoint = TileToPosition(mapSize / 2);
+        myDefaultLookat = VectorF4(midpoint[X], 0.0f, midpoint[Y]);
+        myDefaultCamera = VectorF4(-midpoint[X], abs(midpoint[X] + midpoint[Y]), -midpoint[Y]);
+
+        myCamera->Near.Set(0.5);
+        myCamera->Far.Set(100);
+        myCamera->FOV.Set(3.14/4);
+
+        myCamMov.Transform.Set(MatrixF4::Translation(myDefaultCamera));
+        myCamMov.SetPointAt(&myCamMarker);
+        myCamMov.InstanceId.Set(1);
+        myCamMov.SetChild(myCamera);
+
+        myCamMarkerMov.InstanceId.Set(2);
+        myCamMarkerMov.Transform.Set(MatrixF4::Translation(myDefaultLookat));
+        myCamMarkerMov.SetChild(&myCamMarkerC);
+
+        myCamMarkerViz.Color.Set(ColorF(1,0,1,1));
+        myCamMarkerViz.Size.Set(0.05f);
+
+        myCamMarkerC.AddChild(&myCamMarkerViz);
+        myCamMarkerC.AddChild(&myCamMarker);
+
+        myContainer->AddChild(&myCamMarkerMov);
+        myContainer->AddChild(&myCamMov);
+
+
         //myStats = new Statusbox();
         //myStats->State.Set(state);
         //myContainer->AddChild(myStats);
@@ -159,35 +226,6 @@ void GameStateService::Update(const GameState &state)
 
     Turn = state.GetTurn();
 }
-
-VectorF2 DirectionToOffset(Direction dir)
-{
-    VectorI2 tileoff;
-    switch(dir)
-    {
-        case Direction::None:
-            break;
-        case Direction::Up:
-            tileoff = VectorI2(-1,-1);
-            break;
-        case Direction::Down:
-            tileoff = VectorI2(1 , 1);
-            break;
-        case Direction::Left_Up:
-            tileoff = VectorI2(0,-1);
-            break;
-        case Direction::Left_Down:
-            tileoff = VectorI2(1,0);
-            break;
-        case Direction::Right_Up:
-            tileoff = VectorI2(-1,0);
-            break;
-        case Direction::Right_Down:
-            tileoff = VectorI2(0,1);
-            break;
-    }
-    return Hexmap::jOffset * tileoff[X] + Hexmap::kOffset * tileoff[Y];
-} 
 
 void GameStateService::PlayAnimation()
 {

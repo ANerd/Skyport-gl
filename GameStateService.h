@@ -5,6 +5,8 @@
 #include "util/AnimationHelper.h"
 #include "assets/Texture.h"
 #include "entity/Container.h"
+#include "entity/Marker.h"
+#include "entity/PointVisualizer.h"
 #include "GameState.h"
 #include "Statusbox.h"
 #include "Nametag.h"
@@ -62,6 +64,16 @@ class GameStateService : public Service, public AnimationHelperListner
     ActionState myActionStates[3];
     AnimationHelper::AnimationIndex mySubtitleAnimation;
 
+    Movable myCamMov;
+    Camera *myCamera;
+    MultiContainer myCamMarkerC;
+    Movable myCamMarkerMov;
+    Marker myCamMarker;
+    PointVisualizer myCamMarkerViz;
+
+    VectorF4 myDefaultLookat;
+    VectorF4 myDefaultCamera;
+
     void SetCurrentPlayer();
     bool StateUpdate(Event &event, InPin pin);
     void PlayAnimation();
@@ -69,7 +81,7 @@ class GameStateService : public Service, public AnimationHelperListner
     virtual void AnimationDone();
     public:
     GameStateService(MultiContainer *container, Hexmap *map,
-            AssetRef<Texture> figureTexture);
+            AssetRef<Texture> figureTexture, Camera *camera);
 
     virtual ~GameStateService();
     
