@@ -92,34 +92,16 @@ int main(int argc, const char *argv[])
     dispatcher.AddService(scene);
 
     MultiContainer c;
-    Camera cam;
-    cam.Near.Set(0.5);
-    cam.Far.Set(100);
-    cam.FOV.Set(3.14/4);
-    Movable camMov;
-    camMov.Transform.Set(MatrixF4::Translation(VectorF4(0,1,1)));
-    PointVisualizer center;
-    center.Color.Set(ColorF(1,1,1,1));
-    center.Size.Set(0.05f);
-    c.AddChild(&center);
 
-    MultiContainer camMarkerC;
-    Movable camMarkerMov;
-    camMarkerMov.InstanceId.Set(2);
-    Marker camMarker;
-    camMarkerMov.SetChild(&camMarkerC);
-    camMarkerC.AddChild(&camMarker);
-    camMov.SetPointAt(&camMarker);
-    c.AddChild(&camMarkerMov);
-
-    PointVisualizer camMarkerViz;
-    camMarkerViz.Color.Set(ColorF(1,0,1,1));
-    camMarkerViz.Size.Set(0.05f);
-    camMarkerC.AddChild(&camMarkerViz);
 
     Skybox sky(skyTex);
     sky.SetProgram(skyShader);
     c.AddChild(&sky);
+
+    PointVisualizer center;
+    center.Color.Set(ColorF(1,1,1,1));
+    center.Size.Set(0.05f);
+    c.AddChild(&center);
 
     Movable topMov;
     topMov.Transform.Set(MatrixF4::Translation(VectorF4(0,0.1,0)));
@@ -145,11 +127,6 @@ int main(int argc, const char *argv[])
     frontMov.SetChild(&front);
     c.AddChild(&frontMov);
 
-    scene.GetCameraManager().SetCamera(&cam);
-
-    camMov.InstanceId.Set(1);
-    camMov.SetChild(&cam);
-    c.AddChild(&camMov);
 
     Movable mapMov;
     mapMov.Transform.Set(MatrixF4::RotationX(3*Pi/2)*MatrixF4::RotationZ(Pi));
@@ -157,7 +134,9 @@ int main(int argc, const char *argv[])
     mapMov.SetChild(&map);
     c.AddChild(&mapMov);
 
-    GameStateService gamestate(&c, &map, figureTex);
+    Camera cam;
+    scene.GetCameraManager().SetCamera(&cam);
+    GameStateService gamestate(&c, &map, figureTex, &cam);
     dispatcher.AddService(gamestate);
 
     Pin::Connect(ns, "GameStates", gamestate, "StateUpdates");
