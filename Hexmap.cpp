@@ -83,6 +83,16 @@ int TypeToIndex(char type)
     }
 }
 
+static const ColorF HexborderColors[Hexmap::TileTypeCount] = {
+    ColorF(0,0,0,0),
+    ColorF(0.48, 0.45, 0.04, 1),
+    ColorF(0.24, 0.20, 0.16, 1),
+    ColorF(0.29, 0.05, 0.04, 1),
+    ColorF(0.37, 0.37, 0.37, 1),
+    ColorF(0.20, 0.28, 0.00, 1),
+    ColorF(0.44, 0.40, 0.16, 1)
+};
+
 void Hexmap::OnCreate()
 {
     myHextileProgram = myHextileProgramRef.Get(Scene.Get()->GetAssetManager());
@@ -100,7 +110,7 @@ void Hexmap::OnCreate()
 
         myHexborderProgramStates[i] = myHexborderProgram->CreateState();
         Program::ProgramState &bstate = myHexborderProgram->GetState(myHexborderProgramStates[i]);
-        bstate.SetUniform("Color", ColorF(1,0,0,1));
+        bstate.SetUniform("Color", HexborderColors[i]);
 
         myEmblemProgramStates[i] = myEmblemProgram->CreateState();
         Program::ProgramState &estate = myEmblemProgram->GetState(myEmblemProgramStates[i]);

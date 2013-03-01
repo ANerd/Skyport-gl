@@ -8,7 +8,9 @@
 
 class Hexmap : public MultiContainer
 {
+    public:
     static const uint TileTypeCount = 7;
+    private:
     struct TileData
     {
         Hextile Tile;
