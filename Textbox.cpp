@@ -26,7 +26,7 @@ namespace anengine
     {
         if(id == &TextProperty || id == &ColorProperty)
         {
-            Debug("Change text");
+            //Debug("Change text");
             if(IsCreated())
                 UpdateText();
         }

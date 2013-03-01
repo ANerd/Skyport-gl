@@ -73,10 +73,12 @@ class GameStateService : public Service, public AnimationHelperListner
 
     VectorF4 myDefaultLookat;
     VectorF4 myDefaultCamera;
+    VectorF4 myCameraTarget;
 
     void SetCurrentPlayer();
     bool StateUpdate(Event &event, InPin pin);
     void PlayAnimation();
+    void MoveCamera();
 
     virtual void AnimationDone();
     public:

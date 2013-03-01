@@ -114,7 +114,34 @@ void GameStateService::SetCurrentPlayer()
         if(myCurrentPlayer == Players.end())
             myCurrentPlayer = Players.begin();
     }
+    myCurrentPlayer->PlayerMovable->Transform.Get().GetTranslation(myCameraTarget);
 }
+
+void GameStateService::MoveCamera()
+{
+    VectorF4 oldtarget;
+    myCamMarkerMov.Transform.Get().GetTranslation(oldtarget);
+
+    //Debug("Cam from "+static_cast<std::string>(oldtarget) + " to " + static_cast<std::string>(target));
+    
+    AnimationHelper::TranslationAnimationData *markdata =
+        new AnimationHelper::TranslationAnimationData(
+            &myCamMarkerMov,
+            oldtarget, 
+            myCameraTarget,
+            1, AnimationHelper::SmoothCurve);
+    myAnimations.AddAnimation(markdata);
+
+    AnimationHelper::TranslationAnimationData *camdata =
+        new AnimationHelper::TranslationAnimationData(
+            &myCamMov,
+            oldtarget + VectorF4(0, 10, 10), 
+            myCameraTarget + VectorF4(0, 10, 10),
+            2, AnimationHelper::SmoothCurve);
+    myAnimations.AddAnimation(camdata);
+    Debug("Start movement");
+}
+
 void GameStateService::Update(const GameState &state)
 {
     VectorI2 mapSize = state.GetMap().GetSize();
@@ -195,6 +222,7 @@ void GameStateService::Update(const GameState &state)
             Players[i++].Update(*pit);
         }
     }
+
     for(int j = 0;  j < mapSize[X]; j++)
     {
         for(int k = 0;  k < mapSize[Y]; k++)
@@ -203,6 +231,7 @@ void GameStateService::Update(const GameState &state)
         }
     }
     SetCurrentPlayer();
+    MoveCamera();
 
     if(Turn != state.GetTurn())
     {
@@ -250,6 +279,9 @@ void GameStateService::PlayAnimation()
                                 VectorF4(pos[X] + off[X], pos[Y], pos[Z]+off[Y]), 
                                 1, AnimationHelper::SmoothCurve);
                         myAnimations.AddAnimation(trdata);
+
+                        myCameraTarget = VectorF4(pos[X] + off[X], pos[Y], pos[Z]+off[Y]);
+                        MoveCamera();
 
                         //AnimationHelper::TextureAnimationData *tedata =
                         //    new AnimationHelper::TextureAnimationData(
