@@ -187,7 +187,7 @@ void GameStateService::Update(const GameState &state)
         myDefaultCamera = VectorF4(-midpoint[X], abs(midpoint[X] + midpoint[Y]), -midpoint[Y]);
 
         myCamera->Near.Set(0.5);
-        myCamera->Far.Set(100);
+        myCamera->Far.Set(200);
         myCamera->FOV.Set(3.14/4);
 
         myCamMov.Transform.Set(MatrixF4::Translation(myDefaultCamera));
