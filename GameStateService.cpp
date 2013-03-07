@@ -209,6 +209,7 @@ void GameStateService::Update(const GameState &state)
         myContainer->AddChild(&myCamMarkerMov);
         myContainer->AddChild(&myCamMov);
 
+        myLaser.Visible.Set(false);
         myLaserMov.SetChild(&myLaser);
         myLaserMov.Transform.Set(MatrixF4::RotationX(-Pi / 2));
         myContainer->AddChild(&myLaserMov);
