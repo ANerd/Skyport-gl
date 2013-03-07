@@ -89,7 +89,7 @@ static const ColorF HexborderColors[Hexmap::TileTypeCount] = {
     ColorF(0.24, 0.20, 0.16, 1),
     ColorF(0.29, 0.05, 0.04, 1),
     ColorF(0.37, 0.37, 0.37, 1),
-    ColorF(0.20, 0.28, 0.00, 1),
+    ColorF(0.20+0.1, 0.28+0.3, 0.00+0.3, 1),
     ColorF(0.44, 0.40, 0.16, 1)
 };
 
