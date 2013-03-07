@@ -40,8 +40,12 @@ namespace anengine
     void Nametag::UpdateStatus()
     {
         SDL_Surface *stat = textlib_get_nametag(PlayerName.Get().c_str(), Health.Get());
+        TextureSettings settings;
+        settings.MinFilter = GL_LINEAR_MIPMAP_LINEAR;
+        settings.MagFilter = GL_LINEAR;
+        settings.GenerateMipmap = true;
         SDL_LockSurface(stat);
-        myTexture->SetData(stat->w, stat->h, GL_BGRA, stat->pixels);
+        myTexture->SetData(stat->w, stat->h, GL_BGRA, stat->pixels, settings);
         SDL_UnlockSurface(stat);
         SDL_FreeSurface(stat);
     }
