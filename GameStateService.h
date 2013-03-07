@@ -12,6 +12,7 @@
 #include "Nametag.h"
 #include "Textbox.h"
 #include "Hexmap.h"
+#include "Laser.h"
 
 using namespace anengine;
 
@@ -71,6 +72,10 @@ class GameStateService : public Service, public AnimationHelperListner
     Marker myCamMarker;
     PointVisualizer myCamMarkerViz;
 
+    Movable myLaserMov;
+    Laser myLaser;
+    bool myInLaser;
+
     VectorF4 myDefaultLookat;
     VectorF4 myDefaultCamera;
     VectorF4 myCameraTarget;
@@ -83,7 +88,8 @@ class GameStateService : public Service, public AnimationHelperListner
     virtual void AnimationDone();
     public:
     GameStateService(MultiContainer *container, Hexmap *map,
-            AssetRef<Texture> figureTexture, Camera *camera);
+            AssetRef<Texture> figureTexture, AssetRef<Texture> laserTexture,
+            Camera *camera);
 
     virtual ~GameStateService();
     

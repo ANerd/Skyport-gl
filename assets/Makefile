@@ -1,5 +1,5 @@
 
-TARGETS:=geometry/hexborder.gen.vbo geometry/hextile.gen.vbo geometry/skybox.gen.vbo textures/tiles.gen.png textures/emblems.gen.png textures/sky.gen.png textures/figure.gen.png
+TARGETS:=geometry/hexborder.gen.vbo geometry/hextile.gen.vbo geometry/skybox.gen.vbo textures/tiles.gen.png textures/emblems.gen.png textures/sky.gen.png textures/figure.gen.png textures/laser.gen.png
 CFLAGS:= -lm -ggdb
 MKDIR:=mkdir -p
 CP:=cp
@@ -20,6 +20,9 @@ all: $(TARGETS)
 textures/sky.gen.png: ../$(EXTASSETSDIR)/skybox/skybox.png
 	$(CP) $< $@
 textures/figure.gen.png: ../$(EXTASSETSDIR)/char/Jern-kjempen.png
+	$(CP) $< $@
+
+textures/laser.gen.png: ../$(EXTASSETSDIR)/projectiles/laser.png Makefile
 	$(CP) $< $@
 
 textures/tiles.gen.png: $(TILESRC)

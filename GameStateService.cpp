@@ -31,10 +31,11 @@ void GameStateService::Player::Update(const PlayerState &other)
 }
 
 GameStateService::GameStateService(MultiContainer *container, Hexmap *map,
-        AssetRef<Texture> figureTexture, Camera *camera) 
+        AssetRef<Texture> figureTexture, AssetRef<Texture> laserTexture, 
+        Camera *camera) 
     : myAnimations(this), Turn(-1), myContainer(container), myMap(map), 
     myFigureTexture(figureTexture), myActionCount(0), myActionCursor(0),
-    myCamera(camera)
+    myCamera(camera), myLaser(laserTexture), myInLaser(false)
 {
     RegisterInPin(SkyportEventClass::GameState, "StateUpdates", 
             static_cast<EventCallback>(&GameStateService::StateUpdate));
@@ -208,6 +209,10 @@ void GameStateService::Update(const GameState &state)
         myContainer->AddChild(&myCamMarkerMov);
         myContainer->AddChild(&myCamMov);
 
+        myLaserMov.SetChild(&myLaser);
+        myLaserMov.Transform.Set(MatrixF4::RotationX(-Pi / 2));
+        myContainer->AddChild(&myLaserMov);
+        myLaser.Length.Set(8);
 
         //myStats = new Statusbox();
         //myStats->State.Set(state);
@@ -260,7 +265,22 @@ void GameStateService::PlayAnimation()
 {
     if(myAnimations.GetAnimationCount() == 1)
     {
-        if(myActionCursor < myActionCount)
+        if(myInLaser)
+        {
+            AnimationHelper::TextureAnimationData *tedata =
+                new AnimationHelper::TextureAnimationData(
+                    &myLaser, 16, Y, 1,
+                    AnimationHelper::LinearCurve);
+            myAnimations.AddAnimation(tedata);
+
+            AnimationHelper::HideAnimationData *hdata = 
+                new AnimationHelper::HideAnimationData(&myLaser, 1);
+            myAnimations.AddAnimation(hdata);
+
+            myInLaser = false;
+            Debug("Laser animation");
+        }
+        else if(myActionCursor < myActionCount)
         {
             switch(myActionStates[myActionCursor].GetAction())
             {
@@ -288,6 +308,25 @@ void GameStateService::PlayAnimation()
                         //        myCurrentPlayer->PlayerVisual, 4, X, 1,
                         //        AnimationHelper::LinearCurve);
                         //myAnimations.AddAnimation(tedata);
+                    }
+                    break;
+                case SkyportAction::Laser:
+                    {
+                        VectorF4 pos;
+                        myCurrentPlayer->PlayerMovable->Transform.Get()
+                            .GetTranslation(pos);
+                        pos[Y] = 0.5;
+                        MatrixF4 transform = myLaserMov.Transform.Get();
+                        transform.SetTranslation(pos);
+                        myLaserMov.Transform.Set(transform);
+
+                        myLaser.Length.Set(0);
+                        myLaser.Visible.Set(true);
+                        LaserAnimationData *ldata = 
+                            new LaserAnimationData(&myLaser, 8, 0.3/8, 
+                                    AnimationHelper::LinearCurve);
+                        myAnimations.AddAnimation(ldata);
+                        myInLaser = true;
                     }
                     break;
                 default:
