@@ -16,6 +16,7 @@ void GameStateService::Player::Update(const PlayerState &other)
     {
         Health = other.Health;
         Score = other.Score;
+        PlayerNametag->Health.Set(Health/100.0f);
     }
     if(StateDirty)
     {
