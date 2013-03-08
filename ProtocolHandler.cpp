@@ -99,7 +99,6 @@ Weapon ParseWeapon(std::string name)
 
 ProtocolHandler::MessageType ProtocolHandler::Parse(std::string str, GameState &state)
 {
-    //{"message":"title", "text":"kort tekst"} og {"message":"subtitle", "text":"muligens litt lengre tekst"}
     MessageType type;
     json_object *root = json_tokener_parse(str.c_str());
 
@@ -282,8 +281,16 @@ ProtocolHandler::MessageType ProtocolHandler::Parse(std::string str, GameState &
             json_object *directionObject;
             if(!json_object_object_get_ex(root, "direction", &directionObject))
                 throw Error(Error::InvalidValue, "Laser has no direction");
+            json_object *startObject;
+            if(!json_object_object_get_ex(root, "start", &startObject))
+                throw Error(Error::InvalidValue, "Laser has no start");
+            json_object *stopObject;
+            if(!json_object_object_get_ex(root, "stop", &stopObject))
+                throw Error(Error::InvalidValue, "Laser has no stop");
             state.AddAction(ActionState::CreateLaser(ParseDirection(
-                            json_object_get_string(directionObject))));
+                            json_object_get_string(directionObject)),
+                            ParseVector(json_object_get_string(startObject)) - 
+                                ParseVector(json_object_get_string(stopObject))));
         }
         else if(atype == "motar")
         {

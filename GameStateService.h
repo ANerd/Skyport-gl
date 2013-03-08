@@ -74,6 +74,7 @@ class GameStateService : public Service, public AnimationHelperListner
 
     Movable myLaserMov;
     Laser myLaser;
+    MatrixF4 myLaserBaseTransform;
     bool myInLaser;
 
     VectorF4 myDefaultLookat;

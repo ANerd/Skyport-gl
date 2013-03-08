@@ -87,10 +87,11 @@ class ActionState
     {
         return ActionState(SkyportAction::Mine);
     }
-    static ActionState CreateLaser(Direction dir)
+    static ActionState CreateLaser(Direction dir, VectorI2 offset)
     {
         ActionState state(SkyportAction::Laser);
         state.myDirection = dir;
+        state.myCoordinate = offset;
         return state;
     }
     static ActionState CreateMotar(VectorI2 coord)

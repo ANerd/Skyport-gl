@@ -209,9 +209,12 @@ void GameStateService::Update(const GameState &state)
         myContainer->AddChild(&myCamMarkerMov);
         myContainer->AddChild(&myCamMov);
 
+        real laserScale = Hexmap::jOffset.Length();
+        myLaserBaseTransform = MatrixF4::RotationX(-Pi / 2) 
+            * MatrixF4::Scale(VectorF4(laserScale, laserScale, laserScale, 1));
         myLaser.Visible.Set(false);
         myLaserMov.SetChild(&myLaser);
-        myLaserMov.Transform.Set(MatrixF4::RotationX(-Pi / 2));
+        myLaserMov.Transform.Set(myLaserBaseTransform);
         myContainer->AddChild(&myLaserMov);
         myLaser.Length.Set(8);
 
@@ -260,6 +263,28 @@ void GameStateService::Update(const GameState &state)
     PlayAnimation();
 
     Turn = state.GetTurn();
+}
+
+real DirectionToAngle(Direction dir)
+{
+    switch(dir)
+    {
+        case Direction::Up:
+            return 3 * Pi / 2;
+        case Direction::Down:
+            return Pi / 2;
+        case Direction::Left_Down:
+            return Pi / 6;
+        case Direction::Right_Down:
+            return 5 * Pi / 6;
+        case Direction::Right_Up:
+            return 7 * Pi / 6;
+        case Direction::Left_Up:
+            return 11 * Pi / 6;
+        default:
+            Warning("Unknown laser direction.");
+            return 0;
+    }
 }
 
 void GameStateService::PlayAnimation()
@@ -317,16 +342,24 @@ void GameStateService::PlayAnimation()
                         myCurrentPlayer->PlayerMovable->Transform.Get()
                             .GetTranslation(pos);
                         pos[Y] = 0.5;
-                        MatrixF4 transform = myLaserMov.Transform.Get();
-                        transform.SetTranslation(pos);
-                        myLaserMov.Transform.Set(transform);
+                        MatrixF4 localtransform = MatrixF4::RotationY(
+                                DirectionToAngle(myActionStates[myActionCursor].
+                                    GetDirection()));
+                        localtransform.SetTranslation(pos);
+                        myLaserMov.Transform.Set(localtransform 
+                                * myLaserBaseTransform);
+
+                        VectorI2 offset = myActionStates[myActionCursor].GetCoordinate();
+                        Debug("Laser offset: "+static_cast<std::string>(offset));
+                        int length = std::max(abs(offset[X]), abs(offset[Y]));
 
                         myLaser.Length.Set(0);
                         myLaser.Visible.Set(true);
                         LaserAnimationData *ldata = 
-                            new LaserAnimationData(&myLaser, 8, 0.3/8, 
+                            new LaserAnimationData(&myLaser, length+0.5, 0.3/8, 
                                     AnimationHelper::LinearCurve);
                         myAnimations.AddAnimation(ldata);
+
                         myInLaser = true;
                     }
                     break;
