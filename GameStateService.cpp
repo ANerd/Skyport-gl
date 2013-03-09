@@ -36,7 +36,7 @@ GameStateService::GameStateService(MultiContainer *container, Hexmap *map,
         Camera *camera) 
     : myAnimations(this), Turn(-1), myContainer(container), myMap(map), 
     myFigureTexture(figureTexture), myActionCount(0), myActionCursor(0),
-    myCamera(camera), myLaser(laserTexture), myInLaser(false)
+    myCamera(camera), myLaser(laserTexture)
 {
     RegisterInPin(SkyportEventClass::GameState, "StateUpdates", 
             static_cast<EventCallback>(&GameStateService::StateUpdate));
@@ -119,7 +119,7 @@ void GameStateService::SetCurrentPlayer()
     myCurrentPlayer->PlayerMovable->Transform.Get().GetTranslation(myCameraTarget);
 }
 
-void GameStateService::MoveCamera()
+void GameStateService::MoveCamera(real time, real dragTime)
 {
     VectorF4 oldtarget;
     myCamMarkerMov.Transform.Get().GetTranslation(oldtarget);
@@ -131,7 +131,7 @@ void GameStateService::MoveCamera()
             &myCamMarkerMov,
             oldtarget, 
             myCameraTarget,
-            1, AnimationHelper::SmoothCurve);
+            time, AnimationHelper::SmoothCurve);
     myAnimations.AddAnimation(markdata);
 
     AnimationHelper::TranslationAnimationData *camdata =
@@ -139,7 +139,7 @@ void GameStateService::MoveCamera()
             &myCamMov,
             oldtarget + VectorF4(0, 10, 10), 
             myCameraTarget + VectorF4(0, 10, 10),
-            2, AnimationHelper::SmoothCurve);
+            time+dragTime, AnimationHelper::SmoothCurve);
     myAnimations.AddAnimation(camdata);
     Debug("Start movement");
 }
@@ -292,22 +292,7 @@ void GameStateService::PlayAnimation()
 {
     if(myAnimations.GetAnimationCount() == 1)
     {
-        if(myInLaser)
-        {
-            AnimationHelper::TextureAnimationData *tedata =
-                new AnimationHelper::TextureAnimationData(
-                    &myLaser, 16, Y, 1,
-                    AnimationHelper::LinearCurve);
-            myAnimations.AddAnimation(tedata);
-
-            AnimationHelper::HideAnimationData *hdata = 
-                new AnimationHelper::HideAnimationData(&myLaser, 1);
-            myAnimations.AddAnimation(hdata);
-
-            myInLaser = false;
-            Debug("Laser animation");
-        }
-        else if(myActionCursor < myActionCount)
+        if(myActionCursor < myActionCount)
         {
             switch(myActionStates[myActionCursor].GetAction())
             {
@@ -353,15 +338,29 @@ void GameStateService::PlayAnimation()
                         VectorI2 offset = myActionStates[myActionCursor].GetCoordinate();
                         Debug("Laser offset: "+static_cast<std::string>(offset));
                         int length = std::max(abs(offset[X]), abs(offset[Y]));
+                        VectorF2 off = TileToPosition(offset)/2;
+
 
                         myLaser.Length.Set(0);
                         myLaser.Visible.Set(true);
+                        real rollSpeed = 0.3/8;
                         LaserAnimationData *ldata = 
                             new LaserAnimationData(&myLaser, length+0.5, 0.3/8, 
                                     AnimationHelper::LinearCurve);
                         myAnimations.AddAnimation(ldata);
 
-                        myInLaser = true;
+                        AnimationHelper::TextureAnimationData *tedata =
+                            new AnimationHelper::TextureAnimationData(
+                                &myLaser, 16, Y, 1,
+                                AnimationHelper::LinearCurve);
+                        myAnimations.AddAnimation(tedata);
+
+                        AnimationHelper::HideAnimationData *hdata = 
+                            new AnimationHelper::HideAnimationData(&myLaser, 1);
+                        myAnimations.AddAnimation(hdata);
+                        myCameraTarget = VectorF4(pos[X] + off[X], pos[Y], pos[Z]+off[Y]);
+                        MoveCamera(std::min(rollSpeed * (length + 0.5) + 0.2, 1.0), 0.1);
+
                     }
                     break;
                 default:

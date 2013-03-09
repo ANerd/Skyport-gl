@@ -289,8 +289,8 @@ ProtocolHandler::MessageType ProtocolHandler::Parse(std::string str, GameState &
                 throw Error(Error::InvalidValue, "Laser has no stop");
             state.AddAction(ActionState::CreateLaser(ParseDirection(
                             json_object_get_string(directionObject)),
-                            ParseVector(json_object_get_string(startObject)) - 
-                                ParseVector(json_object_get_string(stopObject))));
+                            ParseVector(json_object_get_string(stopObject)) - 
+                                ParseVector(json_object_get_string(startObject))));
         }
         else if(atype == "motar")
         {

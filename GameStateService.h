@@ -75,7 +75,6 @@ class GameStateService : public Service, public AnimationHelperListner
     Movable myLaserMov;
     Laser myLaser;
     MatrixF4 myLaserBaseTransform;
-    bool myInLaser;
 
     VectorF4 myDefaultLookat;
     VectorF4 myDefaultCamera;
@@ -84,7 +83,7 @@ class GameStateService : public Service, public AnimationHelperListner
     void SetCurrentPlayer();
     bool StateUpdate(Event &event, InPin pin);
     void PlayAnimation();
-    void MoveCamera();
+    void MoveCamera(real time = 1, real dragTime = 0.5);
 
     virtual void AnimationDone();
     public:
