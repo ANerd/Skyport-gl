@@ -13,11 +13,13 @@
 #include "Textbox.h"
 #include "Hexmap.h"
 #include "Laser.h"
+#include "Meteor.h"
 
 using namespace anengine;
 
 class GameStateService : public Service, public AnimationHelperListner
 {
+    static const uint MeteorCount = 10;
     struct Player
     {
         uint Index;
@@ -72,9 +74,15 @@ class GameStateService : public Service, public AnimationHelperListner
     Marker myCamMarker;
     PointVisualizer myCamMarkerViz;
 
+    Meteor myMeteors[MeteorCount];
+    Movable myMeteorMovs[MeteorCount];
+
     Movable myLaserMov;
     Laser myLaser;
     MatrixF4 myLaserBaseTransform;
+
+    Movable myMotarMov;
+    Billboard myMotar;
 
     VectorF4 myDefaultLookat;
     VectorF4 myDefaultCamera;

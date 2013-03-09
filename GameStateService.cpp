@@ -219,6 +219,27 @@ void GameStateService::Update(const GameState &state)
         myContainer->AddChild(&myLaserMov);
         myLaser.Length.Set(8);
 
+        for(uint i = 0; i < MeteorCount; i++)
+        {
+            myMeteorMovs[i].SetChild(&myMeteors[i]);
+            myMeteorMovs[i].Transform.Set(MatrixF4::RotationZ(-0.463647609));
+            MeteorAnimationData *adata = 
+                new MeteorAnimationData(&myMeteorMovs[i], 30, 
+                        AnimationHelper::LinearCurve);
+            adata->CurrentTime = double(std::rand()) * 30 / double(RAND_MAX);
+            adata->Finalize();
+            myAnimations.AddAnimation(adata);
+
+            AnimationHelper::TextureAnimationData *tedata =
+                new AnimationHelper::TextureAnimationData(
+                    &myMeteors[i], 16, X, 1,
+                    AnimationHelper::LinearCurve);
+            tedata->Repeating = true;
+            myAnimations.AddAnimation(tedata);
+
+            myContainer->AddChild(myMeteorMovs + i);
+        }
+
         //myStats = new Statusbox();
         //myStats->State.Set(state);
         //myContainer->AddChild(myStats);
@@ -290,7 +311,7 @@ real DirectionToAngle(Direction dir)
 
 void GameStateService::PlayAnimation()
 {
-    if(myAnimations.GetAnimationCount() == 1)
+    if(myAnimations.GetNonPermanentCount() == 0)
     {
         if(myActionCursor < myActionCount)
         {
