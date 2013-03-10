@@ -34,7 +34,7 @@ StaticAsset<Program> Meteor::MeteorProgram = AssetManager
         "Global:View;"
         "World:World;"
         "Default:FrameCount=1 1;"
-        "Default:Size=0.05 0.20;"
+        "Default:Size=0.1 0.40;"
         "Default:Z=0.98;");
 StaticAsset<Texture> Meteor::MeteorTexture = AssetManager
     ::CreateStaticFromFile<Texture>("assets/textures/meteor.gen.png");
