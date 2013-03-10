@@ -69,7 +69,7 @@ void sndlib_play_robot_mining(void){
 // Sound is globally disabled.
 
 void sndlib_init(void){
-  printf("sndlib.c: Compiled without sndlib support, won't play any sound.\n");
+  printf("sndlib.c: Compiled with -DNO_SNDLIB set, won't play any sound or load any files.\n");
 }
 void sndlib_quit(void){}
 void sndlib_play_wind(void){}
