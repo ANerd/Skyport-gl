@@ -1,5 +1,7 @@
 #include "sndlib.h"
 
+#define SNDLIB_STUB(string) do{printf("STUB! sndlib.c:%d, in function %s: %s\n", __LINE__, __FUNCTION__, string);}while(0)
+
 static Mix_Chunk *snd_wind;
 static Mix_Chunk *snd_laser;
 
@@ -23,7 +25,39 @@ void sndlib_play_wind(void){
   //Mix_PlayMusic(snd_wind, 0);
 }
 
-void sndlib_play_laser(void){
-  Mix_PlayChannel(-1, snd_laser, 0);
+void sndlib_stop_wind(void){
+  SNDLIB_STUB("register globals yada yada");
+}
+
+void sndlib_play_laser(int milliseconds){
+  Mix_PlayChannelTimed(-1, snd_laser, 0, milliseconds);
   //Mix_PlayMusic(snd_laser, 0);
+}
+
+void sndlib_play_mortar_fire(void){
+  SNDLIB_STUB("add sound");
+}
+void sndlib_play_mortar_air(int milliseconds){
+  SNDLIB_STUB("add sound");
+}
+void sndlib_play_mortar_impact(void){
+  SNDLIB_STUB("add sound");
+}
+void sndlib_play_droid_fire(void){
+  SNDLIB_STUB("add sound");
+}
+void sndlib_play_droid_step(void){
+  SNDLIB_STUB("add sound");
+}
+void sndlib_play_droid_impact(void){
+  SNDLIB_STUB("add sound");
+}
+void sndlib_play_robot_destruction(void){
+  SNDLIB_STUB("add sound");
+}
+void sndlib_play_robot_respawn(void){
+  SNDLIB_STUB("add sound");
+}
+void sndlib_play_robot_mining(void){
+  SNDLIB_STUB("add sound");
 }
