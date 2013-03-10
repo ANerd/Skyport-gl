@@ -19,7 +19,7 @@ using namespace anengine;
 
 class GameStateService : public Service, public AnimationHelperListner
 {
-    static const uint MeteorCount = 10;
+    static const uint MeteorCount = 1;
     struct Player
     {
         uint Index;

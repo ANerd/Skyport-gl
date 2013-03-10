@@ -224,9 +224,9 @@ void GameStateService::Update(const GameState &state)
             myMeteorMovs[i].SetChild(&myMeteors[i]);
             myMeteorMovs[i].Transform.Set(MatrixF4::RotationZ(-0.463647609));
             MeteorAnimationData *adata = 
-                new MeteorAnimationData(&myMeteorMovs[i], 30, 
+                new MeteorAnimationData(&myMeteorMovs[i], 10, 
                         AnimationHelper::LinearCurve);
-            adata->CurrentTime = double(std::rand()) * 30 / double(RAND_MAX);
+            adata->CurrentTime = double(std::rand()) * 10 / double(RAND_MAX);
             adata->Finalize();
             myAnimations.AddAnimation(adata);
 
