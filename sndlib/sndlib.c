@@ -2,6 +2,9 @@
 
 #define SNDLIB_STUB(string) do{printf("STUB! sndlib.c:%d, in function %s: %s\n", __LINE__, __FUNCTION__, string);}while(0)
 
+#ifndef NO_SNDLIB
+// Sound is globally enabled.
+
 static Mix_Chunk *snd_wind;
 static Mix_Chunk *snd_laser;
 
@@ -61,3 +64,24 @@ void sndlib_play_robot_respawn(void){
 void sndlib_play_robot_mining(void){
   SNDLIB_STUB("add sound");
 }
+
+#else
+// Sound is globally disabled.
+
+void sndlib_init(void){
+  printf("sndlib.c: Compiled with -DNO_SNDLIB set, won't play any sound or load any files.\n");
+}
+void sndlib_quit(void){}
+void sndlib_play_wind(void){}
+void sndlib_stop_wind(void){}
+void sndlib_play_laser(int milliseconds){}
+void sndlib_play_mortar_fire(void){}
+void sndlib_play_mortar_air(int milliseconds){}
+void sndlib_play_mortar_impact(void){}
+void sndlib_play_droid_fire(void){}
+void sndlib_play_droid_step(void){}
+void sndlib_play_droid_impact(void){}
+void sndlib_play_robot_destruction(void){}
+void sndlib_play_robot_respawn(void){}
+void sndlib_play_robot_mining(void){}
+#endif

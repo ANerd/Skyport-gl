@@ -7,7 +7,6 @@
 extern "C" {
 #endif
 
-  // mortar sounds
 #define SNDLIB_SOUND_WIND "wind.wav"
   
 #define SNDLIB_SOUND_LASER "laser.wav"
@@ -49,6 +48,7 @@ extern "C" {
    */
   void sndlib_play_wind(void);
 
+  
   /**
    * Stop the wind sound.
    */
