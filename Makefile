@@ -5,7 +5,7 @@ MKDIR:=mkdir -p
 RM:=rm -f
 ECHO:=echo
 LD:=g++
-EXTASSETSDIR:=../Skyport-assets/png
+EXTASSETSDIR:=../Skyport-assets
 export EXTASSETSDIR
 
 ENGINEDIR:=../ANEngine
@@ -14,21 +14,21 @@ ENGINELIB:=$(ENGINEDIR)/bin/libanengine.a
 
 ASSETSDIR:=assets
 
-INCFLAGS:= -I$(ENGINEINC) $(shell pkg-config --cflags-only-I sdl SDL_ttf libpng gl json)
-CPPFLAGS:= -I$(ENGINEINC) -DASSETSDIR="$(EXTASSETSDIR)" -c -Wall -pthread -std=c++11 -ggdb $(shell pkg-config --cflags sdl SDL_ttf libpng gl json)
+INCFLAGS:= -I$(ENGINEINC) $(shell pkg-config --cflags-only-I sdl SDL_ttf SDL_mixer libpng gl json)
+CPPFLAGS:= -I$(ENGINEINC) -DASSETSDIR="$(EXTASSETSDIR)" -c -Wall -pthread -std=c++11 -ggdb $(shell pkg-config --cflags sdl SDL_ttf SDL_mixer libpng gl json)
 LDFLAGS:= -pthread 
-LIBFLAGS:= $(shell pkg-config --libs sdl SDL_ttf libpng glew gl json)
+LIBFLAGS:= $(shell pkg-config --libs sdl SDL_ttf SDL_mixer libpng glew gl json)
 ARFLAGS:= rcs
 MMFLAGS:= $(INCFLAGS) -std=c++11
 MMCFLAGS:= $(INCFLAGS) -std=c99
 BINDIR:=bin
 CPPSRCFILES:=$(shell find -mindepth 0 -maxdepth 3 -name "*.cpp")
-CSRCFILES:=textlib/textlib.c
+CSRCFILES:=textlib/textlib.c sndlib/sndlib.c
 OBJFILES:=$(patsubst %.cpp, $(BINDIR)/%.o, $(CPPSRCFILES)) $(patsubst %.c, $(BINDIR)/%.o, $(CSRCFILES))
 DEPS:=$(OBJFILES:.o=.d)
 TARGET:=skyport-gl
 
-CFLAGS := -c $(INCFLAGS) -std=c99 $(shell pkg-config --cflags sdl SDL_ttf libpng)
+CFLAGS := -c $(INCFLAGS) -std=c99 $(shell pkg-config --cflags sdl SDL_ttf SDL_mixer libpng)
 
 .PHONY: all
 all: $(TARGET) assets

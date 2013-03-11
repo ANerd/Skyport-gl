@@ -41,6 +41,7 @@ GameStateService::GameStateService(MultiContainer *container, Hexmap *map,
     RegisterInPin(SkyportEventClass::GameState, "StateUpdates", 
             static_cast<EventCallback>(&GameStateService::StateUpdate));
     myDonePin = RegisterOutPin(SkyportEventClass::GameState, "Done");
+    mySoundPin = RegisterOutPin(SkyportEventClass::Sound, "Sound");
     myTitle.Color.Set(ColorRGBA(255,255,0,255));
     myTitle.Text.Set("Welcome");
     myTitle.Anchors.Set(Anchor::Top);
@@ -382,6 +383,7 @@ void GameStateService::PlayAnimation()
                         myCameraTarget = VectorF4(pos[X] + off[X], pos[Y], pos[Z]+off[Y]);
                         MoveCamera(std::min(rollSpeed * (length + 0.5) + 0.2, 1.0), 0.1);
 
+                        PlaySound(Sound::Laser, 1);
                     }
                     break;
                 default:
@@ -396,6 +398,12 @@ void GameStateService::PlayAnimation()
             myDonePin.Send(nevent);
         }
     }
+}
+
+void GameStateService::PlaySound(Sound sound, real duration)
+{
+    SoundEvent sevent(SoundEventCodes::Play, this, sound, duration);
+    mySoundPin.Send(sevent);
 }
 
 void GameStateService::AnimationDone()

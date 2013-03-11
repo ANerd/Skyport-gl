@@ -1,5 +1,5 @@
 
-TARGETS:=geometry/hexborder.gen.vbo geometry/hextile.gen.vbo geometry/skybox.gen.vbo textures/tiles.gen.png textures/emblems.gen.png textures/sky.gen.png textures/figure.gen.png textures/laser.gen.png textures/meteor.gen.png
+TARGETS:=geometry/hexborder.gen.vbo geometry/hextile.gen.vbo geometry/skybox.gen.vbo textures/tiles.gen.png textures/emblems.gen.png textures/sky.gen.png textures/figure.gen.png textures/laser.gen.png textures/meteor.gen.png sound/laser.wav
 CFLAGS:= -lm -ggdb
 MKDIR:=mkdir -p
 CP:=cp
@@ -8,8 +8,9 @@ ifndef EXTASSETSDIR
     $(error Need external assets. Download Skyport-assets and set EXTASSETSDIR in Makefile.)
 endif
 
-TILESRC:=$(sort $(wildcard ../$(EXTASSETSDIR)/tiles/*-tile.png))
-EMBLEMSRC:=$(sort $(wildcard ../$(EXTASSETSDIR)/billboards/*-billboard.png))
+EXTTEXDIR:=$(EXTASSETSDIR)/png
+TILESRC:=$(sort $(wildcard ../$(EXTTEXDIR)/tiles/*-tile.png))
+EMBLEMSRC:=$(sort $(wildcard ../$(EXTTEXDIR)/billboards/*-billboard.png))
 
 ifndef TILESRC
     $(error External assets not found.)
@@ -17,15 +18,18 @@ endif
 
 all: $(TARGETS)
 
-textures/sky.gen.png: ../$(EXTASSETSDIR)/skybox/skybox.png
+textures/sky.gen.png: ../$(EXTTEXDIR)/skybox/skybox.png
 	$(CP) $< $@
-textures/figure.gen.png: ../$(EXTASSETSDIR)/char/Jern-kjempen.png
-	$(CP) $< $@
-
-textures/laser.gen.png: ../$(EXTASSETSDIR)/projectiles/laser.png Makefile
+textures/figure.gen.png: ../$(EXTTEXDIR)/char/Jern-kjempen.png
 	$(CP) $< $@
 
-textures/meteor.gen.png: ../$(EXTASSETSDIR)/misc/meteor.png Makefile
+textures/laser.gen.png: ../$(EXTTEXDIR)/projectiles/laser.png Makefile
+	$(CP) $< $@
+
+textures/meteor.gen.png: ../$(EXTTEXDIR)/misc/meteor.png Makefile
+	$(CP) $< $@
+
+sound/laser.wav: ../$(EXTASSETSDIR)/snd/8-bit/laser.wav
 	$(CP) $< $@
 
 textures/tiles.gen.png: $(TILESRC)

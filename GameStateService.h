@@ -14,6 +14,7 @@
 #include "Hexmap.h"
 #include "Laser.h"
 #include "Meteor.h"
+#include "SoundManager.h"
 
 using namespace anengine;
 
@@ -52,6 +53,7 @@ class GameStateService : public Service, public AnimationHelperListner
 
     AnimationHelper myAnimations;
     OutPin myDonePin;
+    OutPin mySoundPin;
 
     int Turn;
     std::vector<Player> Players;
@@ -92,6 +94,7 @@ class GameStateService : public Service, public AnimationHelperListner
     bool StateUpdate(Event &event, InPin pin);
     void PlayAnimation();
     void MoveCamera(real time = 1, real dragTime = 0.5);
+    void PlaySound(Sound sound, real duration = 0);
 
     virtual void AnimationDone();
     public:

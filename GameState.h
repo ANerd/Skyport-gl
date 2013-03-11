@@ -11,7 +11,8 @@ struct SkyportEventClass
 {
     enum SkyportEventClass_t
     {
-        GameState = 0x40000000
+        GameState = 0x40000000,
+        Sound = 0x40000001,
     };
 };
 

@@ -23,6 +23,7 @@
 #include "Textbox.h"
 #include "NetworkService.h"
 #include "GameStateService.h"
+#include "SoundManager.h"
 
 using namespace anengine;
 
@@ -141,8 +142,12 @@ int main(int argc, const char *argv[])
     GameStateService gamestate(&c, &map, figureTex, laserTex, &cam);
     dispatcher.AddService(gamestate);
 
+    SoundManager sound;
+    dispatcher.AddService(sound);
+
     Pin::Connect(ns, "GameStates", gamestate, "StateUpdates");
     Pin::Connect(gamestate, "Done", ns, "Done");
+    Pin::Connect(gamestate, "Sound", sound, "Sound");
 
     scene.SetRoot(&c);
 
