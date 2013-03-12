@@ -1,5 +1,5 @@
 
-TARGETS:=geometry/hexborder.gen.vbo geometry/hextile.gen.vbo geometry/skybox.gen.vbo textures/tiles.gen.png textures/emblems.gen.png textures/sky.gen.png textures/figure.gen.png textures/laser.gen.png textures/mortar.gen.png textures/droid.gen.png textures/meteor.gen.png textures/explosion.gen.png sound/laser.wav
+TARGETS:=geometry/hexborder.gen.vbo geometry/hextile.gen.vbo geometry/skybox.gen.vbo textures/tiles.gen.png textures/emblems.gen.png textures/sky.gen.png textures/figure.gen.png textures/laser.gen.png textures/mortar.gen.png textures/droid.gen.png textures/meteor.gen.png textures/explosion.gen.png sound/laser.wav sound/wind.wav
 CFLAGS:= -lm -ggdb
 MKDIR:=mkdir -p
 CP:=cp
@@ -39,6 +39,9 @@ textures/meteor.gen.png: ../$(EXTTEXDIR)/misc/meteor.png Makefile
 	$(CP) $< $@
 
 sound/laser.wav: ../$(EXTASSETSDIR)/snd/8-bit/laser.wav
+	$(CP) $< $@
+
+sound/wind.wav: ../$(EXTASSETSDIR)/snd/8-bit/deep_rumble.wav
 	$(CP) $< $@
 
 textures/tiles.gen.png: $(TILESRC)

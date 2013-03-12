@@ -350,6 +350,7 @@ void GameStateService::PlayAnimation()
             myAnimations.AddAnimation(hdata);
             myAnimations.AddAnimation(tdata);
             myInMortar = false;
+            PlaySound(Sound::MotarImpact);
         }
         else if(myActionCursor < myActionCount)
         {
@@ -438,7 +439,10 @@ void GameStateService::PlayAnimation()
                                     AnimationHelper::LinearCurve);
                         myAnimations.AddAnimation(mdata);
                         myInMortar = true;
+                        PlaySound(Sound::MotarFire);
+                        PlaySound(Sound::MotarAir, 5);
                     }
+                    break;
                 default:
                     Debug("Action not implemented, may hang.");
             }

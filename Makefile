@@ -15,7 +15,7 @@ ENGINELIB:=$(ENGINEDIR)/bin/libanengine.a
 ASSETSDIR:=assets
 
 INCFLAGS:= -I$(ENGINEINC) $(shell pkg-config --cflags-only-I sdl SDL_ttf SDL_mixer libpng gl json)
-CPPFLAGS:= -I$(ENGINEINC) -DASSETSDIR="$(EXTASSETSDIR)" -c -Wall -pthread -std=c++11 -ggdb $(shell pkg-config --cflags sdl SDL_ttf SDL_mixer libpng gl json)
+CPPFLAGS:= -I$(ENGINEINC) -DSNDLIB_SOUND_DIR="\"assets/sound\"" -DASSETSDIR="$(EXTASSETSDIR)" -c -Wall -pthread -std=c++11 -ggdb $(shell pkg-config --cflags sdl SDL_ttf SDL_mixer libpng gl json)
 LDFLAGS:= -pthread 
 LIBFLAGS:= $(shell pkg-config --libs sdl SDL_ttf SDL_mixer libpng glew gl json)
 ARFLAGS:= rcs
@@ -28,7 +28,7 @@ OBJFILES:=$(patsubst %.cpp, $(BINDIR)/%.o, $(CPPSRCFILES)) $(patsubst %.c, $(BIN
 DEPS:=$(OBJFILES:.o=.d)
 TARGET:=skyport-gl
 
-CFLAGS := -c $(INCFLAGS) -std=c99 $(shell pkg-config --cflags sdl SDL_ttf SDL_mixer libpng)
+CFLAGS := -c $(INCFLAGS) -std=c99 -DSNDLIB_SOUND_DIR="\"assets/sound\"" $(shell pkg-config --cflags sdl SDL_ttf SDL_mixer libpng)
 
 .PHONY: all
 all: $(TARGET) assets
