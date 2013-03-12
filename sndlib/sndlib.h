@@ -7,21 +7,25 @@
 extern "C" {
 #endif
 
-#define SNDLIB_SOUND_WIND "wind.wav"
+#ifndef SNDLIB_SOUND_DIR
+#define SNDLIB_SOUND_DIR "."
+#endif
   
-#define SNDLIB_SOUND_LASER "laser.wav"
+#define SNDLIB_SOUND_WIND SNDLIB_SOUND_DIR "/" "wind.wav"
   
-#define SNDLIB_SOUND_MORTAR_FIRE "mortar-fire.wav"
-#define SNDLIB_SOUND_MORTAR_AIR "mortar-air.wav"
-#define SNDLIB_SOUND_MORTAR_IMPACT "mortar-impact.wav"
+#define SNDLIB_SOUND_LASER SNDLIB_SOUND_DIR "/" "laser.wav"
   
-#define SNDLIB_SOUND_DROID_LAUNCH "droid-launch.wav"
-#define SNDLIB_SOUND_DROID_STEP "droid-step.wav"
-#define SNDLIB_SOUND_DROID_IMPACT "droid-impact.wav"
+#define SNDLIB_SOUND_MORTAR_FIRE SNDLIB_SOUND_DIR "/" "mortar-fire.wav"
+#define SNDLIB_SOUND_MORTAR_AIR SNDLIB_SOUND_DIR "/" "mortar-air.wav"
+#define SNDLIB_SOUND_MORTAR_IMPACT SNDLIB_SOUND_DIR "/" "mortar-impact.wav"
   
-#define SNDLIB_SOUND_ROBOT_DESTRUCTION "robot-destruction.wav"
-#define SNDLIB_SOUND_ROBOT_MOVEMENT "robot-movement.wav"
-#define SNDLIB_SOUND_ROBOT_MINING "robot-mining.wav"
+#define SNDLIB_SOUND_DROID_LAUNCH SNDLIB_SOUND_DIR "/" "droid-launch.wav"
+#define SNDLIB_SOUND_DROID_STEP SNDLIB_SOUND_DIR "/" "droid-step.wav"
+#define SNDLIB_SOUND_DROID_IMPACT SNDLIB_SOUND_DIR "/" "droid-impact.wav"
+  
+#define SNDLIB_SOUND_ROBOT_DESTRUCTION SNDLIB_SOUND_DIR "/" "robot-destruction.wav"
+#define SNDLIB_SOUND_ROBOT_MOVEMENT SNDLIB_SOUND_DIR "/" "robot-movement.wav"
+#define SNDLIB_SOUND_ROBOT_MINING SNDLIB_SOUND_DIR "/" "robot-mining.wav"
 
   
   /**
