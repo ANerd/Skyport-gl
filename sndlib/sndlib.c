@@ -1,4 +1,5 @@
 #include "sndlib.h"
+#include <assert.h>
 
 #define SNDLIB_STUB(string) do{printf("STUB! sndlib.c:%d, in function %s: %s\n", __LINE__, __FUNCTION__, string);}while(0)
 
@@ -12,11 +13,13 @@ void _sndlib_load_samples(void);
 void _sndlib_load_samples(void){
   snd_wind = Mix_LoadWAV(SNDLIB_SOUND_WIND);
   snd_laser = Mix_LoadWAV(SNDLIB_SOUND_LASER);
+  assert(snd_wind != NULL);
+  assert(snd_laser != NULL);
 }
 
 void sndlib_init(void){
-  SDL_Init(SDL_INIT_AUDIO);
-  Mix_OpenAudio(22050, AUDIO_S16, 2, 4096);
+  assert(SDL_Init(SDL_INIT_AUDIO) != -1);
+  assert(Mix_OpenAudio(22050, AUDIO_S16, 2, 4096) != -1);
   _sndlib_load_samples();
 }
 void sndlib_quit(void){
@@ -24,7 +27,7 @@ void sndlib_quit(void){
 }
 
 void sndlib_play_wind(void){
-  Mix_PlayChannel(-1, snd_wind, -1);
+  assert(Mix_PlayChannel(-1, snd_wind, -1) != -1);
   //Mix_PlayMusic(snd_wind, 0);
 }
 
