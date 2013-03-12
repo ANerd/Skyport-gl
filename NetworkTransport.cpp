@@ -86,9 +86,10 @@ std::string NetworkTransport::Recv(char separator)
     char c = 0;
     while(c != '\n')
     {
-        if(read(myFD, &c, 1) == -1)
+        ssize_t r;
+        if((r = read(myFD, &c, 1)) < 1)
         {
-            if(errno == EINTR)
+            if(r == -1 && errno == EINTR)
             {
                 Debug("N:Interrupted, exit.");
                 recv.clear();

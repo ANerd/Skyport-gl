@@ -41,7 +41,7 @@ textures/meteor.gen.png: ../$(EXTTEXDIR)/misc/meteor.png Makefile
 sound/laser.wav: ../$(EXTASSETSDIR)/snd/8-bit/laser.wav
 	$(CP) $< $@
 
-sound/wind.wav: ../$(EXTASSETSDIR)/snd/8-bit/deep_rumble.wav
+sound/wind.wav: ../$(EXTASSETSDIR)/snd/8-bit/silence.wav
 	$(CP) $< $@
 
 textures/tiles.gen.png: $(TILESRC)
