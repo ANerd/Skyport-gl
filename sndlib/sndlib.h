@@ -11,7 +11,7 @@ extern "C" {
 #define SNDLIB_SOUND_DIR "."
 #endif
   
-#define SNDLIB_SOUND_WIND SNDLIB_SOUND_DIR "/" "wind.wav"
+#define SNDLIB_SOUND_WIND SNDLIB_SOUND_DIR "/" "wind2.wav"
   
 #define SNDLIB_SOUND_LASER SNDLIB_SOUND_DIR "/" "laser.wav"
   
