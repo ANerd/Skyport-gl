@@ -12,7 +12,7 @@ CFLAGS := -std=c99 -Wall -Wextra -pedantic -pedantic-errors -Wfloat-equal -Wunde
 -Wwrite-strings -Wvla -Wswitch-enum -Wconversion -Wformat=2 -Wold-style-definition \
 -Wunreachable-code -Wswitch-default -Wstrict-overflow -Warray-bounds
 
-CNFLAGS := $(CFLAGS) -O3 -s #-DNO_SNDLIB # this flag disables sound globally.
+CNFLAGS := $(CFLAGS) -O3 -s -DSNDLIB_SOUND_DIR="\"sounds\"" #-DNO_SNDLIB # this flag disables sound globally.
 
 default: Makefile $(BINNAME)
 $(BINNAME): $(INPUTFILES) sndlib.o
