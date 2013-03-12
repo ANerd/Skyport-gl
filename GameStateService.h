@@ -83,8 +83,12 @@ class GameStateService : public Service, public AnimationHelperListner
     Laser myLaser;
     MatrixF4 myLaserBaseTransform;
 
-    Movable myMotarMov;
-    Billboard myMotar;
+    Movable myMortarMov;
+    Billboard myMortar;
+    bool myInMortar;
+
+    Movable myExplosionMov;
+    Billboard myExplosion;
 
     VectorF4 myDefaultLookat;
     VectorF4 myDefaultCamera;
@@ -100,6 +104,8 @@ class GameStateService : public Service, public AnimationHelperListner
     public:
     GameStateService(MultiContainer *container, Hexmap *map,
             AssetRef<Texture> figureTexture, AssetRef<Texture> laserTexture,
+            AssetRef<Texture> mortarTexture, AssetRef<Texture> droidTexture,
+            AssetRef<Texture> explosionTexture,
             Camera *camera);
 
     virtual ~GameStateService();

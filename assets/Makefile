@@ -1,5 +1,5 @@
 
-TARGETS:=geometry/hexborder.gen.vbo geometry/hextile.gen.vbo geometry/skybox.gen.vbo textures/tiles.gen.png textures/emblems.gen.png textures/sky.gen.png textures/figure.gen.png textures/laser.gen.png textures/meteor.gen.png sound/laser.wav
+TARGETS:=geometry/hexborder.gen.vbo geometry/hextile.gen.vbo geometry/skybox.gen.vbo textures/tiles.gen.png textures/emblems.gen.png textures/sky.gen.png textures/figure.gen.png textures/laser.gen.png textures/mortar.gen.png textures/droid.gen.png textures/meteor.gen.png textures/explosion.gen.png sound/laser.wav
 CFLAGS:= -lm -ggdb
 MKDIR:=mkdir -p
 CP:=cp
@@ -24,6 +24,15 @@ textures/figure.gen.png: ../$(EXTTEXDIR)/char/Jern-kjempen.png
 	$(CP) $< $@
 
 textures/laser.gen.png: ../$(EXTTEXDIR)/projectiles/laser.png Makefile
+	$(CP) $< $@
+
+textures/mortar.gen.png: ../$(EXTTEXDIR)/projectiles/mortar.png Makefile
+	$(CP) $< $@
+
+textures/droid.gen.png: ../$(EXTTEXDIR)/projectiles/droid.png Makefile
+	$(CP) $< $@
+
+textures/explosion.gen.png: ../$(EXTTEXDIR)/misc/explosion-big.png Makefile
 	$(CP) $< $@
 
 textures/meteor.gen.png: ../$(EXTTEXDIR)/misc/meteor.png Makefile

@@ -90,7 +90,7 @@ Weapon ParseWeapon(std::string name)
 {
     if(name == "laser")
         return Weapon::Laser;
-    if(name == "motar")
+    if(name == "mortar")
         return Weapon::Motar;
     if(name == "droid")
         return Weapon::Droid;
@@ -292,7 +292,7 @@ ProtocolHandler::MessageType ProtocolHandler::Parse(std::string str, GameState &
                             ParseVector(json_object_get_string(stopObject)) - 
                                 ParseVector(json_object_get_string(startObject))));
         }
-        else if(atype == "motar")
+        else if(atype == "mortar")
         {
 
             json_object *coordinateObject;

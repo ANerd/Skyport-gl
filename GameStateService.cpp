@@ -1,5 +1,6 @@
 #include "GameStateService.h"
 #include "entity/Billboard.h"
+#include "MortarAnimation.h"
 
 #define XOR(p1, p2) ((p1 || p2) && !(p1 && p2))
 
@@ -32,11 +33,15 @@ void GameStateService::Player::Update(const PlayerState &other)
 }
 
 GameStateService::GameStateService(MultiContainer *container, Hexmap *map,
-        AssetRef<Texture> figureTexture, AssetRef<Texture> laserTexture, 
+        AssetRef<Texture> figureTexture, AssetRef<Texture> laserTexture,
+        AssetRef<Texture> mortarTexture, AssetRef<Texture> droidTexture, 
+        AssetRef<Texture> explosionTexture,
         Camera *camera) 
     : myAnimations(this), Turn(-1), myContainer(container), myMap(map), 
     myFigureTexture(figureTexture), myActionCount(0), myActionCursor(0),
-    myCamera(camera), myLaser(laserTexture)
+    myCamera(camera), myLaser(laserTexture), myMortar(mortarTexture),
+    myInMortar(false),
+    myExplosion(explosionTexture)
 {
     RegisterInPin(SkyportEventClass::GameState, "StateUpdates", 
             static_cast<EventCallback>(&GameStateService::StateUpdate));
@@ -220,6 +225,19 @@ void GameStateService::Update(const GameState &state)
         myContainer->AddChild(&myLaserMov);
         myLaser.Length.Set(8);
 
+        myMortarMov.SetChild(&myMortar);
+        myContainer->AddChild(&myMortarMov);
+        myMortar.ProgramState().SetUniform("FrameCount", VectorI2(1,16));
+        myMortar.ProgramState().SetUniform("Size", VectorF2(0.5,0.5));
+        myMortar.Visible.Set(false);
+
+        myExplosionMov.SetChild(&myExplosion);
+        myContainer->AddChild(&myExplosionMov);
+        myExplosion.ProgramState().SetUniform("FrameCount", VectorI2(16,1));
+        myExplosion.ProgramState().SetUniform("Offset", VectorF2(0,0.5));
+        myExplosion.ProgramState().SetUniform("Size", VectorF2(2,2));
+        myExplosion.Visible.Set(false);
+
         for(uint i = 0; i < MeteorCount; i++)
         {
             myMeteorMovs[i].SetChild(&myMeteors[i]);
@@ -314,7 +332,26 @@ void GameStateService::PlayAnimation()
 {
     if(myAnimations.GetNonPermanentCount() == 0)
     {
-        if(myActionCursor < myActionCount)
+        if(myInMortar)
+        {
+            myMortar.Visible.Set(false);
+            AnimationHelper::HideAnimationData *hdata = 
+                new AnimationHelper::HideAnimationData(&myExplosion, 1);
+
+            AnimationHelper::TextureAnimationData *tdata = 
+                new AnimationHelper::TextureAnimationData(
+                        &myExplosion, 16, X, 1, AnimationHelper::LinearCurve);
+
+            VectorF4 pos;
+            myMortarMov.Transform.Get().GetTranslation(pos);
+
+            myExplosionMov.Transform.Set(MatrixF4::Translation(pos));
+            myExplosion.Visible.Set(true);
+            myAnimations.AddAnimation(hdata);
+            myAnimations.AddAnimation(tdata);
+            myInMortar = false;
+        }
+        else if(myActionCursor < myActionCount)
         {
             switch(myActionStates[myActionCursor].GetAction())
             {
@@ -386,6 +423,22 @@ void GameStateService::PlayAnimation()
                         PlaySound(Sound::Laser, 1);
                     }
                     break;
+                case SkyportAction::Motar:
+                    {
+                        VectorF4 pos;
+                        myCurrentPlayer->PlayerMovable->Transform.Get()
+                            .GetTranslation(pos);
+                        pos[Y] = 0;
+                        VectorF2 target = TileToPosition(myActionStates[myActionCursor].GetCoordinate());
+                        myMortar.Visible.Set(true);
+
+                        MortarAnimationData *mdata = 
+                            new MortarAnimationData(&myMortarMov, 1.5, pos, 
+                                    VectorF4(target[X], 0, target[Y]), 5,
+                                    AnimationHelper::LinearCurve);
+                        myAnimations.AddAnimation(mdata);
+                        myInMortar = true;
+                    }
                 default:
                     Debug("Action not implemented, may hang.");
             }

@@ -65,8 +65,14 @@ int main(int argc, const char *argv[])
         ->CreateFromFile<Texture>("assets/textures/figure.gen.png");
     AssetRef<Texture> laserTex = scene.GetAssetManager()
         ->CreateFromFile<Texture>("assets/textures/laser.gen.png");
+    AssetRef<Texture> mortarTex = scene.GetAssetManager()
+        ->CreateFromFile<Texture>("assets/textures/mortar.gen.png");
+    AssetRef<Texture> droidTex = scene.GetAssetManager()
+        ->CreateFromFile<Texture>("assets/textures/droid.gen.png");
     AssetRef<Texture> skyTex = scene.GetAssetManager()
         ->CreateFromFile<Texture>("assets/textures/sky.gen.png");
+    AssetRef<Texture> explosionTex = scene.GetAssetManager()
+        ->CreateFromFile<Texture>("assets/textures/explosion.gen.png");
 
     keymapFilter.SetKeymap(keymap);
     hub.CreateInPin("In");
@@ -139,7 +145,8 @@ int main(int argc, const char *argv[])
 
     Camera cam;
     scene.GetCameraManager().SetCamera(&cam);
-    GameStateService gamestate(&c, &map, figureTex, laserTex, &cam);
+    GameStateService gamestate(&c, &map, figureTex, laserTex, mortarTex, 
+            droidTex, explosionTex, &cam);
     dispatcher.AddService(gamestate);
 
     SoundManager sound;
