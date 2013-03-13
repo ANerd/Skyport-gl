@@ -40,7 +40,7 @@ GameStateService::GameStateService(MultiContainer *container, Hexmap *map,
     : myAnimations(this), Turn(-1), myContainer(container), myMap(map), 
     myFigureTexture(figureTexture), myActionCount(0), myActionCursor(0),
     myCamera(camera), myLaser(laserTexture), myMortar(mortarTexture),
-    myInMortar(false),
+    myInMortar(false), myDroid(droidTexture), myDroidSequenceCounter(-1),
     myExplosion(explosionTexture)
 {
     RegisterInPin(SkyportEventClass::GameState, "StateUpdates", 
@@ -245,6 +245,11 @@ void GameStateService::Update(const GameState &state)
         myExplosion.ProgramState().SetUniform("Size", VectorF2(2,2));
         myExplosion.Visible.Set(false);
 
+        myDroidMov.SetChild(&myDroid);
+        myContainer->AddChild(&myDroidMov);
+        myDroid.Visible.Set(false);
+        myDroid.ProgramState().SetUniform("Offset", VectorF2(0,0.5));
+
         for(uint i = 0; i < MeteorCount; i++)
         {
             myMeteorMovs[i].SetChild(&myMeteors[i]);
@@ -358,6 +363,54 @@ void GameStateService::PlayAnimation()
             myAnimations.AddAnimation(tdata);
             myInMortar = false;
             PlaySound(Sound::MotarImpact);
+            myActionCursor++;
+        }
+        else if(myDroidSequenceCounter != -1)
+        {
+            while(myDroidSequenceCounter < ActionState::MaxDroidCommands)
+            {
+                Direction dir = myActionStates[myActionCursor]
+                    .GetCommands()[myDroidSequenceCounter];
+                if(dir != Direction::None)
+                {
+                    VectorF4 pos;
+                    myDroidMov.Transform.Get().GetTranslation(pos);
+
+                    VectorF2 off = DirectionToOffset(dir);
+                    AnimationHelper::TranslationAnimationData *trdata =
+                        new AnimationHelper::TranslationAnimationData(
+                            &myDroidMov, pos, 
+                            VectorF4(pos[X] + off[X], pos[Y], pos[Z]+off[Y]), 
+                            1, AnimationHelper::SmoothCurve);
+                    myAnimations.AddAnimation(trdata);
+
+                    myCameraTarget = VectorF4(pos[X] + off[X], pos[Y], pos[Z]+off[Y]);
+                    ForceMoveCamera();
+                    myDroidSequenceCounter++;
+                    PlaySound(Sound::DroidStep);
+                    return;
+                }
+                myDroidSequenceCounter++;
+            }
+            myActionCursor++;
+            myDroidSequenceCounter = -1;
+
+            myDroid.Visible.Set(false);
+            AnimationHelper::HideAnimationData *hdata = 
+                new AnimationHelper::HideAnimationData(&myExplosion, 1);
+
+            AnimationHelper::TextureAnimationData *tdata = 
+                new AnimationHelper::TextureAnimationData(
+                        &myExplosion, 16, X, 1, AnimationHelper::LinearCurve);
+
+            VectorF4 pos;
+            myDroidMov.Transform.Get().GetTranslation(pos);
+
+            myExplosionMov.Transform.Set(MatrixF4::Translation(pos));
+            myExplosion.Visible.Set(true);
+            myAnimations.AddAnimation(hdata);
+            myAnimations.AddAnimation(tdata);
+            PlaySound(Sound::DroidFire);
         }
         else if(myActionCursor < myActionCount)
         {
@@ -387,6 +440,7 @@ void GameStateService::PlayAnimation()
                         //        myCurrentPlayer->PlayerVisual, 4, X, 1,
                         //        AnimationHelper::LinearCurve);
                         //myAnimations.AddAnimation(tedata);
+                        myActionCursor++;
                     }
                     break;
                 case SkyportAction::Laser:
@@ -429,6 +483,8 @@ void GameStateService::PlayAnimation()
                         ForceMoveCamera(std::min(rollSpeed * (length + 0.5) + 0.2, 1.0), 0.1);
 
                         PlaySound(Sound::Laser, 1);
+
+                        myActionCursor++;
                     }
                     break;
                 case SkyportAction::Motar:
@@ -454,10 +510,23 @@ void GameStateService::PlayAnimation()
                         PlaySound(Sound::MotarAir, 5);
                     }
                     break;
+                case SkyportAction::Droid:
+                    {
+                        PlaySound(Sound::DroidFire);
+                        myDroid.Visible.Set(true);
+
+                        VectorF4 pos;
+                        myCurrentPlayer->PlayerMovable->Transform.Get()
+                            .GetTranslation(pos);
+                        pos[Y] = 0;
+                        myDroidMov.Transform.Set(MatrixF4::Translation(pos));
+                        myDroidSequenceCounter = 0;
+                    }
+                    break;
                 default:
                     Debug("Action not implemented, may hang.");
+                    myActionCursor++;
             }
-            myActionCursor++;
         }
         else
         {

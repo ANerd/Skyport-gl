@@ -87,6 +87,10 @@ class GameStateService : public Service, public AnimationHelperListner
     Billboard myMortar;
     bool myInMortar;
 
+    Movable myDroidMov;
+    Billboard myDroid;
+    int myDroidSequenceCounter;
+
     Movable myExplosionMov;
     Billboard myExplosion;
 

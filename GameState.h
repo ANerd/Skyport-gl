@@ -58,7 +58,7 @@ enum class Weapon
 class ActionState
 {
     public:
-    static const uint MaxDroidCommands = 5;
+    static const int MaxDroidCommands = 5;
     private:
     SkyportAction myAction;
     Direction myDirection;
@@ -101,14 +101,14 @@ class ActionState
         state.myCoordinate = coord;
         return state;
     }
-    static ActionState CreateDroid(Direction *commands, uint count)
+    static ActionState CreateDroid(Direction *commands, int count)
     {
         ActionState state(SkyportAction::Droid);
         if(count > MaxDroidCommands)
             throw Error(Error::InvalidValue, "Too many droid actions");
-        for(uint i = 0; i < count; i++)
+        for(int i = 0; i < count; i++)
             state.myCommands[i] = commands[i];
-        for(uint i = count; i < MaxDroidCommands; i++)
+        for(int i = count; i < MaxDroidCommands; i++)
             state.myCommands[i] = Direction::None;
         return state;
     }

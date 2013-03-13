@@ -94,6 +94,7 @@ void *NetworkService::NetworkMain()
                         break;
                     Debug("N: Waiting for done");
                     pthread_cond_wait(&myDoneCond, &myGameSateLock);
+                    Debug("N: Got done");
                 }
                 if(!myQuit)
                     myProtocol.NotifyDone();
