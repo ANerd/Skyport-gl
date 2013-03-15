@@ -13,6 +13,7 @@ class Hexmap : public MultiContainer
     private:
     struct TileData
     {
+        char Type;
         Hextile Tile;
         Hexborder Border;
         Billboard Emblem;
@@ -60,6 +61,7 @@ class Hexmap : public MultiContainer
 
     void Create(uint jSize, uint kSize);
     void SetTileType(uint j, uint k, char type);
+    char GetTileType(uint j, uint k);
 };
 
 #endif

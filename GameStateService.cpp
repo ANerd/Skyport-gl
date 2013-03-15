@@ -41,7 +41,7 @@ GameStateService::GameStateService(MultiContainer *container, Hexmap *map,
     myFigureTexture(figureTexture), myActionCount(0), myActionCursor(0),
     myCamera(camera), myLaser(laserTexture), myMortar(mortarTexture),
     myInMortar(false), myDroid(droidTexture), myDroidSequenceCounter(-1),
-    myExplosion(explosionTexture)
+    myDoExplode(false), myExplosion(explosionTexture)
 {
     RegisterInPin(SkyportEventClass::GameState, "StateUpdates", 
             static_cast<EventCallback>(&GameStateService::StateUpdate));
@@ -60,6 +60,11 @@ GameStateService::GameStateService(MultiContainer *container, Hexmap *map,
 
     container->AddChild(&myTitle);
     container->AddChild(&mySubtitle);
+
+    for(int i = 0; i < 6; i++)
+    {
+        myBiexplosions[i].SetTexture(explosionTexture);
+    }
 }
 
 GameStateService::~GameStateService()
@@ -238,12 +243,50 @@ void GameStateService::Update(const GameState &state)
         myMortar.ProgramState().SetUniform("Size", VectorF2(0.5,0.5));
         myMortar.Visible.Set(false);
 
-        myExplosionMov.SetChild(&myExplosion);
         myContainer->AddChild(&myExplosionMov);
+        myExplosionC.AddChild(&myExplosion);
+        myExplosionMov.SetChild(&myExplosionC);
         myExplosion.ProgramState().SetUniform("FrameCount", VectorI2(16,1));
         myExplosion.ProgramState().SetUniform("Offset", VectorF2(0,0.5));
         myExplosion.ProgramState().SetUniform("Size", VectorF2(2,2));
         myExplosion.Visible.Set(false);
+
+        for(int i = 0; i < 6; i++)
+        {
+            Direction dir;
+            switch(i)
+            {
+                case 0:
+                    dir = Direction::Up;
+                    break;
+                case 1:
+                    dir = Direction::Down;
+                    break;
+                case 2:
+                    dir = Direction::Left_Up;
+                    break;
+                case 3:
+                    dir = Direction::Left_Down;
+                    break;
+                case 4:
+                    dir = Direction::Right_Up;
+                    break;
+                case 5:
+                    dir = Direction::Right_Down;
+                    break;
+
+            }
+            VectorF2 offset = DirectionToOffset(dir);
+
+            myExplosionC.AddChild(myBiexplosionMoves + i);
+            myBiexplosionMoves[i].SetChild(myBiexplosions + i);
+            myBiexplosionMoves[i].Transform
+                .Set(MatrixF4::Translation(VectorF4(offset[X], 0, offset[Y])));
+            myBiexplosions[i].ProgramState().SetUniform("FrameCount", VectorI2(16,1));
+            myBiexplosions[i].ProgramState().SetUniform("Offset", VectorF2(0,0.5));
+            myBiexplosions[i].ProgramState().SetUniform("Size", VectorF2(1,1));
+            myBiexplosions[i].Visible.Set(false);
+        }
 
         myDroidMov.SetChild(&myDroid);
         myContainer->AddChild(&myDroidMov);
@@ -340,6 +383,35 @@ real DirectionToAngle(Direction dir)
     }
 }
 
+void GameStateService::Explode(VectorF4 pos)
+{
+    AnimationHelper::HideAnimationData *hdata = 
+        new AnimationHelper::HideAnimationData(&myExplosion, 1);
+
+    AnimationHelper::TextureAnimationData *tdata = 
+        new AnimationHelper::TextureAnimationData(
+                &myExplosion, 16, X, 1, AnimationHelper::LinearCurve);
+
+
+    myExplosionMov.Transform.Set(MatrixF4::Translation(pos));
+    myExplosion.Visible.Set(true);
+    myAnimations.AddAnimation(hdata);
+    myAnimations.AddAnimation(tdata);
+
+    for(int i = 0; i < 6; i++)
+    {
+        myBiexplosions[i].Visible.Set(true);
+        AnimationHelper::HideAnimationData *hbdata = 
+            new AnimationHelper::HideAnimationData(myBiexplosions + i, 1);
+
+        AnimationHelper::TextureAnimationData *tbdata = 
+            new AnimationHelper::TextureAnimationData(
+                    myBiexplosions + i, 16, X, 1, AnimationHelper::LinearCurve);
+        myAnimations.AddAnimation(hbdata);
+        myAnimations.AddAnimation(tbdata);
+    }
+}
+
 void GameStateService::PlayAnimation()
 {
     if(myAnimations.GetNonPermanentCount() == 0)
@@ -347,22 +419,15 @@ void GameStateService::PlayAnimation()
         if(myInMortar)
         {
             myMortar.Visible.Set(false);
-            AnimationHelper::HideAnimationData *hdata = 
-                new AnimationHelper::HideAnimationData(&myExplosion, 1);
-
-            AnimationHelper::TextureAnimationData *tdata = 
-                new AnimationHelper::TextureAnimationData(
-                        &myExplosion, 16, X, 1, AnimationHelper::LinearCurve);
-
             VectorF4 pos;
             myMortarMov.Transform.Get().GetTranslation(pos);
+            if(myDoExplode)
+            {
+                Explode(pos);
+                PlaySound(Sound::MotarImpact);
+            }
 
-            myExplosionMov.Transform.Set(MatrixF4::Translation(pos));
-            myExplosion.Visible.Set(true);
-            myAnimations.AddAnimation(hdata);
-            myAnimations.AddAnimation(tdata);
             myInMortar = false;
-            PlaySound(Sound::MotarImpact);
             myActionCursor++;
         }
         else if(myDroidSequenceCounter != -1)
@@ -396,20 +461,11 @@ void GameStateService::PlayAnimation()
             myDroidSequenceCounter = -1;
 
             myDroid.Visible.Set(false);
-            AnimationHelper::HideAnimationData *hdata = 
-                new AnimationHelper::HideAnimationData(&myExplosion, 1);
-
-            AnimationHelper::TextureAnimationData *tdata = 
-                new AnimationHelper::TextureAnimationData(
-                        &myExplosion, 16, X, 1, AnimationHelper::LinearCurve);
 
             VectorF4 pos;
             myDroidMov.Transform.Get().GetTranslation(pos);
+            Explode(pos);
 
-            myExplosionMov.Transform.Set(MatrixF4::Translation(pos));
-            myExplosion.Visible.Set(true);
-            myAnimations.AddAnimation(hdata);
-            myAnimations.AddAnimation(tdata);
             PlaySound(Sound::DroidFire);
         }
         else if(myActionCursor < myActionCount)
@@ -422,8 +478,10 @@ void GameStateService::PlayAnimation()
                         myCurrentPlayer->PlayerMovable->Transform.Get()
                             .GetTranslation(pos);
 
-                        VectorF2 off = DirectionToOffset(
+                        VectorI2 tileoff = DirectionToTileOffset(
                                 myActionStates[myActionCursor].GetDirection());
+                        VectorF2 off = TileToPosition(tileoff);
+                        myCurrentPlayer->Position += tileoff;
                         AnimationHelper::TranslationAnimationData *trdata =
                             new AnimationHelper::TranslationAnimationData(
                                 myCurrentPlayer->PlayerMovable,
@@ -505,9 +563,16 @@ void GameStateService::PlayAnimation()
                                     VectorF4(target[X], 0, target[Y]), 5,
                                     AnimationHelper::LinearCurve);
                         myAnimations.AddAnimation(mdata);
-                        myInMortar = true;
                         PlaySound(Sound::MotarFire);
                         PlaySound(Sound::MotarAir, 5);
+
+                        VectorI2 targetTile = myCurrentPlayer->Position +
+                            myActionStates[myActionCursor].GetCoordinate();
+                        char t = myMap->GetTileType(targetTile[X],targetTile[Y]);
+                        Debug(std::string("Type is: ")+t);
+                        myDoExplode = !(t == 'V' || t == 'O');
+                        
+                        myInMortar = true;
                     }
                     break;
                 case SkyportAction::Droid:

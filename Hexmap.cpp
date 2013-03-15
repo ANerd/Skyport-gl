@@ -55,6 +55,7 @@ void Hexmap::Create(uint jSize, uint kSize)
             tile.Tile.SetProgram(myHextileProgram, myHextileProgramStates[0]);
             tile.Border.SetProgram(myHexborderProgram, myHexborderProgramStates[0]);
             tile.Emblem.SetProgram(myEmblemProgram, myEmblemProgramStates[0]);
+            tile.Type = 0;
             AddChild(&(tile.Mov));
         }
     }
@@ -135,10 +136,16 @@ void Hexmap::OnDestroy()
 
 void Hexmap::SetTileType(uint j, uint k, char type)
 {
+    myHextiles[Index(j,k)].Type = type;
     myHextiles[Index(j,k)].Tile.SetProgramState(
             myHextileProgramStates[TypeToIndex(type)]);
     myHextiles[Index(j,k)].Border.SetProgramState(
             myHexborderProgramStates[TypeToIndex(type)]);
     myHextiles[Index(j,k)].Emblem.SetProgramState(
             myEmblemProgramStates[TypeToIndex(type)]);
+}
+
+char Hexmap::GetTileType(uint j, uint k)
+{
+    return myHextiles[Index(j,k)].Type;
 }

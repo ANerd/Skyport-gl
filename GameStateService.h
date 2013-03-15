@@ -29,12 +29,13 @@ class GameStateService : public Service, public AnimationHelperListner
         std::string Name;
         uint Health;
         uint Score;
-        anengine::VectorI2 Position;
+        VectorI2 Position;
         Movable *PlayerMovable;
         Visual *PlayerVisual;
         Movable *NametagMovable;
         MultiContainer *PlayerContainer;
         Nametag *PlayerNametag;
+        bool IsDead;
 
         Player(uint index, std::string name, Movable *playerMovable, 
                 Visual *playerVisual, Movable *nametagMovable,
@@ -43,7 +44,7 @@ class GameStateService : public Service, public AnimationHelperListner
             Health(0), Score(0), Position(ZeroI2), 
             PlayerMovable(playerMovable), PlayerVisual(playerVisual),
             NametagMovable(nametagMovable), PlayerContainer(playerContainer),
-            PlayerNametag(nametag) { }
+            PlayerNametag(nametag), IsDead(true) { }
 
         ~Player() { }
 
@@ -91,8 +92,14 @@ class GameStateService : public Service, public AnimationHelperListner
     Billboard myDroid;
     int myDroidSequenceCounter;
 
+    bool myDoExplode;
+
     Movable myExplosionMov;
+    MultiContainer myExplosionC;
     Billboard myExplosion;
+
+    Movable myBiexplosionMoves[6];
+    Billboard myBiexplosions[6];
 
     VectorF4 myDefaultLookat;
     VectorF4 myDefaultCamera;
@@ -104,6 +111,7 @@ class GameStateService : public Service, public AnimationHelperListner
     void MoveCamera(real time = 1, real dragTime = 0.5);
     void ForceMoveCamera(real time = 1, real dragTime = 0.5);
     void PlaySound(Sound sound, real duration = 0);
+    void Explode(VectorF4 pos);
 
     virtual void AnimationDone();
     public:
