@@ -16,6 +16,17 @@ void GameStateService::Player::Update(const PlayerState &other)
     if(StatsDirty)
     {
         Health = other.Health;
+        if(Health == 0)
+        {
+            Died = true;
+            IsDead = true;
+            PlayerVisual->Visible.Set(false);
+        }
+        if(IsDead && Health != 0)
+        {
+            IsDead = false;
+            PlayerVisual->Visible.Set(true);
+        }
         Score = other.Score;
         PlayerNametag->Health.Set(Health/100.0f);
     }
@@ -188,7 +199,7 @@ void GameStateService::Update(const GameState &state)
             nameMov->SetChild(nametag);
             myContainer->AddChild(mov);
             bill->ProgramState().SetUniform("Z", -0.05f);
-            bill->ProgramState().SetUniform("FrameCount", VectorI2(1,1));
+            bill->ProgramState().SetUniform("FrameCount", VectorI2(16,2));
             nametag->ProgramState().SetUniform("Size", VectorF2(1.6,0.2));
             Players.push_back(Player(i++,pit->Name,mov,bill,nameMov,
                         container, nametag));
@@ -324,7 +335,12 @@ void GameStateService::Update(const GameState &state)
         for(auto pit = state.Players_begin(); 
                 pit != state.Players_end(); pit++)
         {
-            Players[i++].Update(*pit);
+            Players[i].Update(*pit);
+            if(Players[i].GetDied())
+            {
+                myDyingPlayers.push_back(i);
+            }
+            i++;
         }
     }
 
@@ -335,8 +351,11 @@ void GameStateService::Update(const GameState &state)
             myMap->SetTileType(j,k,state.GetMap()(j,k));
         }
     }
-    SetCurrentPlayer();
-    MoveCamera();
+    if(myDyingPlayers.size() == 0)
+    {
+        SetCurrentPlayer();
+        MoveCamera();
+    }
 
     if(Turn != state.GetTurn())
     {
@@ -416,7 +435,36 @@ void GameStateService::PlayAnimation()
 {
     if(myAnimations.GetNonPermanentCount() == 0)
     {
-        if(myInMortar)
+        if(myDyingPlayers.size() != 0)
+        {
+            VectorF4 pos;
+            Player &dyingplayer = Players[myDyingPlayers.back()];
+            myDyingPlayers.pop_back();
+            dyingplayer.PlayerMovable->Transform.Get()
+                .GetTranslation(pos);
+            VectorF4 camoff = pos - myCameraTarget;
+            if(camoff.SquareLength() > 1)
+            {
+                myCameraTarget = pos;
+                ForceMoveCamera();
+            }
+            else
+            {
+                dyingplayer.PlayerVisual->ProgramState().SetUniform("Frame", 
+                        VectorI2(0,1));
+                AnimationHelper::TextureAnimationData *tedata =
+                    new AnimationHelper::TextureAnimationData(
+                        dyingplayer.PlayerVisual, 16, X, 1,
+                        AnimationHelper::LinearCurve);
+                myAnimations.AddAnimation(tedata);
+            }
+        }
+        else if(myAnimatingDying)
+        {
+            SetCurrentPlayer();
+            MoveCamera();
+        }
+        else if(myInMortar)
         {
             myMortar.Visible.Set(false);
             VectorF4 pos;

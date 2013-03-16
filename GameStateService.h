@@ -36,6 +36,7 @@ class GameStateService : public Service, public AnimationHelperListner
         MultiContainer *PlayerContainer;
         Nametag *PlayerNametag;
         bool IsDead;
+        bool Died;
 
         Player(uint index, std::string name, Movable *playerMovable, 
                 Visual *playerVisual, Movable *nametagMovable,
@@ -49,6 +50,13 @@ class GameStateService : public Service, public AnimationHelperListner
         ~Player() { }
 
         void Update(const PlayerState &other);
+
+        bool GetDied()
+        {
+            bool d = Died;
+            Died = false;
+            return d;
+        }
     };
     void Update(const GameState &state);
 
@@ -69,6 +77,9 @@ class GameStateService : public Service, public AnimationHelperListner
     uint myActionCursor;
     ActionState myActionStates[3];
     AnimationHelper::AnimationIndex mySubtitleAnimation;
+
+    bool myAnimatingDying;
+    std::vector<int> myDyingPlayers;
 
     Movable myCamMov;
     Camera *myCamera;

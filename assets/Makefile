@@ -20,28 +20,36 @@ all: $(TARGETS)
 
 textures/sky.gen.png: ../$(EXTTEXDIR)/skybox/skybox.png
 	$(CP) $< $@
-textures/figure.gen.png: ../$(EXTTEXDIR)/char/Jern-kjempen.png
-	$(CP) $< $@
+textures/figure.gen.png: ../$(EXTTEXDIR)/char/Jern-kjempen.png ../$(EXTTEXDIR)/char/jernkjempen-destroyed.png
+	$(MKDIR) $(@D)
+	$(IMGCONVERT) $^ -append $@
 
 textures/laser.gen.png: ../$(EXTTEXDIR)/projectiles/laser.png Makefile
+	$(MKDIR) $(@D)
 	$(CP) $< $@
 
 textures/mortar.gen.png: ../$(EXTTEXDIR)/projectiles/mortar.png Makefile
+	$(MKDIR) $(@D)
 	$(CP) $< $@
 
 textures/droid.gen.png: ../$(EXTTEXDIR)/projectiles/droid.png Makefile
+	$(MKDIR) $(@D)
 	$(CP) $< $@
 
 textures/explosion.gen.png: ../$(EXTTEXDIR)/misc/explosion-big.png Makefile
+	$(MKDIR) $(@D)
 	$(CP) $< $@
 
 textures/meteor.gen.png: ../$(EXTTEXDIR)/misc/meteor.png Makefile
+	$(MKDIR) $(@D)
 	$(CP) $< $@
 
 sound/laser.wav: ../$(EXTASSETSDIR)/snd/8-bit/laser.wav
+	$(MKDIR) $(@D)
 	$(CP) $< $@
 
 sound/wind.wav: ../$(EXTASSETSDIR)/snd/8-bit/silence.wav
+	$(MKDIR) $(@D)
 	$(CP) $< $@
 
 textures/tiles.gen.png: $(TILESRC)
