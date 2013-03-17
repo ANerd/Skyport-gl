@@ -20,7 +20,7 @@ Hexmap::~Hexmap()
         delete [] myHextiles;
 }
 
-void Hexmap::Create(uint jSize, uint kSize)
+void Hexmap::Create(int jSize, int kSize)
 {
     if(Scene.Get() == NULL)
         Debug("Hexmap %p has no scene!",this);
@@ -36,9 +36,9 @@ void Hexmap::Create(uint jSize, uint kSize)
     myKLength = kSize;
     myHextiles = new TileData[jSize*kSize];
 
-    for(uint j = 0; j < jSize; j++)
+    for(int j = 0; j < jSize; j++)
     {
-        for(uint k = 0; k < kSize; k++)
+        for(int k = 0; k < kSize; k++)
         {
             VectorF4 mjOffset(-jOffset[X],jOffset[Y],0);
             VectorF4 mkOffset(-kOffset[X],kOffset[Y],0);
@@ -134,8 +134,10 @@ void Hexmap::OnDestroy()
     MultiContainer::OnDestroy();
 }
 
-void Hexmap::SetTileType(uint j, uint k, char type)
+void Hexmap::SetTileType(int j, int k, char type)
 {
+    if(j < 0 || j >= myJLength || k < 0 || k > myKLength)
+        return;
     myHextiles[Index(j,k)].Type = type;
     myHextiles[Index(j,k)].Tile.SetProgramState(
             myHextileProgramStates[TypeToIndex(type)]);
@@ -145,7 +147,9 @@ void Hexmap::SetTileType(uint j, uint k, char type)
             myEmblemProgramStates[TypeToIndex(type)]);
 }
 
-char Hexmap::GetTileType(uint j, uint k)
+char Hexmap::GetTileType(int j, int k)
 {
+    if(j < 0 || j >= myJLength || k < 0 || k > myKLength)
+        return 'V';
     return myHextiles[Index(j,k)].Type;
 }

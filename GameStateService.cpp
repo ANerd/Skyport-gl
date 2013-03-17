@@ -18,8 +18,6 @@ void GameStateService::Player::Update(const PlayerState &other)
     if(IsDead && Health != 0)
     {
         IsDead = false;
-        PlayerVisual->Visible.Set(true);
-        PlayerNametag->Visible.Set(true);
         Spawned = true;
         Debug("Player spawning");
     }
@@ -31,8 +29,6 @@ void GameStateService::Player::Update(const PlayerState &other)
         {
             Died = true;
             IsDead = true;
-            PlayerVisual->Visible.Set(false);
-            PlayerNametag->Visible.Set(false);
         }
     }
     if(Position != other.Position)
@@ -475,6 +471,15 @@ void GameStateService::PlayAnimation()
                         dyingplayer.PlayerVisual, 16, X, 1,
                         AnimationHelper::LinearCurve);
                 myAnimations.AddAnimation(tedata);
+                
+                AnimationHelper::HideAnimationData *hpdata =
+                    new AnimationHelper::HideAnimationData(
+                            dyingplayer.PlayerVisual, 1);
+                myAnimations.AddAnimation(hpdata);
+                AnimationHelper::HideAnimationData *hndata =
+                    new AnimationHelper::HideAnimationData(
+                            dyingplayer.PlayerNametag, 1);
+                myAnimations.AddAnimation(hndata);
             }
         }
         else if(myAnimatingDying)
@@ -489,6 +494,8 @@ void GameStateService::PlayAnimation()
             myCurrentPlayer->PlayerMovable->Transform.Get()
                 .GetTranslation(pos);
             Explode(pos);
+            myCurrentPlayer->PlayerVisual->Visible.Set(true);
+            myCurrentPlayer->PlayerNametag->Visible.Set(true);
         }
         else if(myInMortar)
         {

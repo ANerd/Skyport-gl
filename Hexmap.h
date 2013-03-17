@@ -22,8 +22,8 @@ class Hexmap : public MultiContainer
         MultiContainer TileContainer;
     };
     TileData *myHextiles;
-    uint myJLength;
-    uint myKLength;
+    int myJLength;
+    int myKLength;
     static StaticAsset<Program> myHextileProgramRef;
     Asset<Program> myHextileProgram;
     static StaticAsset<Program> myHexborderProgramRef;
@@ -59,9 +59,9 @@ class Hexmap : public MultiContainer
     virtual void OnCreate();
     virtual void OnDestroy();
 
-    void Create(uint jSize, uint kSize);
-    void SetTileType(uint j, uint k, char type);
-    char GetTileType(uint j, uint k);
+    void Create(int jSize, int kSize);
+    void SetTileType(int j, int k, char type);
+    char GetTileType(int j, int k);
 };
 
 #endif
