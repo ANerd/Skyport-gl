@@ -180,7 +180,7 @@ ProtocolHandler::MessageType ProtocolHandler::Parse(std::string str, GameState &
                 throw Error(Error::InvalidValue, "Player has no name");
 
             json_object * healthObject;
-            int health = 100;
+            int health = 0;
             if(json_object_object_get_ex(playerObject, "health", &healthObject))
                 health = json_object_get_int(healthObject);
 

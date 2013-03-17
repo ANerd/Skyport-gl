@@ -24,8 +24,6 @@ class GameStateService : public Service, public AnimationHelperListner
     struct Player
     {
         uint Index;
-        bool StatsDirty;
-        bool StateDirty;
         std::string Name;
         uint Health;
         uint Score;
@@ -37,15 +35,16 @@ class GameStateService : public Service, public AnimationHelperListner
         Nametag *PlayerNametag;
         bool IsDead;
         bool Died;
+        bool Spawned;
 
         Player(uint index, std::string name, Movable *playerMovable, 
                 Visual *playerVisual, Movable *nametagMovable,
                 MultiContainer *playerContainer, Nametag *nametag)
-            : Index(index), StatsDirty(true), StateDirty(true), Name(name), 
+            : Index(index), Name(name), 
             Health(0), Score(0), Position(ZeroI2), 
             PlayerMovable(playerMovable), PlayerVisual(playerVisual),
             NametagMovable(nametagMovable), PlayerContainer(playerContainer),
-            PlayerNametag(nametag), IsDead(true) { }
+            PlayerNametag(nametag), IsDead(true), Died(false), Spawned(false) { }
 
         ~Player() { }
 
@@ -55,6 +54,13 @@ class GameStateService : public Service, public AnimationHelperListner
         {
             bool d = Died;
             Died = false;
+            return d;
+        }
+
+        bool GetSpawned()
+        {
+            bool d = Spawned;
+            Spawned = false;
             return d;
         }
     };

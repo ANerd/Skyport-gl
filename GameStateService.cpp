@@ -9,29 +9,35 @@ void GameStateService::Player::Update(const PlayerState &other)
     if(Name != other.Name)
         throw Error(Error::InvalidValue, "Updating name of player");
 
-    StatsDirty |= other.Health != Health || other.Score != Score || 
-        XOR(other.Index == 0, Index == 0);
-    StateDirty |= other.Position != Position;
+    //StatsDirty |= other.Health != Health || other.Score != Score || 
+    //    XOR(other.Index == 0, Index == 0);
+    //StateDirty |= other.Position != Position;
     Index = other.Index;
-    if(StatsDirty)
+
+    Score = other.Score;
+    if(IsDead && Health != 0)
+    {
+        IsDead = false;
+        PlayerVisual->Visible.Set(true);
+        PlayerNametag->Visible.Set(true);
+        Spawned = true;
+        Debug("Player spawning");
+    }
+    if(other.Health != Health)
     {
         Health = other.Health;
+        PlayerNametag->Health.Set(Health/100.0f);
         if(Health == 0)
         {
             Died = true;
             IsDead = true;
             PlayerVisual->Visible.Set(false);
+            PlayerNametag->Visible.Set(false);
         }
-        if(IsDead && Health != 0)
-        {
-            IsDead = false;
-            PlayerVisual->Visible.Set(true);
-        }
-        Score = other.Score;
-        PlayerNametag->Health.Set(Health/100.0f);
     }
-    if(StateDirty)
+    if(Position != other.Position)
     {
+        Debug("Warning: Jumping on gamesate");
         Position = other.Position;
         VectorF2 pos(
                 Hexmap::jOffset[X]*Position[X]+Hexmap::kOffset[X]*Position[Y],
@@ -39,8 +45,6 @@ void GameStateService::Player::Update(const PlayerState &other)
         PlayerMovable->Transform.Set(
                 MatrixF4::Translation(VectorF4(pos[X],0.0,pos[Y])));
     }
-    StatsDirty = false;
-    StateDirty = false;
 }
 
 GameStateService::GameStateService(MultiContainer *container, Hexmap *map,
@@ -138,7 +142,8 @@ void GameStateService::SetCurrentPlayer()
         if(myCurrentPlayer == Players.end())
             myCurrentPlayer = Players.begin();
     }
-    myCurrentPlayer->PlayerMovable->Transform.Get().GetTranslation(myCameraTarget);
+    if(!myCurrentPlayer->IsDead)
+        myCurrentPlayer->PlayerMovable->Transform.Get().GetTranslation(myCameraTarget);
 }
 
 void GameStateService::MoveCamera(real time, real dragTime)
@@ -147,30 +152,35 @@ void GameStateService::MoveCamera(real time, real dragTime)
     {
         ForceMoveCamera(time, dragTime);
     }
+    else
+    {
+        Debug("Not moving camera, %d running", myAnimations.GetNonPermanentCount());
+    }
 }
 void GameStateService::ForceMoveCamera(real time, real dragTime)
 {
     VectorF4 oldtarget;
     myCamMarkerMov.Transform.Get().GetTranslation(oldtarget);
 
-    //Debug("Cam from "+static_cast<std::string>(oldtarget) + " to " + static_cast<std::string>(target));
+    if((oldtarget - myCameraTarget).SquareLength() > 0.1)
+    {
+        AnimationHelper::TranslationAnimationData *markdata =
+            new AnimationHelper::TranslationAnimationData(
+                    &myCamMarkerMov,
+                    oldtarget, 
+                    myCameraTarget,
+                    time, AnimationHelper::SmoothCurve);
+        myAnimations.AddAnimation(markdata);
 
-    AnimationHelper::TranslationAnimationData *markdata =
-        new AnimationHelper::TranslationAnimationData(
-                &myCamMarkerMov,
-                oldtarget, 
-                myCameraTarget,
-                time, AnimationHelper::SmoothCurve);
-    myAnimations.AddAnimation(markdata);
-
-    AnimationHelper::TranslationAnimationData *camdata =
-        new AnimationHelper::TranslationAnimationData(
-                &myCamMov,
-                oldtarget + VectorF4(0, 10, 10), 
-                myCameraTarget + VectorF4(0, 10, 10),
-                time+dragTime, AnimationHelper::SmoothCurve);
-    myAnimations.AddAnimation(camdata);
-    Debug("Start movement");
+        AnimationHelper::TranslationAnimationData *camdata =
+            new AnimationHelper::TranslationAnimationData(
+                    &myCamMov,
+                    oldtarget + VectorF4(0, 10, 10), 
+                    myCameraTarget + VectorF4(0, 10, 10),
+                    time+dragTime, AnimationHelper::SmoothCurve);
+        myAnimations.AddAnimation(camdata);
+        Debug("Start movement");
+    }
 }
 
 void GameStateService::Update(const GameState &state)
@@ -192,6 +202,7 @@ void GameStateService::Update(const GameState &state)
 
             nametag->PlayerName.Set(pit->Name);
             nametag->Health.Set(pit->Health/100.0f);
+            nametag->Visible.Set(false);
 
             mov->SetChild(container);
             container->AddChild(bill);
@@ -200,6 +211,7 @@ void GameStateService::Update(const GameState &state)
             myContainer->AddChild(mov);
             bill->ProgramState().SetUniform("Z", -0.05f);
             bill->ProgramState().SetUniform("FrameCount", VectorI2(16,2));
+            bill->Visible.Set(false);
             nametag->ProgramState().SetUniform("Size", VectorF2(1.6,0.2));
             Players.push_back(Player(i++,pit->Name,mov,bill,nameMov,
                         container, nametag));
@@ -215,7 +227,8 @@ void GameStateService::Update(const GameState &state)
 
         VectorF2 midpoint = TileToPosition(mapSize / 2);
         myDefaultLookat = VectorF4(midpoint[X], 0.0f, midpoint[Y]);
-        myDefaultCamera = VectorF4(-midpoint[X], abs(midpoint[X] + midpoint[Y]), -midpoint[Y]);
+        myDefaultCamera = VectorF4(0,10,10) + myDefaultLookat; //VectorF4(-midpoint[X], abs(midpoint[X] + midpoint[Y]), -midpoint[Y]);
+        myCameraTarget = myDefaultLookat;
 
         myCamera->Near.Set(0.5);
         myCamera->Far.Set(200);
@@ -353,8 +366,13 @@ void GameStateService::Update(const GameState &state)
     }
     if(myDyingPlayers.size() == 0)
     {
+        Debug("Last turn: %d, new turn: %d", Turn, state.GetTurn());
         SetCurrentPlayer();
         MoveCamera();
+    }
+    else
+    {
+        Debug("Someone died!");
     }
 
     if(Turn != state.GetTurn())
@@ -463,6 +481,14 @@ void GameStateService::PlayAnimation()
         {
             SetCurrentPlayer();
             MoveCamera();
+            myAnimatingDying = false;
+        }
+        else if(myCurrentPlayer->GetSpawned())
+        {
+            VectorF4 pos;
+            myCurrentPlayer->PlayerMovable->Transform.Get()
+                .GetTranslation(pos);
+            Explode(pos);
         }
         else if(myInMortar)
         {
@@ -518,6 +544,9 @@ void GameStateService::PlayAnimation()
         }
         else if(myActionCursor < myActionCount)
         {
+            if(myCurrentPlayer->Index != 0)
+                throw Error(Error::InvalidState, "Action on wrong player");
+            Debug("Do action");
             switch(myActionStates[myActionCursor].GetAction())
             {
                 case SkyportAction::Move:
