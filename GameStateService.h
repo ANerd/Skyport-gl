@@ -121,12 +121,13 @@ class GameStateService : public Service, public AnimationHelperListner
     VectorF4 myDefaultLookat;
     VectorF4 myDefaultCamera;
     VectorF4 myCameraTarget;
+    VectorF4 myOldCamera;
 
     void SetCurrentPlayer();
     bool StateUpdate(Event &event, InPin pin);
     void PlayAnimation();
-    void MoveCamera(real time = 1, real dragTime = 0.5);
-    void ForceMoveCamera(real time = 1, real dragTime = 0.5);
+    void MoveCamera(real angle = 0, real time = 1, real dragTime = 0.5);
+    void ForceMoveCamera(real angle = 0, real time = 1, real dragTime = 0.5);
     void PlaySound(Sound sound, real duration = 0);
     void Explode(VectorF4 pos);
 

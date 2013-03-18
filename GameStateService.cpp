@@ -142,18 +142,18 @@ void GameStateService::SetCurrentPlayer()
         myCurrentPlayer->PlayerMovable->Transform.Get().GetTranslation(myCameraTarget);
 }
 
-void GameStateService::MoveCamera(real time, real dragTime)
+void GameStateService::MoveCamera(real angle, real time, real dragTime)
 {
     if(myAnimations.GetNonPermanentCount() == 0)
     {
-        ForceMoveCamera(time, dragTime);
+        ForceMoveCamera(angle, time, dragTime);
     }
     else
     {
         Debug("Not moving camera, %d running", myAnimations.GetNonPermanentCount());
     }
 }
-void GameStateService::ForceMoveCamera(real time, real dragTime)
+void GameStateService::ForceMoveCamera(real angle, real time, real dragTime)
 {
     VectorF4 oldtarget;
     myCamMarkerMov.Transform.Get().GetTranslation(oldtarget);
@@ -168,13 +168,15 @@ void GameStateService::ForceMoveCamera(real time, real dragTime)
                     time, AnimationHelper::SmoothCurve);
         myAnimations.AddAnimation(markdata);
 
+        VectorF4 cam = myCameraTarget + MatrixF4::RotationY(angle)*VectorF4(0, 10, -10);
         AnimationHelper::TranslationAnimationData *camdata =
             new AnimationHelper::TranslationAnimationData(
                     &myCamMov,
-                    oldtarget + VectorF4(0, 10, 10), 
-                    myCameraTarget + VectorF4(0, 10, 10),
+                    myOldCamera, 
+                    cam,
                     time+dragTime, AnimationHelper::SmoothCurve);
         myAnimations.AddAnimation(camdata);
+        myOldCamera = cam;
         Debug("Start movement");
     }
 }
@@ -223,8 +225,9 @@ void GameStateService::Update(const GameState &state)
 
         VectorF2 midpoint = TileToPosition(mapSize / 2);
         myDefaultLookat = VectorF4(midpoint[X], 0.0f, midpoint[Y]);
-        myDefaultCamera = VectorF4(0,10,10) + myDefaultLookat; //VectorF4(-midpoint[X], abs(midpoint[X] + midpoint[Y]), -midpoint[Y]);
+        myDefaultCamera = VectorF4(0,10,-10) + myDefaultLookat; //VectorF4(-midpoint[X], abs(midpoint[X] + midpoint[Y]), -midpoint[Y]);
         myCameraTarget = myDefaultLookat;
+        myOldCamera = myDefaultCamera;
 
         myCamera->Near.Set(0.5);
         myCamera->Far.Set(200);
@@ -445,6 +448,40 @@ void GameStateService::Explode(VectorF4 pos)
     }
 }
 
+void DirectionToView(Direction dir, real &angle, bool &flip)
+{
+    switch(dir)
+    {
+        case Direction::Right_Down:
+            angle = -Pi / 6;
+            flip = false;
+            break;
+        case Direction::Right_Up:
+            angle = Pi / 6;
+            flip = false;
+            break;
+        case Direction::Left_Up:
+            angle = -Pi / 6;
+            flip = true;
+            break;
+        case Direction::Left_Down:
+            angle = Pi / 6;
+            flip = true;
+            break;
+        case Direction::Up:
+            angle = Pi / 2;
+            flip = false;
+            break;
+        case Direction::Down:
+            angle = Pi / 2;
+            flip = true;
+            break;
+        default:
+            angle = 0;
+            flip = false;
+    }
+}
+
 void GameStateService::PlayAnimation()
 {
     if(myAnimations.GetNonPermanentCount() == 0)
@@ -572,10 +609,16 @@ void GameStateService::PlayAnimation()
                                 pos, 
                                 VectorF4(pos[X] + off[X], pos[Y], pos[Z]+off[Y]), 
                                 1, AnimationHelper::SmoothCurve);
+                        trdata->Delay = 1;
                         myAnimations.AddAnimation(trdata);
 
                         myCameraTarget = VectorF4(pos[X] + off[X], pos[Y], pos[Z]+off[Y]);
-                        ForceMoveCamera();
+                        real angle;
+                        bool flip;
+                        DirectionToView(
+                                myActionStates[myActionCursor].GetDirection(), 
+                                angle, flip);
+                        ForceMoveCamera(angle);
 
                         //AnimationHelper::TextureAnimationData *tedata =
                         //    new AnimationHelper::TextureAnimationData(
@@ -622,7 +665,7 @@ void GameStateService::PlayAnimation()
                             new AnimationHelper::HideAnimationData(&myLaser, 1);
                         myAnimations.AddAnimation(hdata);
                         myCameraTarget = VectorF4(pos[X] + off[X], pos[Y], pos[Z]+off[Y]);
-                        ForceMoveCamera(std::min(rollSpeed * (length + 0.5) + 0.2, 1.0), 0.1);
+                        ForceMoveCamera(0, std::min(rollSpeed * (length + 0.5) + 0.2, 1.0), 0.1);
 
                         PlaySound(Sound::Laser, 1);
 
