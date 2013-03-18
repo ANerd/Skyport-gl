@@ -272,6 +272,7 @@ void GameStateService::Update(const GameState &state)
         myExplosion.ProgramState().SetUniform("FrameCount", VectorI2(16,1));
         myExplosion.ProgramState().SetUniform("Offset", VectorF2(0,0.5));
         myExplosion.ProgramState().SetUniform("Size", VectorF2(2,2));
+        myExplosion.ProgramState().SetUniform("Z", -0.1f);
         myExplosion.Visible.Set(false);
 
         for(int i = 0; i < 6; i++)
@@ -308,6 +309,7 @@ void GameStateService::Update(const GameState &state)
             myBiexplosions[i].ProgramState().SetUniform("FrameCount", VectorI2(16,1));
             myBiexplosions[i].ProgramState().SetUniform("Offset", VectorF2(0,0.5));
             myBiexplosions[i].ProgramState().SetUniform("Size", VectorF2(1,1));
+            myBiexplosions[i].ProgramState().SetUniform("Z", -0.1f);
             myBiexplosions[i].Visible.Set(false);
         }
 
@@ -315,6 +317,7 @@ void GameStateService::Update(const GameState &state)
         myContainer->AddChild(&myDroidMov);
         myDroid.Visible.Set(false);
         myDroid.ProgramState().SetUniform("Offset", VectorF2(0,0.5));
+        myDroid.ProgramState().SetUniform("Z", -0.8f);
 
         for(uint i = 0; i < MeteorCount; i++)
         {
