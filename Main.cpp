@@ -149,6 +149,9 @@ int main(int argc, const char *argv[])
             droidTex, explosionTex, &cam);
     dispatcher.AddService(gamestate);
 
+    gamestate.DependOn(&scene);
+    ns.DependOn(&gamestate);
+
     SoundManager sound;
     dispatcher.AddService(sound);
 
