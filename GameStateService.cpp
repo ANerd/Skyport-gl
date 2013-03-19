@@ -44,16 +44,17 @@ void GameStateService::Player::Update(const PlayerState &other)
 }
 
 GameStateService::GameStateService(MultiContainer *container, Hexmap *map,
+        AssetRef<Program> playerProgram,
         AssetRef<Texture> figureTexture, AssetRef<Texture> laserTexture,
         AssetRef<Texture> mortarTexture, AssetRef<Texture> droidTexture, 
         AssetRef<Texture> explosionTexture,
         Camera *camera) 
-    : myAnimations(this), Turn(-1), myContainer(container), myMap(map), 
-    myFigureTexture(figureTexture), myActionCount(0), myActionCursor(0),
-    myAnimatingDying(false), myCamera(camera), myLaser(laserTexture), 
-    myMortar(mortarTexture), myInMortar(false), myDroid(droidTexture), 
-    myDroidSequenceCounter(-1), myDoExplode(false), 
-    myExplosion(explosionTexture)
+    : myAnimations(this), myPlayerProgram(playerProgram), Turn(-1), 
+    myContainer(container), myMap(map), myFigureTexture(figureTexture), 
+    myActionCount(0), myActionCursor(0), myAnimatingDying(false), 
+    myCamera(camera), myLaser(laserTexture), myMortar(mortarTexture), 
+    myInMortar(false), myDroid(droidTexture), myDroidSequenceCounter(-1), 
+    myDoExplode(false), myExplosion(explosionTexture)
 {
     RegisterInPin(SkyportEventClass::GameState, "StateUpdates", 
             static_cast<EventCallback>(&GameStateService::StateUpdate));
@@ -193,6 +194,7 @@ void GameStateService::Update(const GameState &state)
         {
             Movable *mov = new Movable();
             Billboard *bill = new Billboard(myFigureTexture);
+            bill->SetProgram(myPlayerProgram);
             Movable *nameMov = new Movable();
             MultiContainer *container = new MultiContainer();
             Nametag *nametag = new Nametag();
@@ -210,6 +212,8 @@ void GameStateService::Update(const GameState &state)
             myContainer->AddChild(mov);
             bill->ProgramState().SetUniform("Z", -0.05f);
             bill->ProgramState().SetUniform("FrameCount", VectorI2(16,2));
+            bill->ProgramState().SetUniform("ColorKey", VectorF4(1.0,0.0,1.0,1.0));
+            bill->ProgramState().SetUniform("Color", pit->Color);
             bill->Visible.Set(false);
             nametag->ProgramState().SetUniform("Size", VectorF2(1.6,0.2));
             Players.push_back(Player(i++,pit->Name,mov,bill,nameMov,

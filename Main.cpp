@@ -57,6 +57,8 @@ int main(int argc, const char *argv[])
         ->CreateFromFile<Keymap>("assets/Navigation.kmp");
     AssetRef<Program> skyShader = scene.GetAssetManager()
         ->CreateFromFile<Program>("assets/shaders/Sky.sp");
+    AssetRef<Program> playerShader = scene.GetAssetManager()
+        ->CreateFromFile<Program>("assets/shaders/Player.sp");
     AssetRef<Texture> groundTex = scene.GetAssetManager()
         ->CreateFromFile<Texture>("assets/textures/tiles.gen.png");
     AssetRef<Texture> emblemTex = scene.GetAssetManager()
@@ -145,8 +147,8 @@ int main(int argc, const char *argv[])
 
     Camera cam;
     scene.GetCameraManager().SetCamera(&cam);
-    GameStateService gamestate(&c, &map, figureTex, laserTex, mortarTex, 
-            droidTex, explosionTex, &cam);
+    GameStateService gamestate(&c, &map, playerShader, figureTex, laserTex, 
+            mortarTex, droidTex, explosionTex, &cam);
     dispatcher.AddService(gamestate);
 
     gamestate.DependOn(&scene);

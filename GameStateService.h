@@ -70,6 +70,7 @@ class GameStateService : public Service, public AnimationHelperListner
     OutPin myDonePin;
     OutPin mySoundPin;
 
+    AssetRef<Program> myPlayerProgram;
     int Turn;
     std::vector<Player> Players;
     MultiContainer *myContainer;
@@ -133,7 +134,8 @@ class GameStateService : public Service, public AnimationHelperListner
 
     virtual void AnimationDone();
     public:
-    GameStateService(MultiContainer *container, Hexmap *map,
+    GameStateService(MultiContainer *container, Hexmap *map, 
+            AssetRef<Program> playerTexture,
             AssetRef<Texture> figureTexture, AssetRef<Texture> laserTexture,
             AssetRef<Texture> mortarTexture, AssetRef<Texture> droidTexture,
             AssetRef<Texture> explosionTexture,
