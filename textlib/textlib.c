@@ -12,6 +12,7 @@ static unsigned int quality;
 static SDL_Color bgcolor;
 
 void textlib_initialize(void){
+  font = NULL;
   if(TTF_Init() == -1){
     printf("textlib: error initializing SDL_ttf: %s\n", TTF_GetError());
     exit(EXIT_FAILURE);
@@ -33,6 +34,11 @@ void textlib_set_quality(unsigned int the_quality){
 }
 
 void textlib_set_font(int dpi, const char *the_font){
+  if(font != NULL)
+  {
+    TTF_CloseFont(font);
+    font = NULL;
+  }
   if(the_font == NULL){
     the_font = (char*)DEFAULT_FONT_FILE;
   }
@@ -43,6 +49,11 @@ void textlib_set_font(int dpi, const char *the_font){
 }
 
 void textlib_quit(void){
+  if(font != NULL)
+  {
+    TTF_CloseFont(font);
+    font = NULL;
+  }
   TTF_Quit();
 }
 
@@ -67,6 +78,7 @@ SDL_Surface *textlib_get_nametag(const char *name, float health){
   TTF_Font *oldfont = font;
   unsigned int oldquality = quality;
   
+  font = NULL;
   textlib_set_font(19, NULL);
   textlib_set_quality(TEXT_QUALITY_HIGH);
   SDL_Surface *nametag = textlib_get_text(name, 0, 0, 0);
@@ -87,7 +99,9 @@ SDL_Surface *textlib_get_nametag(const char *name, float health){
 
   SDL_Rect name_rect = {(int)round(NAMETAG_WIDTH/2.0 - (nametag->w)/2), 6, nametag->w, nametag->h};
   SDL_BlitSurface(nametag, NULL, bg, &name_rect);
+  SDL_FreeSurface(nametag);
   
+  TTF_CloseFont(font);
   font = oldfont;
   quality = oldquality;
   return bg;
