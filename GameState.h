@@ -120,18 +120,21 @@ class ActionState
     Direction *GetCommands() { return myCommands; }
 };
 
+uint StrSum(std::string name);
 class PlayerState
 {
+    static const ColorF Colors[16];
     public:
     uint Index;
     std::string Name;
     uint Health;
     uint Score;
     anengine::VectorI2 Position;
+    ColorF Color;
     PlayerState(uint index, std::string name, uint health, uint score,
             anengine::VectorI2 pos)
-        : Index(index), Name(name), Health(health), Score(score), Position(pos) 
-    { }
+        : Index(index), Name(name), Health(health), Score(score), Position(pos),
+       Color(Colors[StrSum(name) % 16]) { }
     ~PlayerState() { }
 };
 

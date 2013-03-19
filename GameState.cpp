@@ -1,5 +1,34 @@
 #include "GameState.h"
 
+const ColorF PlayerState::Colors[16] = {
+    ColorF(0.0,0.0,0.0,1.0),
+    ColorF(0.0,0.0,0.0,1.0),
+    ColorF(0.0,0.0,0.0,1.0),
+    ColorF(0.0,0.0,0.0,1.0),
+    ColorF(0.0,0.0,0.0,1.0),
+    ColorF(0.0,0.0,0.0,1.0),
+    ColorF(0.0,0.0,0.0,1.0),
+    ColorF(0.0,0.0,0.0,1.0),
+    ColorF(0.0,0.0,0.0,1.0),
+    ColorF(0.0,0.0,0.0,1.0),
+    ColorF(0.0,0.0,0.0,1.0),
+    ColorF(0.0,0.0,0.0,1.0),
+    ColorF(0.0,0.0,0.0,1.0),
+    ColorF(0.0,0.0,0.0,1.0),
+    ColorF(0.0,0.0,0.0,1.0),
+    ColorF(0.0,0.0,0.0,1.0),
+};
+
+uint StrSum(std::string name)
+{
+    uint sum = 0;
+    for(auto it = name.begin(); it != name.end(); it++)
+    {
+        sum += *it;
+    }
+    return sum;
+}
+
 void GameState::SetPlayer(std::string name, uint health, uint score, 
         anengine::VectorI2 pos)
 {
