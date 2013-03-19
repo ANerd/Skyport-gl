@@ -50,9 +50,10 @@ GameStateService::GameStateService(MultiContainer *container, Hexmap *map,
         Camera *camera) 
     : myAnimations(this), Turn(-1), myContainer(container), myMap(map), 
     myFigureTexture(figureTexture), myActionCount(0), myActionCursor(0),
-    myCamera(camera), myLaser(laserTexture), myMortar(mortarTexture),
-    myInMortar(false), myDroid(droidTexture), myDroidSequenceCounter(-1),
-    myDoExplode(false), myExplosion(explosionTexture)
+    myAnimatingDying(false), myCamera(camera), myLaser(laserTexture), 
+    myMortar(mortarTexture), myInMortar(false), myDroid(droidTexture), 
+    myDroidSequenceCounter(-1), myDoExplode(false), 
+    myExplosion(explosionTexture)
 {
     RegisterInPin(SkyportEventClass::GameState, "StateUpdates", 
             static_cast<EventCallback>(&GameStateService::StateUpdate));
@@ -324,7 +325,7 @@ void GameStateService::Update(const GameState &state)
             myMeteorMovs[i].SetChild(&myMeteors[i]);
             myMeteorMovs[i].Transform.Set(MatrixF4::RotationZ(-0.463647609));
             MeteorAnimationData *adata = 
-                new MeteorAnimationData(&myMeteorMovs[i], 10, 
+                new MeteorAnimationData(&myMeteorMovs[i], 2, 
                         AnimationHelper::LinearCurve);
             adata->CurrentTime = double(std::rand()) * 10 / double(RAND_MAX);
             adata->Finalize();
@@ -332,8 +333,9 @@ void GameStateService::Update(const GameState &state)
 
             AnimationHelper::TextureAnimationData *tedata =
                 new AnimationHelper::TextureAnimationData(
-                    &myMeteors[i], 16, X, 1,
+                    &myMeteors[i], 16, X, 1.0,
                     AnimationHelper::LinearCurve);
+            tedata->Delay = 10;
             tedata->Repeating = true;
             myAnimations.AddAnimation(tedata);
 

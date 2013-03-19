@@ -22,7 +22,7 @@ class MeteorAnimationData : public AnimationHelper::AnimationData
 {
     const real StartHeight = 1;
     const real EndHeight = -5;
-    const real XSpeed = -2.5;
+    const real XSpeed = 2.5;
     public:
     MeteorAnimationData(Movable *animated, real duration,
             AnimationHelper::AnimationCurve curve)
