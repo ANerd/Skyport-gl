@@ -211,7 +211,7 @@ void GameStateService::Update(const GameState &state)
             nameMov->SetChild(nametag);
             myContainer->AddChild(mov);
             bill->ProgramState().SetUniform("Z", -0.05f);
-            bill->ProgramState().SetUniform("FrameCount", VectorI2(16,2));
+            bill->ProgramState().SetUniform("FrameCount", VectorI2(16,3));
             bill->ProgramState().SetUniform("ColorKey", VectorF4(1.0,0.0,1.0,1.0));
             bill->ProgramState().SetUniform("Color", pit->Color);
             bill->Visible.Set(false);
@@ -522,10 +522,7 @@ void GameStateService::PlayAnimation()
                     new AnimationHelper::HideAnimationData(
                             dyingplayer.PlayerVisual, 1);
                 myAnimations.AddAnimation(hpdata);
-                AnimationHelper::HideAnimationData *hndata =
-                    new AnimationHelper::HideAnimationData(
-                            dyingplayer.PlayerNametag, 1);
-                myAnimations.AddAnimation(hndata);
+                dyingplayer.PlayerNametag->Visible.Set(false);
             }
         }
         else if(myAnimatingDying)
@@ -629,11 +626,13 @@ void GameStateService::PlayAnimation()
                                 angle, flip);
                         ForceMoveCamera(angle);
 
-                        //AnimationHelper::TextureAnimationData *tedata =
-                        //    new AnimationHelper::TextureAnimationData(
-                        //        myCurrentPlayer->PlayerVisual, 4, X, 1,
-                        //        AnimationHelper::LinearCurve);
-                        //myAnimations.AddAnimation(tedata);
+                        myCurrentPlayer->PlayerVisual->ProgramState().SetUniform("Frame", 
+                                VectorI2(0,2));
+                        AnimationHelper::TextureAnimationData *tedata =
+                            new AnimationHelper::TextureAnimationData(
+                                myCurrentPlayer->PlayerVisual, 16, X, 1, //<-- "1" here is duration
+                                AnimationHelper::LinearCurve);
+                        myAnimations.AddAnimation(tedata);
                         myActionCursor++;
                     }
                     break;

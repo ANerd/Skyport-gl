@@ -20,7 +20,7 @@ all: $(TARGETS)
 
 textures/sky.gen.png: ../$(EXTTEXDIR)/skybox/skybox.png
 	$(CP) $< $@
-textures/figure.gen.png: ../$(EXTTEXDIR)/char/Jern-kjempen.png ../$(EXTTEXDIR)/char/jernkjempen-destroyed.png
+textures/figure.gen.png: ../$(EXTTEXDIR)/char/Jern-kjempen.png ../$(EXTTEXDIR)/char/jernkjempen-destroyed.png ../$(EXTTEXDIR)/char/walking.png
 	$(MKDIR) $(@D)
 	$(IMGCONVERT) $^ -append $@
 
