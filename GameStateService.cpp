@@ -510,12 +510,10 @@ void GameStateService::PlayAnimation()
             }
             else
             {
-                dyingplayer.PlayerVisual->ProgramState().SetUniform("Frame", 
-                        VectorI2(0,1));
                 AnimationHelper::TextureAnimationData *tedata =
                     new AnimationHelper::TextureAnimationData(
                         dyingplayer.PlayerVisual, 16, X, 1,
-                        AnimationHelper::LinearCurve);
+                        AnimationHelper::LinearCurve, 1);
                 myAnimations.AddAnimation(tedata);
                 
                 AnimationHelper::HideAnimationData *hpdata =
@@ -536,6 +534,8 @@ void GameStateService::PlayAnimation()
             VectorF4 pos;
             myCurrentPlayer->PlayerMovable->Transform.Get()
                 .GetTranslation(pos);
+            myCurrentPlayer->PlayerVisual->ProgramState().SetUniform("Frame", 
+                    VectorI2(0,0));
             Explode(pos);
             myCurrentPlayer->PlayerVisual->Visible.Set(true);
             myCurrentPlayer->PlayerNametag->Visible.Set(true);
@@ -626,12 +626,16 @@ void GameStateService::PlayAnimation()
                                 angle, flip);
                         ForceMoveCamera(angle);
 
-                        myCurrentPlayer->PlayerVisual->ProgramState().SetUniform("Frame", 
-                                VectorI2(0,2));
+                        Debug("Set walk frames @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+                        if(flip)
+                            myCurrentPlayer->PlayerVisual->ProgramState().SetUniform("Flip", VectorF2(1,0));
+                        else
+                            myCurrentPlayer->PlayerVisual->ProgramState().SetUniform("Flip", VectorF2(0,0));
                         AnimationHelper::TextureAnimationData *tedata =
                             new AnimationHelper::TextureAnimationData(
                                 myCurrentPlayer->PlayerVisual, 16, X, 1, //<-- "1" here is duration
-                                AnimationHelper::LinearCurve);
+                                AnimationHelper::LinearCurve, 2);
+                        tedata->Delay = 1;
                         myAnimations.AddAnimation(tedata);
                         myActionCursor++;
                     }
