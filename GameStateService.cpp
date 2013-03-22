@@ -71,8 +71,11 @@ GameStateService::GameStateService(MultiContainer *container, Hexmap *map,
     mySubtitle.Anchors.Set(Anchor::Bottom);
     mySubtitle.Size.Set(SizeF2(0.1,0.15));
 
+    myFader.Pass.Set(10);
+    myFader.Fading.Set(1);
     container->AddChild(&myTitle);
     container->AddChild(&mySubtitle);
+    container->AddChild(&myFader);
 
     for(int i = 0; i < 6; i++)
     {
@@ -350,6 +353,9 @@ void GameStateService::Update(const GameState &state)
 
             myContainer->AddChild(myMeteorMovs + i);
         }
+
+        FaderAnimationData *fdata = new FaderAnimationData(&myFader, 5, true, AnimationHelper::LinearCurve);
+        myAnimations.AddAnimation(fdata);
 
         //myStats = new Statusbox();
         //myStats->State.Set(state);

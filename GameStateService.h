@@ -15,6 +15,7 @@
 #include "Laser.h"
 #include "Meteor.h"
 #include "SoundManager.h"
+#include "Fader.h"
 
 using namespace anengine;
 
@@ -125,6 +126,8 @@ class GameStateService : public Service, public AnimationHelperListner
 
     Movable myIconMov;
     Billboard myIcon;
+
+    Fader myFader;
 
     void SetCurrentPlayer();
     bool StateUpdate(Event &event, InPin pin);
