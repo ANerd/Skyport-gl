@@ -211,7 +211,7 @@ void GameStateService::Update(const GameState &state)
             nameMov->SetChild(nametag);
             myContainer->AddChild(mov);
             bill->ProgramState().SetUniform("Z", -0.05f);
-            bill->ProgramState().SetUniform("FrameCount", VectorI2(16,3));
+            bill->ProgramState().SetUniform("FrameCount", VectorI2(16,4));
             bill->ProgramState().SetUniform("ColorKey", VectorF4(1.0,0.0,1.0,1.0));
             bill->ProgramState().SetUniform("Color", pit->Color);
             bill->Visible.Set(false);
@@ -381,7 +381,6 @@ void GameStateService::Update(const GameState &state)
     }
     if(myDyingPlayers.size() == 0)
     {
-        Debug("Last turn: %d, new turn: %d", Turn, state.GetTurn());
         SetCurrentPlayer();
         MoveCamera();
     }
@@ -754,6 +753,12 @@ void GameStateService::PlayAnimation()
                             AnimationHelper::HideAnimationData *hdata = 
                                 new AnimationHelper::HideAnimationData(&myIcon, 1);
                             myAnimations.AddAnimation(hdata);
+
+                            AnimationHelper::TextureAnimationData *tedata =
+                                new AnimationHelper::TextureAnimationData(
+                                    myCurrentPlayer->PlayerVisual, 16, X, 1,
+                                    AnimationHelper::LinearCurve, 3);
+                            myAnimations.AddAnimation(tedata);
                         }
                         myActionCursor++;
                     }
