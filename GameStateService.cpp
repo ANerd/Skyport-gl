@@ -214,6 +214,7 @@ void GameStateService::Update(const GameState &state)
             bill->ProgramState().SetUniform("FrameCount", VectorI2(16,4));
             bill->ProgramState().SetUniform("ColorKey", VectorF4(1.0,0.0,1.0,1.0));
             bill->ProgramState().SetUniform("Color", pit->Color);
+            bill->ProgramState().SetUniform("Size", VectorF2(1.0,1.0));
             bill->Visible.Set(false);
             nametag->ProgramState().SetUniform("Size", VectorF2(1.6,0.2));
             Players.push_back(Player(i++,pit->Name,mov,bill,nameMov,
