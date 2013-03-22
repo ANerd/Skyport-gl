@@ -211,7 +211,7 @@ void GameStateService::Update(const GameState &state)
             nameMov->SetChild(nametag);
             myContainer->AddChild(mov);
             bill->ProgramState().SetUniform("Z", -0.05f);
-            bill->ProgramState().SetUniform("FrameCount", VectorI2(16,4));
+            bill->ProgramState().SetUniform("FrameCount", VectorI2(16,5));
             bill->ProgramState().SetUniform("ColorKey", VectorF4(1.0,0.0,1.0,1.0));
             bill->ProgramState().SetUniform("Color", pit->Color);
             bill->ProgramState().SetUniform("Size", VectorF2(1.3,1.3));
@@ -538,12 +538,12 @@ void GameStateService::PlayAnimation()
         }
         else if(myCurrentPlayer->GetSpawned())
         {
-            VectorF4 pos;
-            myCurrentPlayer->PlayerMovable->Transform.Get()
-                .GetTranslation(pos);
-            myCurrentPlayer->PlayerVisual->ProgramState().SetUniform("Frame", 
-                    VectorI2(0,0));
-            Explode(pos);
+            myCurrentPlayer->PlayerVisual->ProgramState().SetUniform("Frame", VectorI2(0,4));
+            AnimationHelper::TextureAnimationData *tedata =
+                new AnimationHelper::TextureAnimationData(
+                    myCurrentPlayer->PlayerVisual, 16, X, 1,
+                    AnimationHelper::LinearCurve, 4);
+            myAnimations.AddAnimation(tedata);
             myCurrentPlayer->PlayerVisual->Visible.Set(true);
             myCurrentPlayer->PlayerNametag->Visible.Set(true);
         }
