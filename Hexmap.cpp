@@ -86,7 +86,7 @@ int TypeToIndex(char type)
 static const ColorF HexborderColors[Hexmap::TileTypeCount] = {
     ColorF(0,    0,    0,    0),
     ColorF(0.48, 0.45, 0.04, 1), // spawn
-    ColorF(0.29, 0.25, 0.21, 1), // scrap
+    ColorF(0.66, 0.33, 0.07, 1), // scrap
     ColorF(0.29, 0.05, 0.04, 1), // rubidium
     ColorF(0.37, 0.37, 0.37, 1), // rock
     ColorF(0.25, 0.33, 0.05, 1), // grass
