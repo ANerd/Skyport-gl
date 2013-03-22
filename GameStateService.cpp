@@ -332,7 +332,7 @@ void GameStateService::Update(const GameState &state)
         for(uint i = 0; i < MeteorCount; i++)
         {
             myMeteorMovs[i].SetChild(&myMeteors[i]);
-            myMeteorMovs[i].Transform.Set(MatrixF4::RotationZ(-0.463647609));
+            //myMeteorMovs[i].Transform.Set(MatrixF4::RotationZ(-0.463647609));
             MeteorAnimationData *adata = 
                 new MeteorAnimationData(&myMeteorMovs[i], 2, 
                         AnimationHelper::LinearCurve);
