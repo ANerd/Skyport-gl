@@ -198,8 +198,8 @@ void GameStateService::Update(const GameState &state)
             Movable *nameMov = new Movable();
             MultiContainer *container = new MultiContainer();
             Nametag *nametag = new Nametag();
-            bill->Offset.Set(VectorF2(0,0.5));
-            nametag->Offset.Set(VectorF2(0,1.15));
+            bill->Offset.Set(VectorF2(0,0.65));
+            nametag->Offset.Set(VectorF2(0,1.45));
 
             nametag->PlayerName.Set(pit->Name);
             nametag->Health.Set(pit->Health/100.0f);
@@ -214,7 +214,7 @@ void GameStateService::Update(const GameState &state)
             bill->ProgramState().SetUniform("FrameCount", VectorI2(16,4));
             bill->ProgramState().SetUniform("ColorKey", VectorF4(1.0,0.0,1.0,1.0));
             bill->ProgramState().SetUniform("Color", pit->Color);
-            bill->ProgramState().SetUniform("Size", VectorF2(1.0,1.0));
+            bill->ProgramState().SetUniform("Size", VectorF2(1.3,1.3));
             bill->Visible.Set(false);
             nametag->ProgramState().SetUniform("Size", VectorF2(1.6,0.2));
             Players.push_back(Player(i++,pit->Name,mov,bill,nameMov,
@@ -327,7 +327,7 @@ void GameStateService::Update(const GameState &state)
         
         myIconMov.SetChild(&myIcon);
         myContainer->AddChild(&myIconMov);
-        myIcon.ProgramState().SetUniform("Offset", VectorF2(0,1.5));
+        myIcon.ProgramState().SetUniform("Offset", VectorF2(0,1.8));
         myIcon.ProgramState().SetUniform("FrameCount", VectorI2(3,1));
         myIcon.ProgramState().SetUniform("Size", VectorF2(0.5,0.5));
         myIcon.Visible.Set(false);
