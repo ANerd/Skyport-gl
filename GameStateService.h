@@ -124,6 +124,9 @@ class GameStateService : public Service, public AnimationHelperListner
     VectorF4 myCameraTarget;
     VectorF4 myOldCamera;
 
+    Movable myIconMov;
+    Billboard myIcon;
+
     void SetCurrentPlayer();
     bool StateUpdate(Event &event, InPin pin);
     void PlayAnimation();
@@ -138,7 +141,7 @@ class GameStateService : public Service, public AnimationHelperListner
             AssetRef<Program> playerTexture,
             AssetRef<Texture> figureTexture, AssetRef<Texture> laserTexture,
             AssetRef<Texture> mortarTexture, AssetRef<Texture> droidTexture,
-            AssetRef<Texture> explosionTexture,
+            AssetRef<Texture> explosionTexture, AssetRef<Texture> iconTexture,
             Camera *camera);
 
     virtual ~GameStateService();

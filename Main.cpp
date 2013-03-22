@@ -75,6 +75,8 @@ int main(int argc, const char *argv[])
         ->CreateFromFile<Texture>("assets/textures/sky.gen.png");
     AssetRef<Texture> explosionTex = scene.GetAssetManager()
         ->CreateFromFile<Texture>("assets/textures/explosion.gen.png");
+    AssetRef<Texture> iconTex = scene.GetAssetManager()
+        ->CreateFromFile<Texture>("assets/textures/icons.gen.png");
 
     keymapFilter.SetKeymap(keymap);
     hub.CreateInPin("In");
@@ -148,7 +150,7 @@ int main(int argc, const char *argv[])
     Camera cam;
     scene.GetCameraManager().SetCamera(&cam);
     GameStateService gamestate(&c, &map, playerShader, figureTex, laserTex, 
-            mortarTex, droidTex, explosionTex, &cam);
+            mortarTex, droidTex, explosionTex, iconTex, &cam);
     dispatcher.AddService(gamestate);
 
     gamestate.DependOn(&scene);

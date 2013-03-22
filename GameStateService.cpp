@@ -47,14 +47,14 @@ GameStateService::GameStateService(MultiContainer *container, Hexmap *map,
         AssetRef<Program> playerProgram,
         AssetRef<Texture> figureTexture, AssetRef<Texture> laserTexture,
         AssetRef<Texture> mortarTexture, AssetRef<Texture> droidTexture, 
-        AssetRef<Texture> explosionTexture,
+        AssetRef<Texture> explosionTexture,AssetRef<Texture> iconTexture,
         Camera *camera) 
     : myAnimations(this), myPlayerProgram(playerProgram), Turn(-1), 
     myContainer(container), myMap(map), myFigureTexture(figureTexture), 
     myActionCount(0), myActionCursor(0), myAnimatingDying(false), 
     myCamera(camera), myLaser(laserTexture), myMortar(mortarTexture), 
     myInMortar(false), myDroid(droidTexture), myDroidSequenceCounter(-1), 
-    myDoExplode(false), myExplosion(explosionTexture)
+    myDoExplode(false), myExplosion(explosionTexture), myIcon(iconTexture)
 {
     RegisterInPin(SkyportEventClass::GameState, "StateUpdates", 
             static_cast<EventCallback>(&GameStateService::StateUpdate));
@@ -323,6 +323,13 @@ void GameStateService::Update(const GameState &state)
         myDroid.Visible.Set(false);
         myDroid.ProgramState().SetUniform("Offset", VectorF2(0,0.5));
         myDroid.ProgramState().SetUniform("Z", -0.8f);
+        
+        myIconMov.SetChild(&myIcon);
+        myContainer->AddChild(&myIconMov);
+        myIcon.ProgramState().SetUniform("Offset", VectorF2(0,1.5));
+        myIcon.ProgramState().SetUniform("FrameCount", VectorI2(3,1));
+        myIcon.ProgramState().SetUniform("Size", VectorF2(0.5,0.5));
+        myIcon.Visible.Set(false);
 
         for(uint i = 0; i < MeteorCount; i++)
         {
@@ -505,7 +512,7 @@ void GameStateService::PlayAnimation()
             VectorF4 camoff = pos - myCameraTarget;
             if(camoff.SquareLength() > 1)
             {
-                myCameraTarget = pos;
+               myCameraTarget = pos;
                 ForceMoveCamera();
             }
             else
@@ -596,7 +603,6 @@ void GameStateService::PlayAnimation()
         {
             if(myCurrentPlayer->Index != 0)
                 throw Error(Error::InvalidState, "Action on wrong player");
-            Debug("Do action");
             switch(myActionStates[myActionCursor].GetAction())
             {
                 case SkyportAction::Move:
@@ -626,7 +632,6 @@ void GameStateService::PlayAnimation()
                                 angle, flip);
                         ForceMoveCamera(angle);
 
-                        Debug("Set walk frames @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
                         if(flip)
                             myCurrentPlayer->PlayerVisual->ProgramState().SetUniform("Flip", VectorF2(1,0));
                         else
@@ -725,6 +730,32 @@ void GameStateService::PlayAnimation()
                         pos[Y] = 0;
                         myDroidMov.Transform.Set(MatrixF4::Translation(pos));
                         myDroidSequenceCounter = 0;
+                    }
+                    break;
+                case SkyportAction::Mine:
+                    {
+                        VectorF4 pos;
+                        myCurrentPlayer->PlayerMovable->Transform.Get()
+                            .GetTranslation(pos);
+                        myIconMov.Transform.Set(MatrixF4::Translation(pos));
+                        int frame = -1;
+                        VectorI2 tile = myCurrentPlayer->Position;
+                        char t = myMap->GetTileType(tile[X],tile[Y]);
+                        if(t == 'E')
+                            frame = 0;
+                        else if(t == 'R')
+                            frame = 1;
+                        else if(t == 'C')
+                            frame = 2;
+                        if(frame != -1)
+                        {
+                            myIcon.ProgramState().SetUniform("Frame", VectorI2(frame, 0));
+                            myIcon.Visible.Set(true);
+                            AnimationHelper::HideAnimationData *hdata = 
+                                new AnimationHelper::HideAnimationData(&myIcon, 1);
+                            myAnimations.AddAnimation(hdata);
+                        }
+                        myActionCursor++;
                     }
                     break;
                 default:

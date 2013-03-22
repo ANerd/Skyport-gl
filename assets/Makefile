@@ -1,9 +1,10 @@
 
-TARGETS:=geometry/hexborder.gen.vbo geometry/hextile.gen.vbo geometry/skybox.gen.vbo textures/tiles.gen.png textures/emblems.gen.png textures/sky.gen.png textures/figure.gen.png textures/laser.gen.png textures/mortar.gen.png textures/droid.gen.png textures/meteor.gen.png textures/explosion.gen.png sound/laser.wav sound/wind.wav
+TARGETS:=geometry/hexborder.gen.vbo geometry/hextile.gen.vbo geometry/skybox.gen.vbo textures/tiles.gen.png textures/emblems.gen.png textures/sky.gen.png textures/figure.gen.png textures/laser.gen.png textures/mortar.gen.png textures/droid.gen.png textures/meteor.gen.png textures/explosion.gen.png sound/laser.wav sound/wind.wav textures/icons.gen.png
 CFLAGS:= -lm -ggdb
 MKDIR:=mkdir -p
 CP:=cp
 IMGCONVERT:=convert
+IMGCONVERTFLAGS:= -define png:bit-depth=8
 ifndef EXTASSETSDIR
     $(error Need external assets. Download Skyport-assets and set EXTASSETSDIR in Makefile.)
 endif
@@ -11,6 +12,7 @@ endif
 EXTTEXDIR:=$(EXTASSETSDIR)/png
 TILESRC:=$(sort $(wildcard ../$(EXTTEXDIR)/tiles/*-tile.png))
 EMBLEMSRC:=$(sort $(wildcard ../$(EXTTEXDIR)/billboards/*-billboard.png))
+
 
 ifndef TILESRC
     $(error External assets not found.)
@@ -22,7 +24,11 @@ textures/sky.gen.png: ../$(EXTTEXDIR)/skybox/skybox.png
 	$(CP) $< $@
 textures/figure.gen.png: ../$(EXTTEXDIR)/char/walking.png ../$(EXTTEXDIR)/char/jernkjempen-destroyed.png ../$(EXTTEXDIR)/char/Jern-kjempen.png
 	$(MKDIR) $(@D)
-	$(IMGCONVERT) $^ -append $@
+	$(IMGCONVERT) $(IMGCONVERTFLAGS) $^ -append $@
+
+textures/icons.gen.png: ../$(EXTTEXDIR)/icons/explosium.png ../$(EXTTEXDIR)/icons/rubidium.png ../$(EXTTEXDIR)/icons/scrap.png
+	$(MKDIR) $(@D)
+	$(IMGCONVERT) $(IMGCONVERTFLAGS) $^ +append $@
 
 textures/laser.gen.png: ../$(EXTTEXDIR)/projectiles/laser.png Makefile
 	$(MKDIR) $(@D)
