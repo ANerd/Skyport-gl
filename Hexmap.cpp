@@ -1,4 +1,3 @@
-
 #include "Hexmap.h"
 #include <cstdlib>
 
@@ -85,13 +84,13 @@ int TypeToIndex(char type)
 }
 
 static const ColorF HexborderColors[Hexmap::TileTypeCount] = {
-    ColorF(0,0,0,0),
-    ColorF(0.48, 0.45, 0.04, 1),
-    ColorF(0.24, 0.20, 0.16, 1),
-    ColorF(0.29, 0.05, 0.04, 1),
-    ColorF(0.37, 0.37, 0.37, 1),
-    ColorF(0.20+0.1, 0.28+0.3, 0.00+0.3, 1),
-    ColorF(0.44, 0.40, 0.16, 1)
+    ColorF(0,    0,    0,    0),
+    ColorF(0.48, 0.45, 0.04, 1), // spawn
+    ColorF(0.29, 0.25, 0.21, 1), // scrap
+    ColorF(0.29, 0.05, 0.04, 1), // rubidium
+    ColorF(0.37, 0.37, 0.37, 1), // rock
+    ColorF(0.25, 0.33, 0.05, 1), // grass
+    ColorF(0.44, 0.40, 0.16, 1)  // explosium
 };
 
 void Hexmap::OnCreate()
