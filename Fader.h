@@ -7,6 +7,7 @@ using namespace anengine;
 
 class Fader : public Sprite
 {
+    static StaticAsset<VertexBuffer> FaderVertexBuffer;
     static StaticAsset<Program> FaderProgram;
     virtual void OnDraw(FrameTime elapsed);
     virtual void OnNewProgram();
@@ -19,6 +20,11 @@ class Fader : public Sprite
     Fader()
         : Fading(&FadingProperty, this) { }
     virtual ~Fader() { }
+
+    virtual AssetRef<VertexBuffer> GetGeometry(AssetManager *manager)
+    {
+        return FaderVertexBuffer.Get(manager);
+    }
 };
 
 class FaderAnimationData : public AnimationHelper::AnimationData

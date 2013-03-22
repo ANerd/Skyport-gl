@@ -1,19 +1,19 @@
 
 #include "Fader.h"
 
+StaticAsset<VertexBuffer> Fader::FaderVertexBuffer(AssetManager::CreateStaticFromMemory<VertexBuffer>(
+"A1 position float2 false 8 0 "
+"1 12 -0.5 -0.5 0.5 -0.5 0.5 0.5 -0.5 -0.5 0.5 0.5 -0.5 0.5")); 
+
 StaticAsset<Program> Fader::FaderProgram(AssetManager::CreateStaticFromMemory<Program>(
 "##s\n"
 "attribute vec2 position; \n"
-"attribute vec2 texcoord; \n"
-"varying vec2 vtexcoord; \n"
 "void main(void) \n"
 "{ \n"
-"  vtexcoord = texcoord; \n"
 "  gl_Position = vec4((position * 2.0).xy, -0.999, 1.0); \n"
 "} \n"
 "##s\n"
 "uniform float Fading; \n"
-"varying vec2 vtexcoord; \n"
 "void main(void) \n"
 "{ \n"
 "  gl_FragColor = vec4(0.0,0.0,0.0,Fading); \n"
