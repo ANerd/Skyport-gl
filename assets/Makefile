@@ -38,7 +38,7 @@ textures/mortar.gen.png: ../$(EXTTEXDIR)/projectiles/mortar.png Makefile
 	$(MKDIR) $(@D)
 	$(CP) $< $@
 
-textures/droid.gen.png: ../$(EXTTEXDIR)/projectiles/droid.png Makefile
+textures/droid.gen.png: ../$(EXTTEXDIR)/projectiles/droid-anim.png Makefile
 	$(MKDIR) $(@D)
 	$(CP) $< $@
 

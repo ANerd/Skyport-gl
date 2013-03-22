@@ -323,6 +323,7 @@ void GameStateService::Update(const GameState &state)
         myContainer->AddChild(&myDroidMov);
         myDroid.Visible.Set(false);
         myDroid.ProgramState().SetUniform("Offset", VectorF2(0,0.5));
+        myDroid.ProgramState().SetUniform("FrameCount", VectorI2(16,1));
         myDroid.ProgramState().SetUniform("Z", -0.8f);
         
         myIconMov.SetChild(&myIcon);
@@ -578,10 +579,27 @@ void GameStateService::PlayAnimation()
                             &myDroidMov, pos, 
                             VectorF4(pos[X] + off[X], pos[Y], pos[Z]+off[Y]), 
                             1, AnimationHelper::SmoothCurve);
+                    trdata->Delay = 1;
                     myAnimations.AddAnimation(trdata);
 
+                    AnimationHelper::TextureAnimationData *tedata =
+                        new AnimationHelper::TextureAnimationData(
+                            &myDroid, 16, X, 1,
+                            AnimationHelper::LinearCurve, 0);
+                    tedata->Delay = 1;
+                    myAnimations.AddAnimation(tedata);
+
+                    real angle;
+                    bool flip;
+                    DirectionToView(dir, angle, flip);
+
+                    if(flip)
+                        myDroid.ProgramState().SetUniform("Flip", VectorF2(1,0));
+                    else
+                        myDroid.ProgramState().SetUniform("Flip", VectorF2(0,0));
+
                     myCameraTarget = VectorF4(pos[X] + off[X], pos[Y], pos[Z]+off[Y]);
-                    ForceMoveCamera();
+                    ForceMoveCamera(angle);
                     myDroidSequenceCounter++;
                     PlaySound(Sound::DroidStep);
                     return;
