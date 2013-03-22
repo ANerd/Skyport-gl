@@ -93,7 +93,6 @@ class GameStateService : public Service, public AnimationHelperListner
     MultiContainer myCamMarkerC;
     Movable myCamMarkerMov;
     Marker myCamMarker;
-    PointVisualizer myCamMarkerViz;
 
     Meteor myMeteors[MeteorCount];
     Movable myMeteorMovs[MeteorCount];

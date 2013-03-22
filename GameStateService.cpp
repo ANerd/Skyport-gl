@@ -248,10 +248,6 @@ void GameStateService::Update(const GameState &state)
         myCamMarkerMov.Transform.Set(MatrixF4::Translation(myDefaultLookat));
         myCamMarkerMov.SetChild(&myCamMarkerC);
 
-        myCamMarkerViz.Color.Set(ColorF(1,0,1,1));
-        myCamMarkerViz.Size.Set(0.05f);
-
-        myCamMarkerC.AddChild(&myCamMarkerViz);
         myCamMarkerC.AddChild(&myCamMarker);
 
         myContainer->AddChild(&myCamMarkerMov);

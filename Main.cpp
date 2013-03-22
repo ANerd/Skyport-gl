@@ -111,36 +111,6 @@ int main(int argc, const char *argv[])
     sky.SetProgram(skyShader);
     c.AddChild(&sky);
 
-    PointVisualizer center;
-    center.Color.Set(ColorF(1,1,1,1));
-    center.Size.Set(0.05f);
-    c.AddChild(&center);
-
-    Movable topMov;
-    topMov.Transform.Set(MatrixF4::Translation(VectorF4(0,0.1,0)));
-    PointVisualizer pvY;
-    pvY.Color.Set(ColorF(0,1,0,1));
-    pvY.Size.Set(0.05f);
-    topMov.SetChild(&pvY);
-    c.AddChild(&topMov);
-
-    Movable rightMov;
-    rightMov.Transform.Set(MatrixF4::Translation(VectorF4(0.1,0,0)));
-    PointVisualizer pvX;
-    pvX.Color.Set(ColorF(1,0,0,1));
-    pvX.Size.Set(0.05f);
-    rightMov.SetChild(&pvX);
-    c.AddChild(&rightMov);
-
-    Movable frontMov;
-    frontMov.Transform.Set(MatrixF4::Translation(VectorF4(0,0,0.1)));
-    PointVisualizer front;
-    front.Color.Set(ColorF(0,0,1,1));
-    front.Size.Set(0.05f);
-    frontMov.SetChild(&front);
-    c.AddChild(&frontMov);
-
-
     Movable mapMov;
     mapMov.Transform.Set(MatrixF4::RotationX(3*Pi/2)*MatrixF4::RotationZ(Pi));
     Hexmap map(groundTex, emblemTex);
