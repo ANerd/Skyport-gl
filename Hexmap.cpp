@@ -144,6 +144,10 @@ void Hexmap::SetTileType(int j, int k, char type)
             myHexborderProgramStates[TypeToIndex(type)]);
     myHextiles[Index(j,k)].Emblem.SetProgramState(
             myEmblemProgramStates[TypeToIndex(type)]);
+    if(type == 'S')
+    {
+        myHextiles[Index(j,k)].Emblem.Pass.Set(1);
+    }
 }
 
 char Hexmap::GetTileType(int j, int k)
