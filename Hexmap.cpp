@@ -152,7 +152,7 @@ void Hexmap::SetTileType(int j, int k, char type)
 
 char Hexmap::GetTileType(int j, int k)
 {
-    if(j < 0 || j >= myJLength || k < 0 || k > myKLength)
+    if(j < 0 || j >= myJLength || k < 0 || k >= myKLength)
         return 'V';
     return myHextiles[Index(j,k)].Type;
 }

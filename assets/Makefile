@@ -22,7 +22,7 @@ all: $(TARGETS)
 
 textures/sky.gen.png: ../$(EXTTEXDIR)/skybox/skybox.png
 	$(CP) $< $@
-textures/figure.gen.png: ../$(EXTTEXDIR)/char/respawn.png ../$(EXTTEXDIR)/char/mining.png ../$(EXTTEXDIR)/char/walking.png ../$(EXTTEXDIR)/char/jernkjempen-destroyed.png ../$(EXTTEXDIR)/char/Jern-kjempen.png
+textures/figure.gen.png: ../$(EXTTEXDIR)/char/Jern-kjempen_Fire_Mortar.png ../$(EXTTEXDIR)/char/respawn.png ../$(EXTTEXDIR)/char/mining.png ../$(EXTTEXDIR)/char/walking.png ../$(EXTTEXDIR)/char/jernkjempen-destroyed.png ../$(EXTTEXDIR)/char/Jern-kjempen.png
 	$(MKDIR) $(@D)
 	$(IMGCONVERT) $(IMGCONVERTFLAGS) $^ -append $@
 

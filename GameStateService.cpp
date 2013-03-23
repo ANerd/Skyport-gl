@@ -13,7 +13,6 @@ void GameStateService::Player::Update(const PlayerState &other)
     //    XOR(other.Index == 0, Index == 0);
     //StateDirty |= other.Position != Position;
     Index = other.Index;
-
     Score = other.Score;
     if(IsDead && Health != 0)
     {
@@ -214,7 +213,7 @@ void GameStateService::Update(const GameState &state)
             nameMov->SetChild(nametag);
             myContainer->AddChild(mov);
             bill->ProgramState().SetUniform("Z", -0.05f);
-            bill->ProgramState().SetUniform("FrameCount", VectorI2(16,5));
+            bill->ProgramState().SetUniform("FrameCount", VectorI2(16,6));
             bill->ProgramState().SetUniform("ColorKey", VectorF4(1.0,0.0,1.0,1.0));
             bill->ProgramState().SetUniform("Color", pit->Color);
             bill->ProgramState().SetUniform("Size", VectorF2(1.3,1.3));
@@ -726,6 +725,7 @@ void GameStateService::PlayAnimation()
                             new MortarAnimationData(&myMortarMov, 1.5, pos, 
                                     VectorF4(target[X], 0, target[Y]), 5,
                                     AnimationHelper::LinearCurve);
+                        mdata->Delay = 0.4;
                         myAnimations.AddAnimation(mdata);
                         PlaySound(Sound::MotarFire);
                         PlaySound(Sound::MotarAir, 5);
@@ -736,6 +736,12 @@ void GameStateService::PlayAnimation()
                         Debug(std::string("Type is: ")+t);
                         myDoExplode = !(t == 'V' || t == 'O');
                         
+                        AnimationHelper::TextureAnimationData *tedata =
+                            new AnimationHelper::TextureAnimationData(
+                                myCurrentPlayer->PlayerVisual, 16, X, 1,
+                                AnimationHelper::LinearCurve, 5);
+                        myAnimations.AddAnimation(tedata);
+
                         myInMortar = true;
                     }
                     break;
