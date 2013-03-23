@@ -268,7 +268,7 @@ void GameStateService::Update(const GameState &state)
         myMortarMov.SetChild(&myMortar);
         myContainer->AddChild(&myMortarMov);
         myMortar.ProgramState().SetUniform("FrameCount", VectorI2(1,16));
-        myMortar.ProgramState().SetUniform("Size", VectorF2(0.5,0.5));
+        myMortar.ProgramState().SetUniform("Size", VectorF2(0.3,0.3));
         myMortar.Visible.Set(false);
 
         myContainer->AddChild(&myExplosionMov);
@@ -327,9 +327,9 @@ void GameStateService::Update(const GameState &state)
         
         myIconMov.SetChild(&myIcon);
         myContainer->AddChild(&myIconMov);
-        myIcon.ProgramState().SetUniform("Offset", VectorF2(0,1.8));
+        myIcon.ProgramState().SetUniform("Offset", VectorF2(0,2.5));
         myIcon.ProgramState().SetUniform("FrameCount", VectorI2(3,1));
-        myIcon.ProgramState().SetUniform("Size", VectorF2(0.5,0.5));
+        myIcon.ProgramState().SetUniform("Size", VectorF2(1.5,1.5));
         myIcon.Visible.Set(false);
 
         for(uint i = 0; i < MeteorCount; i++)
