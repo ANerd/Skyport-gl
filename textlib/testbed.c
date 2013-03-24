@@ -2,8 +2,8 @@
 #include <SDL.h>
 #include "textlib.h"
 
-#define WIDTH 800
-#define HEIGHT 800
+#define WIDTH 1900
+#define HEIGHT 1000
 
 void print_surface_properties(SDL_Surface *surf, const char *name);
 
@@ -17,7 +17,7 @@ int main(void){
     printf("Error creating SDL screen: %s\n", SDL_GetError());
     exit(EXIT_FAILURE);
   }
-  SDL_FillRect(mainsurf, NULL, SDL_MapRGB(mainsurf->format, 128, 128, 255));
+  SDL_FillRect(mainsurf, NULL, SDL_MapRGB(mainsurf->format, 128, 128, 128));
   textlib_initialize();
   textlib_set_font(72, NULL);
   textlib_set_quality(TEXT_QUALITY_HIGH);
@@ -45,6 +45,28 @@ int main(void){
 			nametag4->w, nametag4->h};
   SDL_BlitSurface(nametag4, NULL, mainsurf, &location4);
   print_surface_properties(nametag4, "nametag-16letters");
+
+  const char *names[] = {"0123456789ABCDEF", "0123456789ABCDEF", "0123456789ABCDEF", "0123456789ABCDEF", "0123456789ABCDEF", "0123456789ABCDEF", "0123456789ABCDEF", "0123456789ABCDEF", "0123456789ABCDEF", "0123456789ABCDEF", "0123456789ABCDEF", "0123456789ABCDEF", "0123456789ABCDEF", "0123456789ABCDEF", "0123456789ABCDEF", "0123456789ABCDEF"};
+  int points[] = {100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1100, 1200, 1300, 1400, 1500, 1600};
+  const char *primaries[] = {"laser", "mortar", "droid", "laser", "mortar", "droid", "laser", "droid", "mortar", "laser", "mortar", "droid", "laser", "laser", "laser", "laser"};
+  const char *secondaries[] = {"laser", "mortar", "droid", "laser", "mortar", "droid", "laser", "droid", "mortar", "laser", "mortar", "droid", "laser", "laser", "laser", "laser"};
+
+
+  SDL_Surface *stats = textlib_get_stats(8, names, points, primaries, secondaries, 1600);
+  SDL_Rect statsloc = {10, text->h + nametag->h + nametag2->h + nametag3->h + nametag4->h + 400,
+			stats->w, stats->h};
+  SDL_BlitSurface(stats, NULL, mainsurf, &statsloc);
+
+  SDL_Surface *stats2 = textlib_get_stats(16, names, points, primaries, secondaries, 1800);
+  SDL_Rect statsloc2 = {10, text->h + nametag->h + nametag2->h + nametag3->h + nametag4->h + stats->h + 450,
+			stats2->w, stats2->h};
+  SDL_BlitSurface(stats2, NULL, mainsurf, &statsloc2);
+
+  SDL_Surface *stats3 = textlib_get_stats(4, names, points, primaries, secondaries, 1200);
+  SDL_Rect statsloc3 = {10, text->h + nametag->h + nametag2->h + nametag3->h + nametag4->h + stats->h + stats2->h + 500,
+			stats3->w, stats3->h};
+  SDL_BlitSurface(stats3, NULL, mainsurf, &statsloc3);
+
   
   for(int i = 0; i < 480; i++){
     SDL_UpdateRect(mainsurf, 0, 0, 0, 0);
@@ -52,6 +74,7 @@ int main(void){
   }
   textlib_quit();
 }
+
 
 void print_surface_properties(SDL_Surface *surf, const char *name){
   printf("'%s' stats: \n\twidth: %d\n\theight: %d\n\talpha: %s\n\t"

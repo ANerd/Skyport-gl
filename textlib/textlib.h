@@ -2,6 +2,8 @@
 #define TEXTLIB_H_
 #include <SDL.h>
 #include <SDL_ttf.h>
+#include <stdbool.h>
+
 
 #ifdef __cplusplus
 extern "C" {
@@ -92,7 +94,7 @@ SDL_Surface *textlib_get_nametag(const char *name, float health);
  *
  */
 SDL_Surface *textlib_get_stats(unsigned int players, const char **names,
-			       int *points, int *primary_weapon, int *secondary_weapon, int screen_width);
+			       int *points, const char **primary_weapon, const char **secondary_weapon, int screen_width);
 
 /**
  * Renders a fullscreen scoreboard.
