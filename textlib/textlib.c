@@ -79,7 +79,7 @@ SDL_Surface *textlib_get_nametag(const char *name, float health){
   unsigned int oldquality = quality;
   
   font = NULL;
-  textlib_set_font(19, NULL);
+  textlib_set_font(24, NULL);
   textlib_set_quality(TEXT_QUALITY_HIGH);
   SDL_Surface *nametag = textlib_get_text(name, 0, 0, 0);
   SDL_Surface *bg = SDL_CreateRGBSurface(SDL_SWSURFACE,
@@ -97,7 +97,7 @@ SDL_Surface *textlib_get_nametag(const char *name, float health){
   SDL_Rect health_rect = {2, 2, pixel_fill_boundary - 4, NAMETAG_HEIGHT - 4};
   SDL_FillRect(bg, &health_rect, SDL_MapRGBA(bg->format, 100, 255, 100, 255));
 
-  SDL_Rect name_rect = {(int)round(NAMETAG_WIDTH/2.0 - (nametag->w)/2), 6, nametag->w, nametag->h};
+  SDL_Rect name_rect = {(int)round(NAMETAG_WIDTH/2.0 - (nametag->w)/2), 3, nametag->w, nametag->h};
   SDL_BlitSurface(nametag, NULL, bg, &name_rect);
   SDL_FreeSurface(nametag);
   
@@ -108,7 +108,25 @@ SDL_Surface *textlib_get_nametag(const char *name, float health){
 }
 
 SDL_Surface *textlib_get_stats(unsigned int players, const char **names,
-			       int *points, int *primary_weapon, int *secondary_weapon){
+			       int *points, int *primary_weapon, int *secondary_weapon, int screen_width){
+  /*TTF_Font *oldfont = font;
+  unsigned int oldquality = quality;
+  
+  font = NULL;
+  textlib_set_font(19, NULL);
+  textlib_set_quality(TEXT_QUALITY_HIGH);
+  SDL_Surface *statsbar = SDL_CreateRGBSurface(SDL_SWSURFACE,
+					       NAMETAG_WIDTH, NAMETAG_HEIGHT,
+					       nametag->format->BitsPerPixel,
+					       nametag->format->Rmask, nametag->format->Gmask,
+					       nametag->format->Bmask, nametag->format->Amask);
+
+  */
+  return NULL;
+}
+
+SDL_Surface *textlib_get_finalstats(unsigned int players, const char **names,
+				    int *points, int *primary_weapon, int *secondary_weapon){
   // TODO
   return NULL;
 }

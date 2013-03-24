@@ -41,7 +41,7 @@ namespace anengine
             names[i] = it->Name.c_str();
             points[i++] = it->Score;
         }
-        SDL_Surface *stat = textlib_get_stats(s.PlayerCount(), names, points, 0, 0);
+        SDL_Surface *stat = textlib_get_stats(s.PlayerCount(), names, points, 0, 0, 1080);
         myTexture->SetData(stat->w, stat->h, GL_BGRA, stat->pixels);
         real height = Size.Get()[Height];
         Size.Set(SizeF2(stat->w * height / stat->h, height));
