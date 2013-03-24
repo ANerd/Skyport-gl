@@ -157,7 +157,7 @@ void GameStateService::MoveCamera(real angle, real time, real dragTime)
         Debug("Not moving camera, %d running", myAnimations.GetNonPermanentCount());
     }
 }
-void GameStateService::ForceMoveCamera(real angle, real time, real dragTime)
+void GameStateService::ForceMoveCamera(real angle, real time, real dragTime, real height)
 {
     VectorF4 oldtarget;
     myCamMarkerMov.Transform.Get().GetTranslation(oldtarget);
@@ -172,7 +172,7 @@ void GameStateService::ForceMoveCamera(real angle, real time, real dragTime)
                     time, AnimationHelper::SmoothCurve);
         myAnimations.AddAnimation(markdata);
 
-        VectorF4 cam = myCameraTarget + MatrixF4::RotationY(angle)*VectorF4(0, 10, -10);
+        VectorF4 cam = myCameraTarget + MatrixF4::RotationY(angle)*VectorF4(0, height, -10);
         AnimationHelper::TranslationAnimationData *camdata =
             new AnimationHelper::TranslationAnimationData(
                     &myCamMov,
@@ -649,7 +649,7 @@ void GameStateService::PlayAnimation()
                         DirectionToView(
                                 myActionStates[myActionCursor].GetDirection(), 
                                 angle, flip);
-                        ForceMoveCamera(angle);
+                        ForceMoveCamera(angle, 1, 0.5, 4);
 
                         if(flip)
                             myCurrentPlayer->PlayerVisual->ProgramState().SetUniform("Flip", VectorF2(1,0));
