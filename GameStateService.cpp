@@ -161,8 +161,9 @@ void GameStateService::ForceMoveCamera(real angle, real time, real dragTime, rea
 {
     VectorF4 oldtarget;
     myCamMarkerMov.Transform.Get().GetTranslation(oldtarget);
+    VectorF4 cam = myCameraTarget + MatrixF4::RotationY(angle)*VectorF4(0, height, -10);
 
-    if((oldtarget - myCameraTarget).SquareLength() > 0.1)
+    if((oldtarget - myCameraTarget).SquareLength() + (myOldCamera - cam).SquareLength()  > 0.1)
     {
         AnimationHelper::TranslationAnimationData *markdata =
             new AnimationHelper::TranslationAnimationData(
@@ -172,7 +173,6 @@ void GameStateService::ForceMoveCamera(real angle, real time, real dragTime, rea
                     time, AnimationHelper::SmoothCurve);
         myAnimations.AddAnimation(markdata);
 
-        VectorF4 cam = myCameraTarget + MatrixF4::RotationY(angle)*VectorF4(0, height, -10);
         AnimationHelper::TranslationAnimationData *camdata =
             new AnimationHelper::TranslationAnimationData(
                     &myCamMov,
@@ -741,6 +741,7 @@ void GameStateService::PlayAnimation()
                                 myCurrentPlayer->PlayerVisual, 16, X, 1,
                                 AnimationHelper::LinearCurve, 5);
                         myAnimations.AddAnimation(tedata);
+                        ForceMoveCamera();
 
                         myInMortar = true;
                     }
