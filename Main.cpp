@@ -26,25 +26,31 @@
 #include "SoundManager.h"
 
 using namespace anengine;
-
 int main(int argc, const char *argv[])
 {
     std::string host;
     std::string port;
-    if(argc == 3)
+    bool fullscreen = false;
+    if(argc == 3 && argv[1][0] != '-')
     {
         host = argv[1];
         port = argv[2];
     }
-    else if(argc != 1)
+    else if(argc == 4 && argv[1][0] == '-' && argv[1][1] == 'f')
     {
-        cerr<<"Usage: "<<argv[0]<<" <hostname> <port>"<<endl;
+        host = argv[2];
+        port = argv[3];
+        fullscreen = true;
+    }
+    else 
+    {
+        cerr<<"Usage: "<<argv[0]<<" {-f} <hostname> <port>"<<endl;
         return 1;
     }
 
     Dispatcher dispatcher;
     SDLEventSource source;
-    SDLContext context(100, 100, false);
+    SDLContext context(100, 100, fullscreen);
     EventHub hub(EventClass::Misc);
     EventHub inputHub(EventClass::Input);
     SceneGraph scene;
@@ -80,6 +86,7 @@ int main(int argc, const char *argv[])
 
     keymapFilter.SetKeymap(keymap);
     hub.CreateInPin("In");
+    hub.CreateInPin("GFXIn");
     hub.CreateOutPin("Context");
     hub.CreateOutPin("Dispatcher");
     hub.CreateOutPin("Scene");
@@ -88,6 +95,7 @@ int main(int argc, const char *argv[])
     inputHub.CreateOutPin("Printer");
     inputHub.CreateOutPin("Input");
 
+    Pin::Connect(context, "Misc", hub, "GFXIn");
     Pin::Connect(source, "Input", inputHub, "Input");
     Pin::Connect(inputHub, "Input", keymapFilter, "Input");
     Pin::Connect(keymapFilter, "Action", scene, "Actions");
