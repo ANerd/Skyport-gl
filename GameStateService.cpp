@@ -13,7 +13,6 @@ void GameStateService::Player::Update(const PlayerState &other)
     //    XOR(other.Index == 0, Index == 0);
     //StateDirty |= other.Position != Position;
     Index = other.Index;
-
     Score = other.Score;
     if(IsDead && Health != 0)
     {
@@ -158,12 +157,13 @@ void GameStateService::MoveCamera(real angle, real time, real dragTime)
         Debug("Not moving camera, %d running", myAnimations.GetNonPermanentCount());
     }
 }
-void GameStateService::ForceMoveCamera(real angle, real time, real dragTime)
+void GameStateService::ForceMoveCamera(real angle, real time, real dragTime, real height)
 {
     VectorF4 oldtarget;
     myCamMarkerMov.Transform.Get().GetTranslation(oldtarget);
+    VectorF4 cam = myCameraTarget + MatrixF4::RotationY(angle)*VectorF4(0, height, -10);
 
-    if((oldtarget - myCameraTarget).SquareLength() > 0.1)
+    if((oldtarget - myCameraTarget).SquareLength() + (myOldCamera - cam).SquareLength()  > 0.1)
     {
         AnimationHelper::TranslationAnimationData *markdata =
             new AnimationHelper::TranslationAnimationData(
@@ -173,7 +173,6 @@ void GameStateService::ForceMoveCamera(real angle, real time, real dragTime)
                     time, AnimationHelper::SmoothCurve);
         myAnimations.AddAnimation(markdata);
 
-        VectorF4 cam = myCameraTarget + MatrixF4::RotationY(angle)*VectorF4(0, 10, -10);
         AnimationHelper::TranslationAnimationData *camdata =
             new AnimationHelper::TranslationAnimationData(
                     &myCamMov,
@@ -214,7 +213,7 @@ void GameStateService::Update(const GameState &state)
             nameMov->SetChild(nametag);
             myContainer->AddChild(mov);
             bill->ProgramState().SetUniform("Z", -0.05f);
-            bill->ProgramState().SetUniform("FrameCount", VectorI2(16,5));
+            bill->ProgramState().SetUniform("FrameCount", VectorI2(16,6));
             bill->ProgramState().SetUniform("ColorKey", VectorF4(1.0,0.0,1.0,1.0));
             bill->ProgramState().SetUniform("Color", pit->Color);
             bill->ProgramState().SetUniform("Size", VectorF2(1.3,1.3));
@@ -650,7 +649,7 @@ void GameStateService::PlayAnimation()
                         DirectionToView(
                                 myActionStates[myActionCursor].GetDirection(), 
                                 angle, flip);
-                        ForceMoveCamera(angle);
+                        ForceMoveCamera(angle, 1, 0.5, 4);
 
                         if(flip)
                             myCurrentPlayer->PlayerVisual->ProgramState().SetUniform("Flip", VectorF2(1,0));
@@ -726,6 +725,7 @@ void GameStateService::PlayAnimation()
                             new MortarAnimationData(&myMortarMov, 1.5, pos, 
                                     VectorF4(target[X], 0, target[Y]), 5,
                                     AnimationHelper::LinearCurve);
+                        mdata->Delay = 0.4;
                         myAnimations.AddAnimation(mdata);
                         PlaySound(Sound::MotarFire);
                         PlaySound(Sound::MotarAir, 5);
@@ -736,6 +736,13 @@ void GameStateService::PlayAnimation()
                         Debug(std::string("Type is: ")+t);
                         myDoExplode = !(t == 'V' || t == 'O');
                         
+                        AnimationHelper::TextureAnimationData *tedata =
+                            new AnimationHelper::TextureAnimationData(
+                                myCurrentPlayer->PlayerVisual, 16, X, 1,
+                                AnimationHelper::LinearCurve, 5);
+                        myAnimations.AddAnimation(tedata);
+                        ForceMoveCamera();
+
                         myInMortar = true;
                     }
                     break;
