@@ -76,7 +76,7 @@ class GameStateService : public Service, public AnimationHelperListner
     std::vector<Player> Players;
     MultiContainer *myContainer;
     Hexmap *myMap;
-    Statusbox *myStats;
+    Statusbox myStats;
     Textbox myTitle;
     Textbox mySubtitle;
     std::vector<Player>::iterator myCurrentPlayer;

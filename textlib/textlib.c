@@ -35,10 +35,8 @@ void textlib_set_quality(unsigned int the_quality){
 
 void textlib_set_font(int dpi, const char *the_font){
   if(font != NULL)
-  {
-    TTF_CloseFont(font);
-    font = NULL;
-  }
+      TTF_CloseFont(font);
+
   if(the_font == NULL){
     the_font = (char*)DEFAULT_FONT_FILE;
   }
@@ -100,6 +98,7 @@ SDL_Surface *textlib_get_nametag(const char *name, float health){
   SDL_Rect name_rect = {(int)round(NAMETAG_WIDTH/2.0 - (nametag->w)/2), 3, nametag->w, nametag->h};
   SDL_BlitSurface(nametag, NULL, bg, &name_rect);
   
+  TTF_CloseFont(font);
   font = oldfont;
   quality = oldquality;
   SDL_FreeSurface(nametag);
@@ -140,6 +139,7 @@ SDL_Surface *textlib_get_stats(unsigned int players, const char **names,
 
   TTF_Font *oldfont = font;
   unsigned int oldquality = quality;
+  font = NULL;
   textlib_set_font(font_size, NULL);
   textlib_set_quality(TEXT_QUALITY_HIGH);
 
@@ -199,11 +199,12 @@ SDL_Surface *textlib_get_stats(unsigned int players, const char **names,
       int y_displacement = (int)((height - surfaces[i]->h)/2.0);
       SDL_Rect placement = {x_position, y_displacement, surfaces[i]->w, surfaces[i]->h};
       SDL_BlitSurface(surfaces[i], NULL, bg, &placement);
-      SDL_FreeSurface(surfaces[i]);
       x_position += surfaces[i]->w + extra_padding;
+      SDL_FreeSurface(surfaces[i]);
     }
   }
 
+  TTF_CloseFont(font);
   // restore old font settings
   font = oldfont;
   quality = oldquality;

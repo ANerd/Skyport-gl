@@ -245,7 +245,6 @@ ProtocolHandler::MessageType ProtocolHandler::Parse(std::string str, GameState &
         }
         state.SetMap(newMap);
 
-        state.SetSubtitle("Subsub");
         myState = ProtocolState::InTurn;
         type = MessageType::GameState;
     }

@@ -357,11 +357,10 @@ void GameStateService::Update(const GameState &state)
         FaderAnimationData *fdata = new FaderAnimationData(&myFader, 5, true, AnimationHelper::LinearCurve);
         myAnimations.AddAnimation(fdata);
 
-        myStats = new Statusbox();
-        myStats->State.Set(state);
-        myStats->Anchors.Set(Anchor::Bottom);
-        myStats->Fill.Set(FillDirection::Width);
-        myContainer->AddChild(myStats);
+        myStats.State.Set(state);
+        myStats.Anchors.Set(Anchor::Bottom);
+        myStats.Fill.Set(FillDirection::Width);
+        myContainer->AddChild(&myStats);
     }
     else
     {
@@ -372,7 +371,7 @@ void GameStateService::Update(const GameState &state)
             uint oldscore = Players[i].Score;
             Players[i].Update(*pit);
             if(oldscore != Players[i].Score)
-                myStats->State.Set(state);
+                myStats.State.Set(state);
             if(Players[i].GetDied())
             {
                 myDyingPlayers.push_back(i);

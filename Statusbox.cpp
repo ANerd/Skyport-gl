@@ -56,5 +56,7 @@ namespace anengine
         }
         delete [] names;
         delete [] points;
+        delete [] pweapons;
+        delete [] sweapons;
     }
 };
