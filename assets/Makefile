@@ -1,5 +1,5 @@
 
-TARGETS:=geometry/hexborder.gen.vbo geometry/hextile.gen.vbo geometry/skybox.gen.vbo textures/tiles.gen.png textures/emblems.gen.png textures/sky.gen.png textures/figure.gen.png textures/laser.gen.png textures/mortar.gen.png textures/droid.gen.png textures/meteor.gen.png textures/explosion.gen.png sound/laser.wav sound/wind.wav textures/icons.gen.png
+TARGETS:=geometry/hexborder.gen.vbo geometry/hextile.gen.vbo geometry/skybox.gen.vbo textures/tiles.gen.png textures/emblems.gen.png textures/sky.gen.png textures/figure.gen.png textures/laser.gen.png textures/mortar.gen.png textures/droid.gen.png textures/meteor.gen.png textures/explosion.gen.png sound/laser.wav sound/wind.wav sound/mortar-fire.wav sound/mortar-air.wav sound/mortar-impact.wav sound/droid-launch.wav sound/droid-step.wav sound/droid-impact.wav sound/robot-destruction.wav sound/robot-movement.wav sound/robot-mining.wav textures/icons.gen.png
 CFLAGS:= -lm -ggdb
 MKDIR:=mkdir -p
 CP:=cp
@@ -22,7 +22,7 @@ all: $(TARGETS)
 
 textures/sky.gen.png: ../$(EXTTEXDIR)/skybox/skybox.png
 	$(CP) $< $@
-textures/figure.gen.png: ../$(EXTTEXDIR)/char/Jern-kjempen_Fire_Mortar.png ../$(EXTTEXDIR)/char/respawn.png ../$(EXTTEXDIR)/char/mining.png ../$(EXTTEXDIR)/char/walking.png ../$(EXTTEXDIR)/char/jernkjempen-destroyed.png ../$(EXTTEXDIR)/char/Jern-kjempen.png
+textures/figure.gen.png: ../$(EXTTEXDIR)/char/laser.png ../$(EXTTEXDIR)/char/Jern-kjempen_Fire_Mortar.png ../$(EXTTEXDIR)/char/respawn.png ../$(EXTTEXDIR)/char/mining.png ../$(EXTTEXDIR)/char/walking.png ../$(EXTTEXDIR)/char/jernkjempen-destroyed.png ../$(EXTTEXDIR)/char/Jern-kjempen.png
 	$(MKDIR) $(@D)
 	$(IMGCONVERT) $(IMGCONVERTFLAGS) $^ -append $@
 
@@ -55,6 +55,42 @@ sound/laser.wav: ../$(EXTASSETSDIR)/snd/8-bit/laser.wav
 	$(CP) $< $@
 
 sound/wind.wav: ../$(EXTASSETSDIR)/snd/8-bit/silence.wav
+	$(MKDIR) $(@D)
+	$(CP) $< $@
+
+sound/mortar-fire.wav: ../$(EXTASSETSDIR)/snd/8-bit/silence.wav 
+	$(MKDIR) $(@D)
+	$(CP) $< $@
+
+sound/mortar-air.wav: ../$(EXTASSETSDIR)/snd/8-bit/silence.wav 
+	$(MKDIR) $(@D)
+	$(CP) $< $@
+	
+sound/mortar-impact.wav: ../$(EXTASSETSDIR)/snd/8-bit/silence.wav 
+	$(MKDIR) $(@D)
+	$(CP) $< $@
+	
+sound/droid-launch.wav: ../$(EXTASSETSDIR)/snd/8-bit/silence.wav 
+	$(MKDIR) $(@D)
+	$(CP) $< $@
+	
+sound/droid-step.wav: ../$(EXTASSETSDIR)/snd/8-bit/silence.wav 
+	$(MKDIR) $(@D)
+	$(CP) $< $@
+	
+sound/droid-impact.wav: ../$(EXTASSETSDIR)/snd/8-bit/silence.wav 
+	$(MKDIR) $(@D)
+	$(CP) $< $@
+
+sound/robot-destruction.wav: ../$(EXTASSETSDIR)/snd/8-bit/silence.wav 
+	$(MKDIR) $(@D)
+	$(CP) $< $@
+	
+sound/robot-movement.wav: ../$(EXTASSETSDIR)/snd/8-bit/silence.wav 
+	$(MKDIR) $(@D)
+	$(CP) $< $@
+	
+sound/robot-mining.wav: ../$(EXTASSETSDIR)/snd/8-bit/silence.wav 
 	$(MKDIR) $(@D)
 	$(CP) $< $@
 

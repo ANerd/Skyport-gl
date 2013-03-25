@@ -129,12 +129,15 @@ class PlayerState
     std::string Name;
     uint Health;
     uint Score;
+    Weapon PrimaryWeapon;
+    Weapon SecondaryWeapon;
     anengine::VectorI2 Position;
     ColorF Color;
     PlayerState(uint index, std::string name, uint health, uint score,
-            anengine::VectorI2 pos)
-        : Index(index), Name(name), Health(health), Score(score), Position(pos),
-       Color(Colors[StrSum(name) % 16]) { }
+            Weapon primary, Weapon secondary, anengine::VectorI2 pos)
+        : Index(index), Name(name), Health(health), Score(score),
+        PrimaryWeapon(primary), SecondaryWeapon(secondary), Position(pos), 
+        Color(Colors[StrSum(name) % 16]) { }
     ~PlayerState() { }
 };
 
@@ -195,8 +198,8 @@ class GameState
     typedef std::vector<PlayerState>::const_iterator Players_iterator;
     GameState()
         : myTurn(-1), myActionCount(0), myPlayerIndex(0) { }
-    void SetPlayer(std::string name, uint health, uint score, 
-            anengine::VectorI2 pos);
+    void SetPlayer(std::string name, uint health, uint score, Weapon primary,
+            Weapon secondary, anengine::VectorI2 pos);
 
     void SetTurn(int turn)
     {
@@ -283,6 +286,8 @@ class GameState
         return true;
     }
 };
+
+const char *GetWeaponName(Weapon wep);
 
 class GameStateEvent : public Event
 {

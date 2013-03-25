@@ -29,12 +29,27 @@ uint StrSum(std::string name)
     return sum;
 }
 
+const char *GetWeaponName(Weapon wep)
+{
+    switch(wep)
+    {
+        case Weapon::Droid:
+            return "droid";
+        case Weapon::Laser:
+            return "laser";
+        case Weapon::Motar:
+            return "mortar";
+    }
+    return "unknown";
+}
+
 void GameState::SetPlayer(std::string name, uint health, uint score, 
-        anengine::VectorI2 pos)
+        Weapon primary, Weapon secondary, anengine::VectorI2 pos)
 {
     if(myTurn == 0)
     {
-        myPlayers.push_back(PlayerState(myPlayerIndex++, name, health, score, pos));
+        myPlayers.push_back(PlayerState(myPlayerIndex++, name, health, score,
+                   primary, secondary, pos));
     }
     else
     {
@@ -46,6 +61,8 @@ void GameState::SetPlayer(std::string name, uint health, uint score,
                 it->Score = score;
                 it->Position = pos;
                 it->Index = myPlayerIndex++;
+                it->PrimaryWeapon = primary;
+                it->SecondaryWeapon = secondary;
                 break;
             }
         }

@@ -28,7 +28,7 @@ OBJFILES:=$(patsubst %.cpp, $(BINDIR)/%.o, $(CPPSRCFILES)) $(patsubst %.c, $(BIN
 DEPS:=$(OBJFILES:.o=.d)
 TARGET:=skyport-gl
 
-CFLAGS := -c $(INCFLAGS) -std=c99 -DSNDLIB_SOUND_DIR="\"assets/sound\"" $(shell pkg-config --cflags sdl SDL_ttf SDL_mixer libpng)
+CFLAGS := -c $(INCFLAGS) -ggdb -std=c99 -DSNDLIB_SOUND_DIR="\"assets/sound\"" $(shell pkg-config --cflags sdl SDL_ttf SDL_mixer libpng)
 
 .PHONY: all
 all: $(TARGET) assets

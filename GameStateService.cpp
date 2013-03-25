@@ -69,6 +69,7 @@ GameStateService::GameStateService(MultiContainer *container, Hexmap *map,
     mySubtitle.Text.Set("Game will begin shortly");
     mySubtitle.Anchors.Set(Anchor::Bottom);
     mySubtitle.Size.Set(SizeF2(0.1,0.15));
+    mySubtitle.Position.Set(VectorF2(0,0.1));
 
     myFader.Pass.Set(10);
     myFader.Fading.Set(1);
@@ -213,7 +214,7 @@ void GameStateService::Update(const GameState &state)
             nameMov->SetChild(nametag);
             myContainer->AddChild(mov);
             bill->ProgramState().SetUniform("Z", -0.05f);
-            bill->ProgramState().SetUniform("FrameCount", VectorI2(16,6));
+            bill->ProgramState().SetUniform("FrameCount", VectorI2(16,7));
             bill->ProgramState().SetUniform("ColorKey", VectorF4(1.0,0.0,1.0,1.0));
             bill->ProgramState().SetUniform("Color", pit->Color);
             bill->ProgramState().SetUniform("Size", VectorF2(1.3,1.3));
@@ -356,9 +357,11 @@ void GameStateService::Update(const GameState &state)
         FaderAnimationData *fdata = new FaderAnimationData(&myFader, 5, true, AnimationHelper::LinearCurve);
         myAnimations.AddAnimation(fdata);
 
-        //myStats = new Statusbox();
-        //myStats->State.Set(state);
-        //myContainer->AddChild(myStats);
+        myStats = new Statusbox();
+        myStats->State.Set(state);
+        myStats->Anchors.Set(Anchor::Bottom);
+        myStats->Fill.Set(FillDirection::Width);
+        myContainer->AddChild(myStats);
     }
     else
     {
@@ -366,7 +369,10 @@ void GameStateService::Update(const GameState &state)
         for(auto pit = state.Players_begin(); 
                 pit != state.Players_end(); pit++)
         {
+            uint oldscore = Players[i].Score;
             Players[i].Update(*pit);
+            if(oldscore != Players[i].Score)
+                myStats->State.Set(state);
             if(Players[i].GetDied())
             {
                 myDyingPlayers.push_back(i);
@@ -703,7 +709,25 @@ void GameStateService::PlayAnimation()
                             new AnimationHelper::HideAnimationData(&myLaser, 1);
                         myAnimations.AddAnimation(hdata);
                         myCameraTarget = VectorF4(pos[X] + off[X], pos[Y], pos[Z]+off[Y]);
-                        ForceMoveCamera(0, std::min(rollSpeed * (length + 0.5) + 0.2, 1.0), 0.1);
+
+                        AnimationHelper::TextureAnimationData *ptedata =
+                            new AnimationHelper::TextureAnimationData(
+                                myCurrentPlayer->PlayerVisual, 16, X, 1,
+                                AnimationHelper::LinearCurve, 6);
+                        myAnimations.AddAnimation(ptedata);
+
+                        real angle;
+                        bool flip;
+                        DirectionToView(
+                                myActionStates[myActionCursor].GetDirection(), 
+                                angle, flip);
+
+                        if(flip)
+                            myCurrentPlayer->PlayerVisual->ProgramState().SetUniform("Flip", VectorF2(1,0));
+                        else
+                            myCurrentPlayer->PlayerVisual->ProgramState().SetUniform("Flip", VectorF2(0,0));
+
+                        ForceMoveCamera(angle, std::min(rollSpeed * (length + 0.5) + 0.2, 1.0), 0.1);
 
                         PlaySound(Sound::Laser, 1);
 

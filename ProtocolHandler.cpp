@@ -194,8 +194,25 @@ ProtocolHandler::MessageType ProtocolHandler::Parse(std::string str, GameState &
             if(json_object_object_get_ex(playerObject, "position", &positionObject))
                 position = ParseVector(json_object_get_string(positionObject));
 
-            state.SetPlayer(json_object_get_string(nameObject), 
-                    health, score, position);
+            json_object * pweaponObject;
+            Weapon pwep = Weapon::Motar;
+            if(json_object_object_get_ex(playerObject, "primary-weapon", &pweaponObject))
+            {
+                json_object * pweaponNameObject;
+                if(json_object_object_get_ex(pweaponObject, "name", &pweaponNameObject))
+                    pwep = ParseWeapon(json_object_get_string(pweaponNameObject));
+            }
+            json_object * sweaponObject;
+            Weapon swep = Weapon::Laser;
+            if(json_object_object_get_ex(playerObject, "secondary-weapon", &sweaponObject))
+            {
+                json_object * sweaponNameObject;
+                if(json_object_object_get_ex(sweaponObject, "name", &sweaponNameObject))
+                    swep = ParseWeapon(json_object_get_string(sweaponNameObject));
+            }
+
+            state.SetPlayer(json_object_get_string(nameObject), health, score,
+                    pwep, swep, position);
         }
 
         json_object *mapObject;
@@ -228,6 +245,7 @@ ProtocolHandler::MessageType ProtocolHandler::Parse(std::string str, GameState &
         }
         state.SetMap(newMap);
 
+        state.SetSubtitle("Subsub");
         myState = ProtocolState::InTurn;
         type = MessageType::GameState;
     }

@@ -35,17 +35,25 @@ namespace anengine
         const GameState &s = State.Get();
         char const** names = new const char*[s.PlayerCount()];
         int *points = new int[s.PlayerCount()];
+        char const** pweapons = new const char*[s.PlayerCount()];
+        char const** sweapons = new const char*[s.PlayerCount()];
         int i = 0;
         for(auto it = s.Players_begin(); it != s.Players_end(); it++)
         {
             names[i] = it->Name.c_str();
-            points[i++] = it->Score;
+            points[i] = it->Score;
+            pweapons[i] = GetWeaponName(it->PrimaryWeapon);
+            sweapons[i++] = GetWeaponName(it->SecondaryWeapon);
         }
-        SDL_Surface *stat = textlib_get_stats(s.PlayerCount(), names, points, 0, 0, 1080);
-        myTexture->SetData(stat->w, stat->h, GL_BGRA, stat->pixels);
-        real height = Size.Get()[Height];
-        Size.Set(SizeF2(stat->w * height / stat->h, height));
-        SDL_FreeSurface(stat);
+        SDL_Surface *stat = textlib_get_stats(s.PlayerCount(), names, points, 
+                pweapons, sweapons, 1920);
+        if(stat != NULL)
+        {
+            myTexture->SetData(stat->w, stat->h, GL_BGRA, stat->pixels);
+            real width = Size.Get()[Width];
+            Size.Set(SizeF2(width, stat->h * width / stat->w));
+            SDL_FreeSurface(stat);
+        }
         delete [] names;
         delete [] points;
     }
