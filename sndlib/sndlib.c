@@ -8,13 +8,26 @@
 
 static Mix_Chunk *snd_wind;
 static Mix_Chunk *snd_laser;
+static Mix_Chunk *snd_steps;
+static Mix_Chunk *snd_mortar_shot;
+static Mix_Chunk *snd_mortar_hit;
+static Mix_Chunk *snd_robot_destruction;
+
 
 void _sndlib_load_samples(void);
 void _sndlib_load_samples(void){
   snd_wind = Mix_LoadWAV(SNDLIB_SOUND_WIND);
   snd_laser = Mix_LoadWAV(SNDLIB_SOUND_LASER);
+  snd_steps = Mix_LoadWAV(SNDLIB_SOUND_ROBOT_MOVEMENT);
+  snd_mortar_shot = Mix_LoadWAV(SNDLIB_SOUND_MORTAR_FIRE);
+  snd_mortar_hit = Mix_LoadWAV(SNDLIB_SOUND_MORTAR_IMPACT);
+  snd_robot_destruction = Mix_LoadWAV(SNDLIB_SOUND_ROBOT_DESTRUCTION);
   assert(snd_wind != NULL);
   assert(snd_laser != NULL);
+  assert(snd_steps != NULL);
+  assert(snd_mortar_shot != NULL);
+  assert(snd_mortar_hit != NULL);
+  assert(snd_robot_destruction != NULL);
 }
 
 void sndlib_init(void){
@@ -41,13 +54,14 @@ void sndlib_play_laser(int milliseconds){
 }
 
 void sndlib_play_mortar_fire(void){
-  SNDLIB_STUB("add sound");
+  //int Mix_PlayChannel(int channel, Mix_Chunk *chunk, int loops)
+  Mix_PlayChannel(-1, snd_mortar_shot, 0);
 }
 void sndlib_play_mortar_air(int milliseconds){
   SNDLIB_STUB("add sound");
 }
 void sndlib_play_mortar_impact(void){
-  SNDLIB_STUB("add sound");
+  Mix_PlayChannel(-1, snd_mortar_hit, 0);
 }
 void sndlib_play_droid_fire(void){
   SNDLIB_STUB("add sound");
@@ -56,10 +70,10 @@ void sndlib_play_droid_step(void){
   SNDLIB_STUB("add sound");
 }
 void sndlib_play_droid_impact(void){
-  SNDLIB_STUB("add sound");
+  Mix_PlayChannel(-1, snd_mortar_hit, 0);
 }
 void sndlib_play_robot_destruction(void){
-  SNDLIB_STUB("add sound");
+  Mix_PlayChannel(-1, snd_robot_destruction, 0);
 }
 void sndlib_play_robot_respawn(void){
   SNDLIB_STUB("add sound");
