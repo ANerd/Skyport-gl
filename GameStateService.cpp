@@ -531,6 +531,7 @@ void GameStateService::PlayAnimation()
                 myAnimations.AddAnimation(hpdata);
                 dyingplayer.PlayerNametag->Visible.Set(false);
             }
+            PlaySound(Sound::RobotDestruction);
         }
         else if(myAnimatingDying)
         {
@@ -548,6 +549,7 @@ void GameStateService::PlayAnimation()
             myAnimations.AddAnimation(tedata);
             myCurrentPlayer->PlayerVisual->Visible.Set(true);
             myCurrentPlayer->PlayerNametag->Visible.Set(true);
+            PlaySound(Sound::RobotRespawn);
         }
         else if(myInMortar)
         {
@@ -616,7 +618,7 @@ void GameStateService::PlayAnimation()
             myDroidMov.Transform.Get().GetTranslation(pos);
             Explode(pos);
 
-            PlaySound(Sound::DroidFire);
+            PlaySound(Sound::DroidImpact);
         }
         else if(myActionCursor < myActionCount)
         {
@@ -787,6 +789,7 @@ void GameStateService::PlayAnimation()
                                     myCurrentPlayer->PlayerVisual, 16, X, 1,
                                     AnimationHelper::LinearCurve, 3);
                             myAnimations.AddAnimation(tedata);
+                            PlaySound(Sound::RobotMining);
                         }
                         myActionCursor++;
                     }
