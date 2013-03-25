@@ -221,6 +221,7 @@ SDL_Surface *textlib_get_finalscreen(unsigned int players, const char **names, i
 					 quickhack->format->BitsPerPixel,
 					 quickhack->format->Rmask, quickhack->format->Gmask,
 					 quickhack->format->Bmask, quickhack->format->Amask);
+  SDL_FillRect(finalscreen, NULL, SDL_MapRGBA(finalscreen->format, 0, 0, 255, 255)); // color surface
   return finalscreen;
 }
 
