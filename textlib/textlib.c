@@ -210,8 +210,18 @@ SDL_Surface *textlib_get_stats(unsigned int players, const char **names,
   return bg;
 }
 
-SDL_Surface *textlib_get_finalstats(unsigned int players, const char **names,
-				    int *points, int *primary_weapon, int *secondary_weapon){
-  // TODO
-  return NULL;
+
+SDL_Surface *textlib_get_finalscreen(unsigned int players, const char **names, int *points, 
+				     char **primary_weapons, int *primary_weapon_lvls, 
+				     char **secondary_weapons, int *secondary_weapon_lvls, 
+				     int w, int h){
+  SDL_Surface *quickhack = textlib_get_text("foobar", 0, 0, 0);
+  SDL_Surface *finalscreen = SDL_CreateRGBSurface(SDL_SWSURFACE,
+					 w, h,
+					 quickhack->format->BitsPerPixel,
+					 quickhack->format->Rmask, quickhack->format->Gmask,
+					 quickhack->format->Bmask, quickhack->format->Amask);
+  SDL_FillRect(finalscreen, NULL, SDL_MapRGBA(finalscreen->format, 0, 0, 255, 255)); // color surface
+  return finalscreen;
 }
+

@@ -100,7 +100,7 @@ SDL_Surface *textlib_get_stats(unsigned int players, const char **names,
  * Renders a fullscreen scoreboard.
  *
  */
-SDL_Surface *textlib_get_finalscreen(unsigned int players, const char **names, int *points, int *primary_weapon, int *secondary_weapon);
+  SDL_Surface *textlib_get_finalscreen(unsigned int players, const char **names, int *points, char **primary_weapons, int *primary_weapon_lvls, char **secondary_weapons, int *secondary_weapon_lvls, int w, int h);
   
 #ifdef __cplusplus
 }
