@@ -696,12 +696,14 @@ void GameStateService::PlayAnimation()
                         LaserAnimationData *ldata = 
                             new LaserAnimationData(&myLaser, length+0.5, 0.3/8, 
                                     AnimationHelper::LinearCurve);
+                        ldata->Delay = 0.4;
                         myAnimations.AddAnimation(ldata);
 
                         AnimationHelper::TextureAnimationData *tedata =
                             new AnimationHelper::TextureAnimationData(
                                 &myLaser, 16, Y, 1,
                                 AnimationHelper::LinearCurve);
+                        ldata->Delay = 0.4;
                         myAnimations.AddAnimation(tedata);
 
                         AnimationHelper::HideAnimationData *hdata = 
