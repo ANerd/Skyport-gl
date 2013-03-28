@@ -341,13 +341,14 @@ void GameStateService::Update(const GameState &state)
                         AnimationHelper::LinearCurve);
             adata->CurrentTime = double(std::rand()) * 10 / double(RAND_MAX);
             adata->Finalize();
+            adata->Delay = 60;
             myAnimations.AddAnimation(adata);
 
             AnimationHelper::TextureAnimationData *tedata =
                 new AnimationHelper::TextureAnimationData(
                     &myMeteors[i], 16, X, 1.0,
                     AnimationHelper::LinearCurve);
-            tedata->Delay = 10;
+            tedata->Delay = 60;
             tedata->Repeating = true;
             myAnimations.AddAnimation(tedata);
 
