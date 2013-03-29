@@ -184,6 +184,12 @@ void GameStateService::ForceMoveCamera(real angle, real time, real dragTime, rea
         myOldCamera = cam;
         Debug("Start movement");
     }
+    else
+    {
+        AnimationHelper::EmptyAnimationData *edata = 
+            new AnimationHelper::EmptyAnimationData(0.0001);
+        myAnimations.AddAnimation(edata);
+    }
 }
 
 void GameStateService::Update(const GameState &state)
@@ -362,6 +368,11 @@ void GameStateService::Update(const GameState &state)
         myStats.Anchors.Set(Anchor::Bottom);
         myStats.Fill.Set(FillDirection::Width);
         myContainer->AddChild(&myStats);
+
+        AnimationHelper::EmptyAnimationData *edata = new
+            AnimationHelper::EmptyAnimationData(1);
+        edata->Repeating = true;
+        myAnimations.AddAnimation(edata);
     }
     else
     {
@@ -588,7 +599,7 @@ void GameStateService::PlayAnimation()
             if(camoff.SquareLength() > 1)
             {
                myCameraTarget = pos;
-                ForceMoveCamera();
+               ForceMoveCamera();
             }
             else
             {
@@ -637,6 +648,9 @@ void GameStateService::PlayAnimation()
 
             myInMortar = false;
             myActionCursor++;
+            AnimationHelper::EmptyAnimationData *edata = 
+                new AnimationHelper::EmptyAnimationData(0.001);
+            myAnimations.AddAnimation(edata);
         }
         else if(myDroidSequenceCounter != -1)
         {
