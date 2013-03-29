@@ -89,7 +89,7 @@ SDL_Surface *textlib_get_nametag(const char *name, float health){
   unsigned int pixel_fill_boundary = (unsigned int)round(health*(NAMETAG_WIDTH));
   SDL_FillRect(bg, NULL, SDL_MapRGBA(bg->format, 0, 0, 0, 255));
   
-  SDL_Rect interior = {2, 2, NAMETAG_WIDTH - 4, NAMETAG_HEIGHT - 4};
+  SDL_Rect interior = {4, 4, NAMETAG_WIDTH - 8, NAMETAG_HEIGHT - 8};
   SDL_FillRect(bg, &interior, SDL_MapRGBA(bg->format, 255, 100, 100, 255));
   
   SDL_Rect health_rect = {2, 2, pixel_fill_boundary - 4, NAMETAG_HEIGHT - 4};
@@ -157,8 +157,8 @@ SDL_Surface *textlib_get_stats(unsigned int players, const char **names,
 					 surfaces[0]->format->Rmask, surfaces[0]->format->Gmask,
 					 surfaces[0]->format->Bmask, surfaces[0]->format->Amask);
   SDL_Rect inner = {2, 2, screen_width - 4, height - 4};
-  SDL_FillRect(bg, NULL, SDL_MapRGBA(bg->format, 0, 0, 0, 255));
-  SDL_FillRect(bg, &inner, SDL_MapRGBA(bg->format, 128, 128, 255, 255));
+  SDL_FillRect(bg, NULL, SDL_MapRGBA(bg->format, 59, 40, 0, 255));
+  SDL_FillRect(bg, &inner, SDL_MapRGBA(bg->format, 185, 90, 0, 255));
   int first_row_y_displacement = (int)((height - 2*surfaces[0]->h)/3.0);
   int second_row_y_displacement = first_row_y_displacement*2 + surfaces[0]->h;
 
