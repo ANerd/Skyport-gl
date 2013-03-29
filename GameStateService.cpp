@@ -556,7 +556,7 @@ void GameStateService::PlayDroid()
                 myDroid.ProgramState().SetUniform("Flip", VectorF2(0,0));
 
             myCameraTarget = VectorF4(pos[X] + off[X], pos[Y], pos[Z]+off[Y]);
-            ForceMoveCamera(angle);
+            ForceMoveCamera(angle, 1, 0.5, 4);
             myDroidSequenceCounter++;
             PlaySound(Sound::DroidStep);
             return;
