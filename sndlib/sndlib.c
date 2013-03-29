@@ -12,6 +12,7 @@ static Mix_Chunk *snd_steps;
 static Mix_Chunk *snd_mortar_shot;
 static Mix_Chunk *snd_mortar_hit;
 static Mix_Chunk *snd_robot_destruction;
+static Mix_Chunk *snd_robot_mining;
 
 
 void _sndlib_load_samples(void);
@@ -22,6 +23,7 @@ void _sndlib_load_samples(void){
   snd_mortar_shot = Mix_LoadWAV(SNDLIB_SOUND_MORTAR_FIRE);
   snd_mortar_hit = Mix_LoadWAV(SNDLIB_SOUND_MORTAR_IMPACT);
   snd_robot_destruction = Mix_LoadWAV(SNDLIB_SOUND_ROBOT_DESTRUCTION);
+  snd_robot_mining = Mix_LoadWAV(SNDLIB_SOUND_ROBOT_MINING);
   assert(snd_wind != NULL);
   assert(snd_laser != NULL);
   assert(snd_steps != NULL);
@@ -79,7 +81,7 @@ void sndlib_play_robot_respawn(void){
   SNDLIB_STUB("add sound");
 }
 void sndlib_play_robot_mining(void){
-  SNDLIB_STUB("add sound");
+  Mix_PlayChannel(-1, snd_robot_mining, 0);
 }
 
 #else
