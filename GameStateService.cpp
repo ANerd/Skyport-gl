@@ -693,11 +693,18 @@ void GameStateService::PlayAnimation()
                         VectorF4 pos;
                         myCurrentPlayer->PlayerMovable->Transform.Get()
                             .GetTranslation(pos);
-                        pos[Y] = 0.5;
+                        pos[Y] = 1.25;
+
+                        VectorF2 diroff = DirectionToOffset(
+                                myActionStates[myActionCursor].GetDirection());
+                        VectorF4 start(pos);
+                        start[X] += diroff[X]*0.35;
+                        start[Z] += diroff[Y]*0.35;
+
                         MatrixF4 localtransform = MatrixF4::RotationY(
                                 DirectionToAngle(myActionStates[myActionCursor].
                                     GetDirection()));
-                        localtransform.SetTranslation(pos);
+                        localtransform.SetTranslation(start);
                         myLaserMov.Transform.Set(localtransform 
                                 * myLaserBaseTransform);
 
