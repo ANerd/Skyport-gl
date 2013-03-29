@@ -69,7 +69,7 @@ GameStateService::GameStateService(MultiContainer *container, Hexmap *map,
     mySubtitle.Text.Set("Game will begin shortly");
     mySubtitle.Anchors.Set(Anchor::Bottom);
     mySubtitle.Size.Set(SizeF2(0.1,0.15));
-    mySubtitle.Position.Set(VectorF2(0,0.1));
+    mySubtitle.Position.Set(VectorF2(0,0.15));
 
     myFader.Pass.Set(10);
     myFader.Fading.Set(1);
