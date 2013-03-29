@@ -713,12 +713,11 @@ void GameStateService::PlayAnimation()
                         int length = std::max(abs(offset[X]), abs(offset[Y]));
                         VectorF2 off = TileToPosition(offset)/2;
 
-
                         myLaser.Length.Set(0);
                         myLaser.Visible.Set(true);
                         real rollSpeed = 0.3/8;
                         LaserAnimationData *ldata = 
-                            new LaserAnimationData(&myLaser, length+0.5, 0.3/8, 
+                            new LaserAnimationData(&myLaser, length+0.5-0.35, 0.3/8, 
                                     AnimationHelper::LinearCurve);
                         ldata->Delay = 0.4;
                         myAnimations.AddAnimation(ldata);
