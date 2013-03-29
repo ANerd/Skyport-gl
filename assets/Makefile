@@ -50,47 +50,47 @@ textures/meteor.gen.png: ../$(EXTTEXDIR)/misc/meteor.png Makefile
 	$(MKDIR) $(@D)
 	$(CP) $< $@
 
-sound/laser.wav: ../$(EXTASSETSDIR)/snd/8-bit/laser.wav
+sound/laser.wav: ../$(EXTASSETSDIR)/snd/final/laser.wav
 	$(MKDIR) $(@D)
 	$(CP) $< $@
 
-sound/wind.wav: ../$(EXTASSETSDIR)/snd/8-bit/silence.wav
+sound/wind.wav: ../$(EXTASSETSDIR)/snd/final/wind.wav
 	$(MKDIR) $(@D)
 	$(CP) $< $@
 
-sound/mortar-fire.wav: ../$(EXTASSETSDIR)/snd/8-bit/silence.wav 
+sound/mortar-fire.wav: ../$(EXTASSETSDIR)/snd/final/mortar-fire.wav 
 	$(MKDIR) $(@D)
 	$(CP) $< $@
 
-sound/mortar-air.wav: ../$(EXTASSETSDIR)/snd/8-bit/silence.wav 
+sound/mortar-air.wav: ../$(EXTASSETSDIR)/snd/final/mortar-air.wav 
 	$(MKDIR) $(@D)
 	$(CP) $< $@
 	
-sound/mortar-impact.wav: ../$(EXTASSETSDIR)/snd/8-bit/silence.wav 
+sound/mortar-impact.wav: ../$(EXTASSETSDIR)/snd/final/mortar-impact.wav 
 	$(MKDIR) $(@D)
 	$(CP) $< $@
 	
-sound/droid-launch.wav: ../$(EXTASSETSDIR)/snd/8-bit/silence.wav 
+sound/droid-launch.wav: ../$(EXTASSETSDIR)/snd/final/droid-launch.wav 
 	$(MKDIR) $(@D)
 	$(CP) $< $@
 	
-sound/droid-step.wav: ../$(EXTASSETSDIR)/snd/8-bit/silence.wav 
+sound/droid-step.wav: ../$(EXTASSETSDIR)/snd/final/droid-step.wav 
 	$(MKDIR) $(@D)
 	$(CP) $< $@
 	
-sound/droid-impact.wav: ../$(EXTASSETSDIR)/snd/8-bit/silence.wav 
+sound/droid-impact.wav: ../$(EXTASSETSDIR)/snd/final/droid-impact.wav 
 	$(MKDIR) $(@D)
 	$(CP) $< $@
 
-sound/robot-destruction.wav: ../$(EXTASSETSDIR)/snd/8-bit/silence.wav 
+sound/robot-destruction.wav: ../$(EXTASSETSDIR)/snd/final/robot-destruction.wav 
 	$(MKDIR) $(@D)
 	$(CP) $< $@
 	
-sound/robot-movement.wav: ../$(EXTASSETSDIR)/snd/8-bit/silence.wav 
+sound/robot-movement.wav: ../$(EXTASSETSDIR)/snd/final/robot-movement.wav 
 	$(MKDIR) $(@D)
 	$(CP) $< $@
 	
-sound/robot-mining.wav: ../$(EXTASSETSDIR)/snd/8-bit/silence.wav 
+sound/robot-mining.wav: ../$(EXTASSETSDIR)/snd/final/robot-mining.wav 
 	$(MKDIR) $(@D)
 	$(CP) $< $@
 
