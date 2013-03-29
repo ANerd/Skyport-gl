@@ -136,6 +136,7 @@ class GameStateService : public Service, public AnimationHelperListner
     void ForceMoveCamera(real angle = 0, real time = 1, real dragTime = 0.5, real height = 10);
     void PlaySound(Sound sound, real duration = 0);
     void Explode(VectorF4 pos);
+    void PlayDroid();
 
     virtual void AnimationDone();
     public:

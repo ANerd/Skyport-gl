@@ -506,6 +506,73 @@ void DirectionToView(Direction dir, real &angle, bool &flip)
     }
 }
 
+void GameStateService::PlayDroid()
+{
+    bool empty = myDroidSequenceCounter == 0;
+    while(myDroidSequenceCounter < ActionState::MaxDroidCommands)
+    {
+        Direction dir = myActionStates[myActionCursor]
+            .GetCommands()[myDroidSequenceCounter];
+        if(dir != Direction::None)
+        {
+            empty = false;
+            VectorF4 pos;
+            myDroidMov.Transform.Get().GetTranslation(pos);
+
+            VectorF2 off = DirectionToOffset(dir);
+            AnimationHelper::TranslationAnimationData *trdata =
+                new AnimationHelper::TranslationAnimationData(
+                    &myDroidMov, pos, 
+                    VectorF4(pos[X] + off[X], pos[Y], pos[Z]+off[Y]), 
+                    1, AnimationHelper::SmoothCurve);
+            trdata->Delay = 1;
+            myAnimations.AddAnimation(trdata);
+
+            AnimationHelper::TextureAnimationData *tedata =
+                new AnimationHelper::TextureAnimationData(
+                    &myDroid, 16, X, 1,
+                    AnimationHelper::LinearCurve, 0);
+            tedata->Delay = 1;
+            myAnimations.AddAnimation(tedata);
+
+            real angle;
+            bool flip;
+            DirectionToView(dir, angle, flip);
+
+            if(flip)
+                myDroid.ProgramState().SetUniform("Flip", VectorF2(1,0));
+            else
+                myDroid.ProgramState().SetUniform("Flip", VectorF2(0,0));
+
+            myCameraTarget = VectorF4(pos[X] + off[X], pos[Y], pos[Z]+off[Y]);
+            ForceMoveCamera(angle);
+            myDroidSequenceCounter++;
+            PlaySound(Sound::DroidStep);
+            return;
+        }
+        myDroidSequenceCounter++;
+    }
+
+    if(empty)
+    {
+        AnimationHelper::EmptyAnimationData *edata = new
+            AnimationHelper::EmptyAnimationData(0.5);
+        myAnimations.AddAnimation(edata);
+        return;
+    }
+
+    myActionCursor++;
+    myDroidSequenceCounter = -1;
+
+    myDroid.Visible.Set(false);
+
+    VectorF4 pos;
+    myDroidMov.Transform.Get().GetTranslation(pos);
+    Explode(pos);
+
+    PlaySound(Sound::DroidImpact);
+}
+
 void GameStateService::PlayAnimation()
 {
     if(myAnimations.GetNonPermanentCount() == 0)
@@ -573,58 +640,7 @@ void GameStateService::PlayAnimation()
         }
         else if(myDroidSequenceCounter != -1)
         {
-            while(myDroidSequenceCounter < ActionState::MaxDroidCommands)
-            {
-                Direction dir = myActionStates[myActionCursor]
-                    .GetCommands()[myDroidSequenceCounter];
-                if(dir != Direction::None)
-                {
-                    VectorF4 pos;
-                    myDroidMov.Transform.Get().GetTranslation(pos);
-
-                    VectorF2 off = DirectionToOffset(dir);
-                    AnimationHelper::TranslationAnimationData *trdata =
-                        new AnimationHelper::TranslationAnimationData(
-                            &myDroidMov, pos, 
-                            VectorF4(pos[X] + off[X], pos[Y], pos[Z]+off[Y]), 
-                            1, AnimationHelper::SmoothCurve);
-                    trdata->Delay = 1;
-                    myAnimations.AddAnimation(trdata);
-
-                    AnimationHelper::TextureAnimationData *tedata =
-                        new AnimationHelper::TextureAnimationData(
-                            &myDroid, 16, X, 1,
-                            AnimationHelper::LinearCurve, 0);
-                    tedata->Delay = 1;
-                    myAnimations.AddAnimation(tedata);
-
-                    real angle;
-                    bool flip;
-                    DirectionToView(dir, angle, flip);
-
-                    if(flip)
-                        myDroid.ProgramState().SetUniform("Flip", VectorF2(1,0));
-                    else
-                        myDroid.ProgramState().SetUniform("Flip", VectorF2(0,0));
-
-                    myCameraTarget = VectorF4(pos[X] + off[X], pos[Y], pos[Z]+off[Y]);
-                    ForceMoveCamera(angle);
-                    myDroidSequenceCounter++;
-                    PlaySound(Sound::DroidStep);
-                    return;
-                }
-                myDroidSequenceCounter++;
-            }
-            myActionCursor++;
-            myDroidSequenceCounter = -1;
-
-            myDroid.Visible.Set(false);
-
-            VectorF4 pos;
-            myDroidMov.Transform.Get().GetTranslation(pos);
-            Explode(pos);
-
-            PlaySound(Sound::DroidImpact);
+            PlayDroid();
         }
         else if(myActionCursor < myActionCount)
         {
@@ -785,6 +801,7 @@ void GameStateService::PlayAnimation()
                         pos[Y] = 0;
                         myDroidMov.Transform.Set(MatrixF4::Translation(pos));
                         myDroidSequenceCounter = 0;
+                        PlayDroid();
                     }
                     break;
                 case SkyportAction::Mine:
