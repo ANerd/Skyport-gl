@@ -30,6 +30,7 @@ void _sndlib_load_samples(void){
   assert(snd_mortar_shot != NULL);
   assert(snd_mortar_hit != NULL);
   assert(snd_robot_destruction != NULL);
+  Mix_Volume(-1, 8);
 }
 
 void sndlib_init(void){
