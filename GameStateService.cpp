@@ -677,7 +677,7 @@ void GameStateService::PlayAnimation()
                                 myCurrentPlayer->PlayerMovable,
                                 pos, 
                                 VectorF4(pos[X] + off[X], pos[Y], pos[Z]+off[Y]), 
-                                1, AnimationHelper::SmoothCurve);
+                                1, AnimationHelper::LinearCurve);
                         trdata->Delay = 1;
                         myAnimations.AddAnimation(trdata);
 
