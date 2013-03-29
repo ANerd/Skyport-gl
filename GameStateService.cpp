@@ -698,6 +698,7 @@ void GameStateService::PlayAnimation()
                                 myCurrentPlayer->PlayerVisual, 16, X, 1, //<-- "1" here is duration
                                 AnimationHelper::LinearCurve, 2);
                         tedata->Delay = 1;
+                        tedata->Repeat = 3;
                         myAnimations.AddAnimation(tedata);
                         myActionCursor++;
                     }
