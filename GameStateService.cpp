@@ -14,12 +14,6 @@ void GameStateService::Player::Update(const PlayerState &other)
     //StateDirty |= other.Position != Position;
     Index = other.Index;
     Score = other.Score;
-    if(IsDead && Health != 0)
-    {
-        IsDead = false;
-        Spawned = true;
-        Debug("Player spawning");
-    }
     if(other.Health != Health)
     {
         Health = other.Health;
@@ -29,6 +23,12 @@ void GameStateService::Player::Update(const PlayerState &other)
             Died = true;
             IsDead = true;
         }
+    }
+    if(IsDead && Health != 0)
+    {
+        IsDead = false;
+        Spawned = true;
+        Debug("Player spawning");
     }
     if(Position != other.Position)
     {
@@ -143,8 +143,8 @@ void GameStateService::SetCurrentPlayer()
         if(myCurrentPlayer == Players.end())
             myCurrentPlayer = Players.begin();
     }
-    if(!myCurrentPlayer->IsDead)
-        myCurrentPlayer->PlayerMovable->Transform.Get().GetTranslation(myCameraTarget);
+    myCurrentPlayer->PlayerMovable->Transform.Get().GetTranslation(myCameraTarget);
+    MoveCamera();
 }
 
 void GameStateService::MoveCamera(real angle, real time, real dragTime)
@@ -158,7 +158,7 @@ void GameStateService::MoveCamera(real angle, real time, real dragTime)
         Debug("Not moving camera, %d running", myAnimations.GetNonPermanentCount());
     }
 }
-void GameStateService::ForceMoveCamera(real angle, real time, real dragTime, real height)
+bool GameStateService::ForceMoveCamera(real angle, real time, real dragTime, real height)
 {
     VectorF4 oldtarget;
     myCamMarkerMov.Transform.Get().GetTranslation(oldtarget);
@@ -183,12 +183,14 @@ void GameStateService::ForceMoveCamera(real angle, real time, real dragTime, rea
         myAnimations.AddAnimation(camdata);
         myOldCamera = cam;
         Debug("Start movement");
+        return true;
     }
     else
     {
         AnimationHelper::EmptyAnimationData *edata = 
             new AnimationHelper::EmptyAnimationData(0.0001);
         myAnimations.AddAnimation(edata);
+        return false;
     }
 }
 
@@ -373,8 +375,9 @@ void GameStateService::Update(const GameState &state)
             AnimationHelper::EmptyAnimationData(1);
         edata->Repeating = true;
         myAnimations.AddAnimation(edata);
+        SetCurrentPlayer();
     }
-    else
+    else if(Turn != state.GetTurn())
     {
         int i = 0;
         for(auto pit = state.Players_begin(); 
@@ -402,7 +405,6 @@ void GameStateService::Update(const GameState &state)
     if(myDyingPlayers.size() == 0)
     {
         SetCurrentPlayer();
-        MoveCamera();
     }
     else
     {
@@ -590,19 +592,14 @@ void GameStateService::PlayAnimation()
     {
         if(myDyingPlayers.size() != 0)
         {
+            myAnimatingDying = true;
             VectorF4 pos;
             Player &dyingplayer = Players[myDyingPlayers.back()];
-            myDyingPlayers.pop_back();
             dyingplayer.PlayerMovable->Transform.Get()
                 .GetTranslation(pos);
-            VectorF4 camoff = pos - myCameraTarget;
-            if(camoff.SquareLength() > 1)
+            if(!ForceMoveCamera())
             {
-               myCameraTarget = pos;
-               ForceMoveCamera();
-            }
-            else
-            {
+                myDyingPlayers.pop_back();
                 AnimationHelper::TextureAnimationData *tedata =
                     new AnimationHelper::TextureAnimationData(
                         dyingplayer.PlayerVisual, 16, X, 1,
@@ -614,13 +611,12 @@ void GameStateService::PlayAnimation()
                             dyingplayer.PlayerVisual, 1);
                 myAnimations.AddAnimation(hpdata);
                 dyingplayer.PlayerNametag->Visible.Set(false);
+                PlaySound(Sound::RobotDestruction);
             }
-            PlaySound(Sound::RobotDestruction);
         }
         else if(myAnimatingDying)
         {
             SetCurrentPlayer();
-            MoveCamera();
             myAnimatingDying = false;
         }
         else if(myCurrentPlayer->GetSpawned())

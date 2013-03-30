@@ -133,7 +133,7 @@ class GameStateService : public Service, public AnimationHelperListner
     bool StateUpdate(Event &event, InPin pin);
     void PlayAnimation();
     void MoveCamera(real angle = 0, real time = 1, real dragTime = 0.5);
-    void ForceMoveCamera(real angle = 0, real time = 1, real dragTime = 0.5, real height = 10);
+    bool ForceMoveCamera(real angle = 0, real time = 1, real dragTime = 0.5, real height = 10);
     void PlaySound(Sound sound, real duration = 0);
     void Explode(VectorF4 pos);
     void PlayDroid();
