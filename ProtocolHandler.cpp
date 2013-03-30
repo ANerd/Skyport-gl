@@ -340,7 +340,7 @@ ProtocolHandler::MessageType ProtocolHandler::Parse(std::string str, GameState &
         type = MessageType::GameState;
     }
     else
-        throw Error(Error::InvalidValue, "Unknown message: "+message);
+        type = MessageType::Unknown;
     return type;
 }
 

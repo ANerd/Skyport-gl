@@ -22,7 +22,8 @@ class ProtocolHandler
         AnimationDone,
         GameState,
         TurnDone,
-        ActionsDone
+        ActionsDone,
+        Unknown
     };
     bool InternalMessage(MessageType type);
 
